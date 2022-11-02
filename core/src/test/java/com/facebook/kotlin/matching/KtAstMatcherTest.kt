@@ -357,7 +357,7 @@ class KtAstMatcherTest {
     val results =
         ktFile.findAll(
             match<KtClassOrObject>().apply {
-              addCustomMatcher { it.superTypeListEntries?.any { it.text == "Super1" } }
+              addCustomMatcher { it.superTypeListEntries.any { it.text == "Super1" } }
             })
 
     assertThat(results.map { it.name }).containsExactly("Foo", "Bar")
