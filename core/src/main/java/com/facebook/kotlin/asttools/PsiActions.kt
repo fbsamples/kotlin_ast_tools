@@ -34,13 +34,17 @@ import org.jetbrains.kotlin.psi.psiUtil.startsWithComment
  * Inserts the annotation after the provided PsiElement's leading comment, if any, and returns the
  * resulting text. If an annotation with the same name is already present, returns the original
  * text. For example, given a declaration like
+ *
  * ```
  * @Bar("dog") fun doThing() = Unit
  * ```
+ *
  * and annotation text `@Foo("cat")`, this method would return
+ *
  * ```
  * @Foo("cat") @Bar("dog") fun doThing() = Unit
  * ```
+ *
  * However, if the passed annotation text were instead `@Bar("cat")`, this method would return the
  * original declaration's text unchanged.
  */
@@ -51,13 +55,17 @@ inline fun <reified T : KtDeclaration> T.withAnnotation(annotationText: String):
  * Inserts the annotation after the provided PsiElement's leading comment, if any, and returns the
  * resulting text. If an annotation with the same name is already present, returns the original
  * text. For example, given a declaration like
+ *
  * ```
  * @Bar("dog") fun doThing() = Unit
  * ```
+ *
  * and annotation text `@Foo("cat")`, this method would return
+ *
  * ```
  * @Foo("cat") @Bar("dog") fun doThing() = Unit
  * ```
+ *
  * However, if the passed annotation text were instead `@Bar("cat")`, this method would return the
  * original declaration's text unchanged.
  */
@@ -81,10 +89,13 @@ inline fun <reified T : KtDeclaration> T.withAnnotation(annotation: KtAnnotation
  * Inserts the supertype after existing supertypes, if any, and returns the resulting text. If a
  * supertype with the same name is already present, returns the original text. For example, given a
  * declaration like
+ *
  * ```
  * class Foo(val name: String) : SuperFoo(name)
  * ```
+ *
  * and supertype text `Cat`, this method would return
+ *
  * ```
  * class Foo(val name: String) : SuperFoo(name), Cat
  * ```
@@ -122,11 +133,13 @@ fun KtClassOrObject.withSupertype(supertypeText: String): KtClassOrObject {
  * Inserts the method after all other properties/methods and returns the resulting text. If a method
  * with the same signature is already present, the new method will be added anyway. For example,
  * given a class like
+ *
  * ```
  * class Foo(val name: String) {
  *   fun getFoo(name: String): Foo = Foo(name)
  * }
  * ```
+ *
  * and method text `fun getFoo(a: String): Foo = Foo(a)`, this method would the original class text
  */
 fun KtClassOrObject.withFunction(methodText: String): KtClassOrObject {

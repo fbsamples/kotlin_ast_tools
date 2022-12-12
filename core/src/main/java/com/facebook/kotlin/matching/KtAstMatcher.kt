@@ -70,8 +70,8 @@ class KtAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    *
    * @param key the name by which this matcher's result can later be found
    * @param transform extracts a value of type T from an Element, which will then be checked by
-   * predicate (for example: to match on return type of a function, we need given a KtNamedFunction
-   * give back the node for the return type)
+   *   predicate (for example: to match on return type of a function, we need given a
+   *   KtNamedFunction give back the node for the return type)
    * @param predicate the predicate to satisfy for the child matcher
    */
   internal fun <T> addChildMatcher(
