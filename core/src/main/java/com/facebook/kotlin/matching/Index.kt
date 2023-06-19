@@ -45,6 +45,7 @@ class Index(private val index: Int) {
     const val FIRST = -1
     const val LAST = -2
     const val ANY = -3
+
     fun at(index: Int): Index {
       check(index >= 0)
       return Index(index)
