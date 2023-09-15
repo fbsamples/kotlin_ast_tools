@@ -105,8 +105,7 @@ fun KtClassOrObject.withSupertype(supertypeText: String): KtClassOrObject {
       KotlinParserUtil.parseAsSupertype(supertypeText)
           .collectDescendantsOfType<KtNameReferenceExpression>()
           .map { it.text }
-          .firstOrNull()
-          ?: return this
+          .firstOrNull() ?: return this
 
   if (this.superTypeListEntries.any {
     it.collectDescendantsOfType<KtNameReferenceExpression>().map { it.text }.firstOrNull() ==
