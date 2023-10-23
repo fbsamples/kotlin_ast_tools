@@ -174,10 +174,12 @@ fun replaceElements(code: String, elements: List<PsiElement>, replacements: List
     if (patch.first.startOffset < previousPatchEndOffset) {
       val patchesDescription =
           sortedPatches.joinToString(separator = "\n", prefix = "\n") {
-            "Patch: ${it.first.javaClass} from: ${it.first.startOffset} to: ${
-              it.first
-                  .endOffset
-            } replacement: ${patch.second}"
+            (if (it == patch) "**** " else "") +
+                "Patch: ${it.first.javaClass}" +
+                " from: ${it.first.startOffset}" +
+                " to: ${it.first.endOffset}" +
+                " original text: ${it.first.text}" +
+                " replacement: ${it.second}"
           }
       throw IllegalArgumentException("Cannot apply patches, patches intersect:$patchesDescription")
     }
