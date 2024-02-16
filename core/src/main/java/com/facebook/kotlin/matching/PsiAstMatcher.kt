@@ -18,7 +18,6 @@ package com.facebook.kotlin.matching
 
 import com.google.errorprone.annotations.CheckReturnValue
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
