@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPostfixExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
@@ -54,6 +55,18 @@ inline fun <T : Any> template(
   val psiAstTemplate = PsiAstTemplate()
   val template = psiAstTemplate.block()
   return psiAstTemplate.parse(clazz, template)
+}
+
+fun KtFile.findAllExpressions(template: String): List<KtExpression> {
+  return findAll(PsiAstTemplate().parse(KtExpression::class.java, template))
+}
+
+fun KtFile.findAllProperties(template: String): List<KtProperty> {
+  return findAll(PsiAstTemplate().parse(KtProperty::class.java, template))
+}
+
+fun KtFile.findAllAnnotations(template: String): List<KtAnnotationEntry> {
+  return findAll(PsiAstTemplate().parse(KtAnnotationEntry::class.java, template))
 }
 
 /** Scope object to allow template building reference local matchers as arguments */

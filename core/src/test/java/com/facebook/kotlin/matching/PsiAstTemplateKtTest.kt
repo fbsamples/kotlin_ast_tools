@@ -26,6 +26,30 @@ import org.junit.Test
 class PsiAstTemplateKtTest {
 
   @Test
+  fun `various ways to starts a search with a convenient API`() {
+    val ktFile =
+        load(
+            """
+          |class Foo {
+          |  @Magic val bar: Bar by SuperDelegate
+          |  val bar2: Bar
+          |  var bar3: Bar by SuperDelegate
+          |  val barString = "Bar".uppercase()
+          |}
+        """
+                .trimMargin())
+
+    assertThat(ktFile.findAllExpressions("\"Bar\".uppercase()").single())
+        .isInstanceOf(KtExpression::class.java)
+
+    assertThat(ktFile.findAllProperties("val bar2: Bar").single())
+        .isInstanceOf(KtProperty::class.java)
+
+    assertThat(ktFile.findAllAnnotations("@Magic").single())
+        .isInstanceOf(KtAnnotationEntry::class.java)
+  }
+
+  @Test
   fun `when parsing from template, match on properties`() {
     val ktFile =
         load(
