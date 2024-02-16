@@ -22,8 +22,8 @@ import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.junit.Test
 
-/** Tests [KtAstTemplate] */
-class KtAstTemplateKtTest {
+/** Tests [PsiAstTemplate] */
+class PsiAstTemplateKtTest {
 
   @Test
   fun `when parsing from template, match on properties`() {

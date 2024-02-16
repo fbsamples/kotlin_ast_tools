@@ -32,7 +32,7 @@ import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 
 /**
- * Create a new [KtAstMatcher] using a code template
+ * Create a new [PsiAstMatcher] using a code template
  *
  * For example, the following template call:
  * ```
@@ -42,19 +42,22 @@ import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
  * Would create a matcher looking for an expression of a method call, with doIt as the name, and the
  * value argument as a binary expression of 1 + 1.
  */
-inline fun <reified T : Any> template(block: KtAstTemplate.() -> String): KtAstMatcher<T> {
+inline fun <reified T : Any> template(block: PsiAstTemplate.() -> String): PsiAstMatcher<T> {
   return template(T::class.java, block)
 }
 
 /** Like [template], but without the reified argument so it can be called from Java code */
-inline fun <T : Any> template(clazz: Class<T>, block: KtAstTemplate.() -> String): KtAstMatcher<T> {
-  val ktAstTemplate = KtAstTemplate()
-  val template = ktAstTemplate.block()
-  return ktAstTemplate.parse(clazz, template)
+inline fun <T : Any> template(
+    clazz: Class<T>,
+    block: PsiAstTemplate.() -> String
+): PsiAstMatcher<T> {
+  val psiAstTemplate = PsiAstTemplate()
+  val template = psiAstTemplate.block()
+  return psiAstTemplate.parse(clazz, template)
 }
 
 /** Scope object to allow template building reference local matchers as arguments */
-class KtAstTemplate {
+class PsiAstTemplate {
 
   private val variableNamesToVariables: MutableMap<String, Variable<*>> = mutableMapOf()
 
@@ -69,7 +72,7 @@ class KtAstTemplate {
    */
   val any: String = "`$$`"
 
-  fun <T : Any> parse(clazz: Class<T>, template: String): KtAstMatcher<T> {
+  fun <T : Any> parse(clazz: Class<T>, template: String): PsiAstMatcher<T> {
     return when (clazz) {
       KtProperty::class.java -> parseRecursive(KotlinParserUtil.parseAsProperty(template))
       KtExpression::class.java -> parseRecursive(KotlinParserUtil.parseAsExpression(template))
@@ -77,7 +80,7 @@ class KtAstTemplate {
           parseRecursive(KotlinParserUtil.parseAsAnnotationEntry(template))
       else -> error("unsupported: $clazz")
     }
-        as KtAstMatcher<T>
+        as PsiAstMatcher<T>
   }
 
   /**
@@ -90,7 +93,7 @@ class KtAstTemplate {
    * For the edge case, we compare on the text of the node, or see if it represents a template
    * variable which means its matcher is defined outside the template.
    */
-  private fun <T : Any> parseRecursive(node: T): KtAstMatcher<T> {
+  private fun <T : Any> parseRecursive(node: T): PsiAstMatcher<T> {
     return when (node) {
       // for example: `private val foo: Foo = Foo(5)`
       is KtProperty ->
@@ -175,7 +178,7 @@ class KtAstTemplate {
           }
       else -> error("unsupported: ${node.javaClass}")
     }
-        as KtAstMatcher<T>
+        as PsiAstMatcher<T>
   }
 
   /**
@@ -196,8 +199,8 @@ class KtAstTemplate {
    */
   private inline fun <reified T : PsiElement> loadIfVariableOr(
       textContent: String?,
-      ifNotVariableBlock: () -> KtAstMatcher<T>
-  ): KtAstMatcher<T> {
+      ifNotVariableBlock: () -> PsiAstMatcher<T>
+  ): PsiAstMatcher<T> {
     if (textContent == null || !isVarName(textContent)) {
       return ifNotVariableBlock()
     }
@@ -215,11 +218,11 @@ class KtAstTemplate {
       "Template references variable $$varName as a matcher of ${T::class.java.simpleName}, " +
           "but variable was defined as a matcher of ${matcherFromVariable.targetType.simpleName}"
     }
-    return matcherFromVariable as KtAstMatcher<T>
+    return matcherFromVariable as PsiAstMatcher<T>
   }
 
   /** Called by `val a by match<*> { ... }` and registers a new matcher with a variable name `a` */
-  operator fun <T : Any> KtAstMatcher<T>.getValue(
+  operator fun <T : Any> PsiAstMatcher<T>.getValue(
       nothing: Nothing?,
       property: KProperty<*>
   ): Variable<T> {
@@ -229,7 +232,7 @@ class KtAstTemplate {
     return ktTemplateVariable
   }
 
-  class Variable<T : Any>(val name: String, val matcher: KtAstMatcher<T>) {
+  class Variable<T : Any>(val name: String, val matcher: PsiAstMatcher<T>) {
     override fun toString(): String {
       return "`$$name$`"
     }

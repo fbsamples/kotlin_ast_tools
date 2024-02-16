@@ -18,6 +18,7 @@ package com.facebook.kotlin.matching
 
 import com.google.errorprone.annotations.CheckReturnValue
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
@@ -27,10 +28,12 @@ import org.jetbrains.kotlin.psi.psiUtil.startOffset
 /**
  * Create a new matcher with the given predicate
  *
- * Additional conditions can be then added with [KtAstMatcher.addCustomMatcher]
+ * Additional conditions can be then added with [PsiAstMatcher.addCustomMatcher]
  */
-inline fun <reified T : Any> match(noinline predicate: (T) -> Boolean = { true }): KtAstMatcher<T> {
-  val matcher = KtAstMatcher(T::class.java)
+inline fun <reified T : Any> match(
+    noinline predicate: (T) -> Boolean = { true }
+): PsiAstMatcher<T> {
+  val matcher = PsiAstMatcher(T::class.java)
   matcher.addCustomMatcher(predicate)
   return matcher
 }
@@ -46,7 +49,7 @@ var enableKtAstMatcherDebugPrints = false
  *
  * Create one of these matchers using [match]
  */
-class KtAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
+class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
 
   /**
    * Stores all the match conditions that need to be satisfied
@@ -103,7 +106,10 @@ class KtAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    *
    * Similar to [addChildMatcher] but takes an actual KtAstMatcher instead of a predicate
    */
-  internal fun <T : Any> addChildMatcher(transform: (Element) -> T?, matcher: KtAstMatcher<out T>) {
+  internal fun <T : Any> addChildMatcher(
+      transform: (Element) -> T?,
+      matcher: PsiAstMatcher<out T>
+  ) {
     matcherFunctions += {
       val t: T? = transform(it)
       if (t == null) null else matcher.matches(t)
@@ -118,7 +124,7 @@ class KtAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    */
   internal fun <T : Any> addIndexedMatchersList(
       transform: (Element) -> List<T>,
-      list: List<Pair<Index, KtAstMatcher<T>>>
+      list: List<Pair<Index, PsiAstMatcher<T>>>
   ) {
     matcherFunctions += { matchAllIndexed(list, transform(it)) }
   }
@@ -164,7 +170,7 @@ class KtAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
  * from for future matchers. This means the order of the matchers is meaningful.
  */
 internal fun <T : Any> matchAllIndexed(
-    indexedMatchers: List<Pair<Index, KtAstMatcher<T>>>,
+    indexedMatchers: List<Pair<Index, PsiAstMatcher<T>>>,
     nodes: List<T>
 ): Map<String, String>? {
   val variableMatches = mutableMapOf<String, String>()
@@ -191,7 +197,7 @@ internal fun <T : Any> matchAllIndexed(
 
 @CheckReturnValue
 fun <Element : PsiElement> PsiElement.findAllWithVariables(
-    matcher: KtAstMatcher<Element>
+    matcher: PsiAstMatcher<Element>
 ): List<Pair<Element, Map<String, String>>> {
   val results = mutableListOf<Pair<Element, Map<String, String>>>()
   this.accept(
@@ -210,22 +216,22 @@ fun <Element : PsiElement> PsiElement.findAllWithVariables(
 /**
  * Finds all the elements matching the given matcher inside under this element
  *
- * @see [KtAstMatcher]
+ * @see [PsiAstMatcher]
  */
 @CheckReturnValue
-fun <Element : PsiElement> PsiElement.findAll(matcher: KtAstMatcher<Element>): List<Element> {
+fun <Element : PsiElement> PsiElement.findAll(matcher: PsiAstMatcher<Element>): List<Element> {
   return findAllWithVariables(matcher).map { it.first }
 }
 
-/** Finds and replaces elements in a Kotlin file using a [KtAstMatcher] */
+/** Finds and replaces elements in a Kotlin file using a [PsiAstMatcher] */
 @CheckReturnValue
 fun <Element : PsiElement> KtFile.replaceAll(
-    matcher: KtAstMatcher<Element>,
+    matcher: PsiAstMatcher<Element>,
     replaceWith: (Element) -> String
 ): KtFile = replaceAllWithVariables(matcher, replaceWith = { (result, _) -> replaceWith(result) })
 
 /**
- * Finds and replaces elements in a Kotlin file using a [KtAstMatcher]
+ * Finds and replaces elements in a Kotlin file using a [PsiAstMatcher]
  *
  * Some elements may intersect, making this complicated. In such cases we try converting outer
  * elements first, then rerun the matcher. If we detect any conversion created new matches, we abort
@@ -236,15 +242,15 @@ fun <Element : PsiElement> KtFile.replaceAll(
  */
 @CheckReturnValue
 fun <Element : PsiElement> KtFile.replaceAllWithVariables(
-    matcher: KtAstMatcher<Element>,
+    matcher: PsiAstMatcher<Element>,
     replaceWith: (Pair<Element, Map<String, String>>) -> String
 ): KtFile {
 
-  var currentKtFile = this
+  var currentPsiFile = this
   var remainingMatches = Int.MAX_VALUE
   while (remainingMatches > 0) {
     val elements: List<Pair<Element, Map<String, String>>> =
-        currentKtFile.findAllWithVariables(matcher)
+        currentPsiFile.findAllWithVariables(matcher)
     if (elements.isEmpty()) {
       return this
     }
@@ -265,9 +271,9 @@ fun <Element : PsiElement> KtFile.replaceAllWithVariables(
           "Cannot apply patches, some patches intersect, and applying them creates new candidates")
     }
     remainingMatches = newRemainingElements
-    currentKtFile = currentKtFile.replaceAllWithVariables(nonIntersectingElements, replaceWith)
+    currentPsiFile = currentPsiFile.replaceAllWithVariables(nonIntersectingElements, replaceWith)
   }
-  return currentKtFile
+  return currentPsiFile
 }
 
 /** Replaces match results using a transform function */

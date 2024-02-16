@@ -36,8 +36,8 @@ import org.jetbrains.kotlin.psi.psiUtil.parents
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 import org.junit.Test
 
-/** Tests [KtAstMatcher] */
-class KtAstMatcherTest {
+/** Tests [PsiAstMatcher] */
+class PsiAstMatcherTest {
 
   @Test
   fun `example test showing multiple feature matching a class object`() {
