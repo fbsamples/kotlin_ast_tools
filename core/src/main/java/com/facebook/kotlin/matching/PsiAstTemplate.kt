@@ -58,21 +58,43 @@ inline fun <T : Any> template(
 }
 
 fun KtFile.findAllExpressions(template: String): List<KtExpression> {
-  return findAll(PsiAstTemplate().parse(KtExpression::class.java, template))
+  return findAll(parseTemplateWithVariables<KtExpression>(template))
 }
 
 fun KtFile.findAllProperties(template: String): List<KtProperty> {
-  return findAll(PsiAstTemplate().parse(KtProperty::class.java, template))
+  val matcher: PsiAstMatcher<KtProperty> = parseTemplateWithVariables<KtProperty>(template)
+  return findAll(matcher)
 }
 
 fun KtFile.findAllAnnotations(template: String): List<KtAnnotationEntry> {
-  return findAll(PsiAstTemplate().parse(KtAnnotationEntry::class.java, template))
+  return findAll(parseTemplateWithVariables<KtAnnotationEntry>(template))
+}
+
+inline fun <reified T : Any> parseTemplateWithVariables(template: String): PsiAstMatcher<T> {
+  val variables =
+      "#[A-Za-z0-9_]+#"
+          .toRegex()
+          .findAll(template)
+          .map { v -> PsiAstTemplate.Variable(v.value.removeSurrounding("#"), ANY_SENTINEL) }
+          .toList()
+  check(variables.map { it.name }.toSet().size == variables.size) {
+    "Multiple reference to the same template variable are not supported yet"
+  }
+
+  val newTemplate =
+      variables
+          .fold(template) { template, variable ->
+            template.replace("#${variable.name}#", variable.toString())
+          }
+          .also { println("newTemplate: $it") }
+  return PsiAstTemplate(variables).parse(T::class.java, newTemplate)
 }
 
 /** Scope object to allow template building reference local matchers as arguments */
-class PsiAstTemplate {
+class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
 
-  private val variableNamesToVariables: MutableMap<String, Variable<*>> = mutableMapOf()
+  private val variableNamesToVariables: MutableMap<String, Variable<*>> =
+      variables.associateByTo(mutableMapOf()) { it.name }
 
   /** Future construct to allow variables */
   operator fun getValue(nothing: Nothing?, property: KProperty<*>): String {
@@ -223,11 +245,14 @@ class PsiAstTemplate {
       return match()
     }
     val matcherFromVariable = variableNamesToVariables[varName]?.matcher
+    if (matcherFromVariable == ANY_SENTINEL) {
+      return match()
+    }
     matcherFromVariable
         ?: error(
             "Template references variable $$varName, " +
                 "but one was defined: Add `val $varName by match<...> { ... }` to your template")
-    check(matcherFromVariable.targetType == T::class.java) {
+    check(T::class.java == matcherFromVariable.targetType) {
       "Template references variable $$varName as a matcher of ${T::class.java.simpleName}, " +
           "but variable was defined as a matcher of ${matcherFromVariable.targetType.simpleName}"
     }
@@ -251,3 +276,5 @@ class PsiAstTemplate {
     }
   }
 }
+
+val ANY_SENTINEL = PsiAstMatcher(PsiElement::class.java)

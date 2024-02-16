@@ -50,6 +50,30 @@ class PsiAstTemplateKtTest {
   }
 
   @Test
+  fun `parse variables from # syntax and match`() {
+    val ktFile =
+        load(
+            """
+          |class Foo {
+          |  @Magic("yay") val barString = "Bar".uppercase()
+          |}
+        """
+                .trimMargin())
+
+    val ktExpression = ktFile.findAllExpressions("#a#.uppercase()").single()
+    assertThat(ktExpression).isInstanceOf(KtExpression::class.java)
+    assertThat(ktExpression.text).isEqualTo("\"Bar\".uppercase()")
+
+    val ktProperty = ktFile.findAllProperties("val barString = #initializer#").single()
+    assertThat(ktProperty).isInstanceOf(KtProperty::class.java)
+    assertThat(ktProperty.text).isEqualTo("""@Magic("yay") val barString = "Bar".uppercase()""")
+
+    val ktAnnotationEntry = ktFile.findAllAnnotations("@Magic(#param#)").single()
+    assertThat(ktAnnotationEntry).isInstanceOf(KtAnnotationEntry::class.java)
+    assertThat(ktAnnotationEntry.text).isEqualTo("""@Magic("yay")""")
+  }
+
+  @Test
   fun `when parsing from template, match on properties`() {
     val ktFile =
         load(
