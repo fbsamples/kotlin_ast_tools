@@ -57,37 +57,92 @@ inline fun <T : Any> template(
   return psiAstTemplate.parse(clazz, template)
 }
 
-fun KtFile.findAllExpressions(template: String): List<KtExpression> {
-  return findAll(parseTemplateWithVariables<KtExpression>(template))
+fun KtFile.findAllExpressions(
+    template: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): List<KtExpression> {
+  return findAll(parseTemplateWithVariables<KtExpression>(template, *variables))
 }
 
-fun KtFile.findAllProperties(template: String): List<KtProperty> {
-  val matcher: PsiAstMatcher<KtProperty> = parseTemplateWithVariables<KtProperty>(template)
+fun KtFile.replaceAllExpressions(
+    template: String,
+    replaceWith: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): KtFile = replaceAllExpressions(template, { _, _ -> replaceWith }, *variables)
+
+fun KtFile.replaceAllExpressions(
+    template: String,
+    replaceWith: (match: KtExpression, templateVariablesToText: Map<String, String>) -> String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): KtFile {
+  return replaceAllWithVariables(parseTemplateWithVariables<KtExpression>(template, *variables)) {
+      (match, templateVariablesToText) ->
+    parseReplacementTemplate(
+        template, replaceWith(match, templateVariablesToText), templateVariablesToText)
+  }
+}
+
+fun KtFile.findAllProperties(
+    template: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): List<KtProperty> {
+  val matcher: PsiAstMatcher<KtProperty> =
+      parseTemplateWithVariables<KtProperty>(template, *variables)
   return findAll(matcher)
 }
 
-fun KtFile.findAllAnnotations(template: String): List<KtAnnotationEntry> {
-  return findAll(parseTemplateWithVariables<KtAnnotationEntry>(template))
+fun KtFile.findAllAnnotations(
+    template: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): List<KtAnnotationEntry> {
+  return findAll(parseTemplateWithVariables<KtAnnotationEntry>(template, *variables))
 }
 
-inline fun <reified T : Any> parseTemplateWithVariables(template: String): PsiAstMatcher<T> {
-  val variables =
-      "#[A-Za-z0-9_]+#"
-          .toRegex()
-          .findAll(template)
-          .map { v -> PsiAstTemplate.Variable(v.value.removeSurrounding("#"), ANY_SENTINEL) }
+inline fun <reified T : Any> parseTemplateWithVariables(
+    template: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): PsiAstMatcher<T> {
+  val unusedVariables = variables.toMap(mutableMapOf())
+
+  val templateVariables =
+      TEMPLATE_VARIABLE_REGEX.findAll(template)
+          .map { v ->
+            PsiAstTemplate.Variable(
+                v.value.removeSurrounding("#"), unusedVariables.remove(v.value) ?: ANY_SENTINEL)
+          }
           .toList()
-  check(variables.map { it.name }.toSet().size == variables.size) {
+  check(unusedVariables.isEmpty()) {
+    "The following variables were not found in the template: " +
+        unusedVariables.keys.joinToString(separator = ", ")
+  }
+  check(templateVariables.map { it.name }.toSet().size == templateVariables.size) {
     "Multiple reference to the same template variable are not supported yet"
   }
 
   val newTemplate =
-      variables
+      templateVariables
           .fold(template) { template, variable ->
             template.replace("#${variable.name}#", variable.toString())
           }
           .also { println("newTemplate: $it") }
-  return PsiAstTemplate(variables).parse(T::class.java, newTemplate)
+  return PsiAstTemplate(templateVariables).parse(T::class.java, newTemplate)
+}
+
+inline fun parseReplacementTemplate(
+    template: String,
+    replacement: String,
+    templateVariablesToText: Map<String, String>,
+): String {
+  var processedReplacment = replacement
+  "#[A-Za-z0-9_]+#".toRegex().findAll(template).forEach { matchResult ->
+    val target = matchResult.value
+    val variableValue =
+        templateVariablesToText[matchResult.value.removeSurrounding("#")]
+            ?: error(
+                "undeclared variable ${matchResult.value}, known variables: ${templateVariablesToText.keys}")
+    processedReplacment = processedReplacment.replace(target, variableValue)
+  }
+  return processedReplacment
 }
 
 /** Scope object to allow template building reference local matchers as arguments */
@@ -246,7 +301,7 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
     }
     val matcherFromVariable = variableNamesToVariables[varName]?.matcher
     if (matcherFromVariable == ANY_SENTINEL) {
-      return match()
+      return match<T>().also { it.variableName = varName }
     }
     matcherFromVariable
         ?: error(
@@ -277,4 +332,5 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
   }
 }
 
-val ANY_SENTINEL = PsiAstMatcher(PsiElement::class.java)
+val ANY_SENTINEL: PsiAstMatcher<PsiElement> = PsiAstMatcher(PsiElement::class.java)
+val TEMPLATE_VARIABLE_REGEX: Regex = "#[A-Za-z0-9_]+#".toRegex()

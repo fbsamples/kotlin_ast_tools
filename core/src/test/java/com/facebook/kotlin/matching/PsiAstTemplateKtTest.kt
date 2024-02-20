@@ -88,9 +88,9 @@ class PsiAstTemplateKtTest {
                 .trimMargin())
 
     val delegatedPropertyResults: List<KtProperty> =
-        ktFile.findAll(template { "val $any: $any by SuperDelegate" })
+        ktFile.findAllProperties("val #name#: #type# by SuperDelegate")
     val initializedPropertyResults: List<KtProperty> =
-        ktFile.findAll(template { "val $any = $any.uppercase()" })
+        ktFile.findAllProperties("val #name# = #exp#.uppercase()")
 
     assertThat(delegatedPropertyResults).hasSize(2)
     assertThat(delegatedPropertyResults[0].text).isEqualTo("val bar: Bar by SuperDelegate")
@@ -160,11 +160,8 @@ class PsiAstTemplateKtTest {
                 .trimMargin())
 
     val results: List<KtExpression> =
-        ktFile.findAll(
-            template {
-              val a by match<KtExpression> { expression -> expression.text == "1 + 1" }
-              "doIt($a)"
-            })
+        ktFile.findAllExpressions(
+            "doIt(#a#)", "#a#" to match<KtExpression> { expression -> expression.text == "1 + 1" })
 
     assertThat(results.map { it.text }).containsExactly("doIt(1 + 1)")
   }
@@ -180,18 +177,7 @@ class PsiAstTemplateKtTest {
         """
                 .trimMargin())
 
-    val newKtFile =
-        ktFile.replaceAllWithVariables(
-            template<KtExpression> {
-              val a by match<KtExpression>()
-              val b by match<KtExpression>()
-              "doIt($a, $b)"
-            },
-            replaceWith = { (_, variables) ->
-              val a by variables
-              val b by variables
-              "doIt($b, $a)"
-            })
+    val newKtFile = ktFile.replaceAllExpressions("doIt(#a#, #b#)", "doIt(#b#, #a#)")
 
     assertThat(newKtFile.text)
         .isEqualTo(
@@ -216,7 +202,7 @@ class PsiAstTemplateKtTest {
         """
                 .trimMargin())
 
-    val results: List<KtExpression> = ktFile.findAll(template { "a?.b()" })
+    val results: List<KtExpression> = ktFile.findAllExpressions("a?.b()")
 
     assertThat(results.map { it.text }).containsExactly("a?.b()")
   }
@@ -235,7 +221,7 @@ class PsiAstTemplateKtTest {
         """
                 .trimMargin())
 
-    val results: List<KtExpression> = ktFile.findAll(template { "Bar::class" })
+    val results: List<KtExpression> = ktFile.findAllExpressions("Bar::class")
 
     assertThat(results.map { it.text })
         .containsExactly("Bar::class", "Bar\n      ::\n" + "      class")
@@ -253,7 +239,7 @@ class PsiAstTemplateKtTest {
           |}
         """
                 .trimMargin())
-    val results: List<KtExpression> = ktFile.findAll(template { "doIt($any)" })
+    val results: List<KtExpression> = ktFile.findAllExpressions("doIt(#any#)")
 
     assertThat(results.map { it.text }).containsExactly("doIt(1)", "doIt(3)")
   }
@@ -270,7 +256,7 @@ class PsiAstTemplateKtTest {
           |}
         """
                 .trimMargin())
-    val results: List<KtExpression> = ktFile.findAll(template { "doIt($any)!!" })
+    val results: List<KtExpression> = ktFile.findAllExpressions("doIt(#any#)!!")
 
     assertThat(results.map { it.text }).containsExactly("doIt(1)!!", "doIt(3)!!")
   }
@@ -286,8 +272,8 @@ class PsiAstTemplateKtTest {
           |}
         """
                 .trimMargin())
-    val resultsPrefix: List<KtExpression> = ktFile.findAll(template { "++$any" })
-    val resultsPostfix: List<KtExpression> = ktFile.findAll(template { "$any++" })
+    val resultsPrefix: List<KtExpression> = ktFile.findAllExpressions("++#any#")
+    val resultsPostfix: List<KtExpression> = ktFile.findAllExpressions("#any#++")
 
     assertThat(resultsPrefix.map { it.text }).containsExactly("++i")
     assertThat(resultsPostfix.map { it.text }).containsExactly("i++")
