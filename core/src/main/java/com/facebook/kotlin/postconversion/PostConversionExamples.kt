@@ -18,9 +18,7 @@ package com.facebook.kotlin.postconversion
 
 import com.facebook.kotlin.asttools.KotlinParserUtil
 import com.facebook.kotlin.asttools.replaceAll
-import com.facebook.kotlin.matching.match
-import com.facebook.kotlin.matching.replaceAllWithVariables
-import com.facebook.kotlin.matching.template
+import com.facebook.kotlin.matching.replaceAllExpressions
 import com.intellij.psi.PsiElement
 import java.io.File
 import java.io.PrintStream
@@ -70,30 +68,14 @@ object PostConversionExamples {
       return ktFile
     }
     return ktFile
-        .replaceAllWithVariables<KtExpression>(
-            matcher =
-                template {
-                  val a by match<KtExpression>()
-                  val b by match<KtExpression>()
-                  "TextUtils.equals($a, $b)"
-                },
-            replaceWith = { (result, variables) ->
-              val a by variables
-              val b by variables
+        .replaceAllExpressions(
+            "TextUtils.equals(#a#, #b#)",
+            replaceWith = { result, _ ->
               val needsParenthesis =
                   result.parent is KtBinaryExpression || result.parent is KtQualifiedExpression
-              if (needsParenthesis) "($a == $b)" else "$a == $b"
+              if (needsParenthesis) "(#a# == #b#)" else "#a# == #b#"
             })
-        .replaceAllWithVariables<KtExpression>(
-            matcher =
-                template {
-                  val a by match<KtExpression>()
-                  "TextUtils.isEmpty($a)"
-                },
-            replaceWith = { (_, variables) ->
-              val a by variables
-              "$a.isNullOrEmpty()"
-            })
+        .replaceAllExpressions("TextUtils.isEmpty(#a#)", "#a#.isNullOrEmpty()")
   }
 
   fun replaceGuavaStrings(ktFile: KtFile): KtFile {
@@ -102,26 +84,8 @@ object PostConversionExamples {
     }
 
     return ktFile
-        .replaceAllWithVariables<KtExpression>(
-            matcher =
-                template {
-                  val a by match<KtExpression>()
-                  "Strings.isNullOrEmpty($a)"
-                },
-            replaceWith = { (_, variables) ->
-              val a by variables
-              "$a.isNullOrEmpty()"
-            })
-        .replaceAllWithVariables<KtExpression>(
-            matcher =
-                template {
-                  val a by match<KtExpression>()
-                  "Strings.nullToEmpty($a)"
-                },
-            replaceWith = { (_, variables) ->
-              val a by variables
-              "$a.orEmpty()"
-            })
+        .replaceAllExpressions("Strings.isNullOrEmpty(#a#)", "#a#.isNullOrEmpty()")
+        .replaceAllExpressions("Strings.nullToEmpty(#a#)", "#a#.orEmpty()")
   }
 
   /**
