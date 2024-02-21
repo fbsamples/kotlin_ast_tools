@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.kotlin.asttools
+package com.facebook.asttools
 
 import java.lang.IllegalStateException
 import org.assertj.core.api.Assertions.assertThat

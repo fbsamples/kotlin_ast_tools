@@ -16,9 +16,9 @@
 
 package com.facebook.kotlin.postconversion
 
-import com.facebook.kotlin.asttools.KotlinParserUtil
-import com.facebook.kotlin.asttools.replaceAll
-import com.facebook.kotlin.matching.replaceAllExpressions
+import com.facebook.asttools.KotlinParserUtil
+import com.facebook.asttools.replaceAll
+import com.facebook.matching.replaceAllExpressions
 import com.intellij.psi.PsiElement
 import java.io.File
 import java.io.PrintStream

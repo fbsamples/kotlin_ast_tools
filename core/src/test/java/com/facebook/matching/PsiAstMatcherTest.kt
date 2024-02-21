@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.kotlin.matching
+package com.facebook.matching
 
 import java.lang.IllegalArgumentException
 import org.assertj.core.api.Assertions.assertThat

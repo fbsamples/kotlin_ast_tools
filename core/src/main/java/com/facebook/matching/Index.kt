@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.kotlin.matching
+package com.facebook.matching
 
 /**
  * A representation of a an index instruction for matchers on lists

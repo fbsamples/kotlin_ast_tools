@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.kotlin.matching
+package com.facebook.matching
 
 import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiManager

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.facebook.kotlin.matching
+package com.facebook.matching
 
-import com.facebook.kotlin.asttools.KotlinParserUtil
+import com.facebook.asttools.KotlinParserUtil
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -40,7 +40,7 @@ import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
  * For each variable in the template an extra matcher can be define under `variables` to allow more
  * accurate matching.
  *
- * See [com.facebook.kotlin.matching.PsiAstTemplateTest] for a lot of examples using these templates
+ * See [com.facebook.matching.PsiAstTemplateTest] for a lot of examples using these templates
  */
 fun KtFile.findAllExpressions(
     template: String,
@@ -82,7 +82,7 @@ fun KtFile.replaceAllExpressions(
 /**
  * Like [findAllExpressions] but instead matches on property declarations (i.e. `val a = 5`)
  *
- * See [com.facebook.kotlin.matching.PsiAstTemplateTest] for a lot of examples using these templates
+ * See [com.facebook.matching.PsiAstTemplateTest] for a lot of examples using these templates
  */
 fun KtFile.findAllProperties(
     template: String,
@@ -96,7 +96,7 @@ fun KtFile.findAllProperties(
 /**
  * Like [findAllExpressions] but instead matches on anontations (i.e. `@Magic(param1 = 5`)
  *
- * See [com.facebook.kotlin.matching.PsiAstTemplateTest] for a lot of examples using these templates
+ * See [com.facebook.matching.PsiAstTemplateTest] for a lot of examples using these templates
  */
 fun KtFile.findAllAnnotations(
     template: String,

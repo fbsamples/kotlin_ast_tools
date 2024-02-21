@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.kotlin.asttools
+package com.facebook.asttools
 
 import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiElement

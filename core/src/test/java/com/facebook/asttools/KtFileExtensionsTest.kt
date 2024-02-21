@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.kotlin.asttools
+package com.facebook.asttools
 
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.psi.KtExpression

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.kotlin.matching
+package com.facebook.matching
 
 import com.google.errorprone.annotations.CheckReturnValue
 import com.intellij.psi.PsiElement
