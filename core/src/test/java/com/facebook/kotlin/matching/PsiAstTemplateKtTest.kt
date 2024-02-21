@@ -108,7 +108,7 @@ class PsiAstTemplateKtTest {
           |}
         """
                 .trimMargin())
-    val results: List<KtExpression> = ktFile.findAll(template { "doIt(1 + 1)" })
+    val results = ktFile.findAllExpressions("doIt(1 + 1)")
 
     assertThat(results).hasSize(1)
   }
@@ -124,7 +124,7 @@ class PsiAstTemplateKtTest {
           |}
         """
                 .trimMargin())
-    val results: List<KtAnnotationEntry> = ktFile.findAll(template { "@Magic" })
+    val results = ktFile.findAllAnnotations("@Magic")
 
     assertThat(results).hasSize(1)
     assertThat(results[0].text).isEqualTo("@Magic")
@@ -142,7 +142,7 @@ class PsiAstTemplateKtTest {
           |}
         """
                 .trimMargin())
-    val results: List<KtExpression> = ktFile.findAll(template { "doIt(1, name = b)" })
+    val results = ktFile.findAllExpressions("doIt(1, name = b)")
 
     assertThat(results.map { it.text }).containsExactly("doIt(1, name = b)")
   }

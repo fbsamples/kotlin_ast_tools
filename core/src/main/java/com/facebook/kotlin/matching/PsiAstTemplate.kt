@@ -18,7 +18,6 @@ package com.facebook.kotlin.matching
 
 import com.facebook.kotlin.asttools.KotlinParserUtil
 import com.intellij.psi.PsiElement
-import kotlin.reflect.KProperty
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
@@ -33,30 +32,16 @@ import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 
 /**
- * Create a new [PsiAstMatcher] using a code template
+ * Returns a list of all expressions in a Kotlin file that match the given string template.
  *
- * For example, the following template call:
- * ```
- * template { "doIt(1 + 1)" }
- * ```
+ * For example, the template `#a#.apply(#b#)` will return all `KtExpression` nodes that are of a
+ * qualified method call where the method is name `apply` and takes one argument.
  *
- * Would create a matcher looking for an expression of a method call, with doIt as the name, and the
- * value argument as a binary expression of 1 + 1.
+ * For each variable in the template an extra matcher can be define under `variables` to allow more
+ * accurate matching.
+ *
+ * See [com.facebook.kotlin.matching.PsiAstTemplateTest] for a lot of examples using these templates
  */
-inline fun <reified T : Any> template(block: PsiAstTemplate.() -> String): PsiAstMatcher<T> {
-  return template(T::class.java, block)
-}
-
-/** Like [template], but without the reified argument so it can be called from Java code */
-inline fun <T : Any> template(
-    clazz: Class<T>,
-    block: PsiAstTemplate.() -> String
-): PsiAstMatcher<T> {
-  val psiAstTemplate = PsiAstTemplate()
-  val template = psiAstTemplate.block()
-  return psiAstTemplate.parse(clazz, template)
-}
-
 fun KtFile.findAllExpressions(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
@@ -64,12 +49,24 @@ fun KtFile.findAllExpressions(
   return findAll(parseTemplateWithVariables<KtExpression>(template, *variables))
 }
 
+/**
+ * Replaces all expressions that match the given template with the given replacement
+ *
+ * See [findAllExpressions] for more details on the template
+ */
 fun KtFile.replaceAllExpressions(
     template: String,
     replaceWith: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): KtFile = replaceAllExpressions(template, { _, _ -> replaceWith }, *variables)
 
+/**
+ * Replaces all expressions that match the given template with the given replacement which is given
+ * as a lambda
+ *
+ * Use this version instead of [replaceAllExpressions] for cases in which the replacement depends on
+ * the actual matched expression
+ */
 fun KtFile.replaceAllExpressions(
     template: String,
     replaceWith: (match: KtExpression, templateVariablesToText: Map<String, String>) -> String,
@@ -82,6 +79,11 @@ fun KtFile.replaceAllExpressions(
   }
 }
 
+/**
+ * Like [findAllExpressions] but instead matches on property declarations (i.e. `val a = 5`)
+ *
+ * See [com.facebook.kotlin.matching.PsiAstTemplateTest] for a lot of examples using these templates
+ */
 fun KtFile.findAllProperties(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
@@ -91,6 +93,11 @@ fun KtFile.findAllProperties(
   return findAll(matcher)
 }
 
+/**
+ * Like [findAllExpressions] but instead matches on anontations (i.e. `@Magic(param1 = 5`)
+ *
+ * See [com.facebook.kotlin.matching.PsiAstTemplateTest] for a lot of examples using these templates
+ */
 fun KtFile.findAllAnnotations(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
@@ -98,6 +105,10 @@ fun KtFile.findAllAnnotations(
   return findAll(parseTemplateWithVariables<KtAnnotationEntry>(template, *variables))
 }
 
+/**
+ * Takes a template string and an optional list of matchers per variavle and builds a
+ * [PsiAstMatcher] for that template
+ */
 inline fun <reified T : Any> parseTemplateWithVariables(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
@@ -126,7 +137,7 @@ inline fun <reified T : Any> parseTemplateWithVariables(
   return PsiAstTemplate(templateVariables).parse(T::class.java, newTemplate)
 }
 
-inline fun parseReplacementTemplate(
+fun parseReplacementTemplate(
     template: String,
     replacement: String,
     templateVariablesToText: Map<String, String>,
@@ -148,17 +159,6 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
 
   private val variableNamesToVariables: MutableMap<String, Variable<*>> =
       variables.associateByTo(mutableMapOf()) { it.name }
-
-  /** Future construct to allow variables */
-  operator fun getValue(nothing: Nothing?, property: KProperty<*>): String {
-    return "`$" + property.name + "$`"
-  }
-
-  /**
-   * Refer to this in a template for a wildcard, for example "val ${any} = 1" would match any
-   * declaration where the initializer is 1, but we do not care about the name of the variable
-   */
-  val any: String = "`$$`"
 
   fun <T : Any> parse(clazz: Class<T>, template: String): PsiAstMatcher<T> {
     return when (clazz) {
@@ -310,17 +310,6 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
           "but variable was defined as a matcher of ${matcherFromVariable.targetType.simpleName}"
     }
     return matcherFromVariable as PsiAstMatcher<T>
-  }
-
-  /** Called by `val a by match<*> { ... }` and registers a new matcher with a variable name `a` */
-  operator fun <T : Any> PsiAstMatcher<T>.getValue(
-      nothing: Nothing?,
-      property: KProperty<*>
-  ): Variable<T> {
-    this.variableName = property.name
-    val ktTemplateVariable = Variable(property.name, this)
-    variableNamesToVariables[property.name] = ktTemplateVariable
-    return ktTemplateVariable
   }
 
   class Variable<T : Any>(val name: String, val matcher: PsiAstMatcher<T>) {
