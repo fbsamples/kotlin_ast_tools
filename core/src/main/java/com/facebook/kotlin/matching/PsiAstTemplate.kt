@@ -120,11 +120,9 @@ inline fun <reified T : Any> parseTemplateWithVariables(
   }
 
   val newTemplate =
-      templateVariables
-          .fold(template) { template, variable ->
-            template.replace("#${variable.name}#", variable.toString())
-          }
-          .also { println("newTemplate: $it") }
+      templateVariables.fold(template) { template, variable ->
+        template.replace("#${variable.name}#", variable.toString())
+      }
   return PsiAstTemplate(templateVariables).parse(T::class.java, newTemplate)
 }
 
@@ -326,6 +324,10 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
   }
 
   class Variable<T : Any>(val name: String, val matcher: PsiAstMatcher<T>) {
+    init {
+      matcher.variableName = name
+    }
+
     override fun toString(): String {
       return "`$$name$`"
     }
