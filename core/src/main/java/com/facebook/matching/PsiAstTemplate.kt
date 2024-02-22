@@ -16,12 +16,24 @@
 
 package com.facebook.matching
 
+import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
+import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiClassObjectAccessExpression
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiExpression
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiMethodCallExpression
+import com.intellij.psi.PsiPostfixExpression
+import com.intellij.psi.PsiReferenceExpression
+import com.intellij.psi.PsiTypeElement
+import com.intellij.psi.PsiUnaryExpression
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
+import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPostfixExpression
@@ -49,6 +61,13 @@ fun KtFile.findAllExpressions(
   return findAll(parseTemplateWithVariables<KtExpression>(template, *variables))
 }
 
+fun PsiJavaFile.findAllExpressions(
+    template: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): List<PsiExpression> {
+  return findAll(parseTemplateWithVariables<PsiExpression>(template, *variables))
+}
+
 /**
  * Replaces all expressions that match the given template with the given replacement
  *
@@ -59,6 +78,12 @@ fun KtFile.replaceAllExpressions(
     replaceWith: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): KtFile = replaceAllExpressions(template, { _, _ -> replaceWith }, *variables)
+
+fun PsiJavaFile.replaceAllExpressions(
+    template: String,
+    replaceWith: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): PsiJavaFile = replaceAllExpressions(template, { _, _ -> replaceWith }, *variables)
 
 /**
  * Replaces all expressions that match the given template with the given replacement which is given
@@ -79,6 +104,18 @@ fun KtFile.replaceAllExpressions(
   }
 }
 
+fun PsiJavaFile.replaceAllExpressions(
+    template: String,
+    replaceWith: (match: PsiExpression, templateVariablesToText: Map<String, String>) -> String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): PsiJavaFile {
+  return replaceAllWithVariables(parseTemplateWithVariables<PsiExpression>(template, *variables)) {
+      (match, templateVariablesToText) ->
+    parseReplacementTemplate(
+        template, replaceWith(match, templateVariablesToText), templateVariablesToText)
+  }
+}
+
 /**
  * Like [findAllExpressions] but instead matches on property declarations (i.e. `val a = 5`)
  *
@@ -93,6 +130,13 @@ fun KtFile.findAllProperties(
   return findAll(matcher)
 }
 
+fun PsiJavaFile.findAllFields(
+    template: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): List<PsiField> {
+  return findAll(parseTemplateWithVariables<PsiField>(template, *variables))
+}
+
 /**
  * Like [findAllExpressions] but instead matches on anontations (i.e. `@Magic(param1 = 5`)
  *
@@ -103,6 +147,13 @@ fun KtFile.findAllAnnotations(
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<KtAnnotationEntry> {
   return findAll(parseTemplateWithVariables<KtAnnotationEntry>(template, *variables))
+}
+
+fun PsiJavaFile.findAllAnnotations(
+    template: String,
+    vararg variables: Pair<String, PsiAstMatcher<*>>
+): List<PsiAnnotation> {
+  return findAll(parseTemplateWithVariables<PsiAnnotation>(template, *variables))
 }
 
 /**
@@ -119,7 +170,9 @@ inline fun <reified T : Any> parseTemplateWithVariables(
       TEMPLATE_VARIABLE_REGEX.findAll(template)
           .map { v ->
             PsiAstTemplate.Variable(
-                v.value.removeSurrounding("#"), unusedVariables.remove(v.value) ?: ANY_SENTINEL)
+                v.value.removeSurrounding("#"),
+                unusedVariables.remove(v.value) ?: ANY_SENTINEL,
+                isKotlin = KtElement::class.java.isAssignableFrom(T::class.java))
           }
           .toList()
   check(unusedVariables.isEmpty()) {
@@ -166,6 +219,9 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
       KtExpression::class.java -> parseKotlinRecursive(KotlinParserUtil.parseAsExpression(template))
       KtAnnotationEntry::class.java ->
           parseKotlinRecursive(KotlinParserUtil.parseAsAnnotationEntry(template))
+      PsiExpression::class.java -> parseJavaRecursive(JavaPsiParserUtil.parseAsExpression(template))
+      PsiField::class.java -> parseJavaRecursive(JavaPsiParserUtil.parseAsField(template))
+      PsiAnnotation::class.java -> parseJavaRecursive(JavaPsiParserUtil.parseAsAnnotation(template))
       else -> error("unsupported: $clazz")
     }
         as PsiAstMatcher<T>
@@ -273,6 +329,95 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
         as PsiAstMatcher<T>
   }
 
+  /** Same as [parseKotlinRecursive] but for Java ASTs */
+  private fun <T : Any> parseJavaRecursive(node: T): PsiAstMatcher<T> {
+    return when (node) {
+      // for example: `private final Foo foo = new Foo(5);`
+      is PsiField ->
+          loadIfVariableOr(node.nameIdentifier.text) {
+                match<PsiField>().apply {
+                  addChildMatcher { property -> property.name == node.nameIdentifier.text }
+                }
+              }
+              .apply {
+                node.initializer?.let {
+                  addChildMatcher(transform = { it.initializer }, matcher = parseJavaRecursive(it))
+                }
+              }
+      // for example: `doIt(1, b)`
+      is PsiMethodCallExpression ->
+          match<PsiMethodCallExpression>().apply {
+            addChildMatcher({ it.methodExpression }, parseJavaRecursive(node.methodExpression))
+            addIndexedMatchersList(
+                { it.argumentList.expressions.toList() },
+                node.argumentList.expressions.withIndex().map { indexedValue ->
+                  Pair(Index.at(indexedValue.index), parseJavaRecursive(indexedValue.value))
+                })
+            addChildMatcher {
+              it.argumentList.expressions.size == node.argumentList.expressions.size
+            }
+          }
+      // for example `foo.bar`
+      is PsiReferenceExpression ->
+          node.qualifierExpression?.let { qualifierExpression ->
+            match<PsiReferenceExpression>().apply {
+              addChildMatcher({ it.qualifierExpression }, parseJavaRecursive(qualifierExpression))
+              if (node.referenceNameElement is PsiExpression) {
+                addChildMatcher(
+                    { it.referenceNameElement }, parseJavaRecursive(node.referenceNameElement!!))
+              } else {
+                addChildMatcher({
+                  it.referenceNameElement?.text == node.referenceNameElement?.text
+                })
+              }
+            }
+          }
+              ?: run {
+                loadIfVariableOr(node.text) {
+                  match<PsiExpression>().apply {
+                    addChildMatcher { expression -> expression.text == node.text }
+                  }
+                }
+              }
+      is PsiClassObjectAccessExpression ->
+          match<PsiClassObjectAccessExpression>().apply {
+            addChildMatcher({ it.operand }, parseJavaRecursive(node.operand))
+          }
+      is PsiUnaryExpression -> {
+        match<PsiUnaryExpression>().apply {
+          addChildMatcher({ it.operand }, parseJavaRecursive(checkNotNull(node.operand)))
+          addChildMatcher { it is PsiPostfixExpression == node is PsiPostfixExpression }
+          addChildMatcher { it.operationSign.text == node.operationSign.text }
+        }
+      }
+      // any expression for which we don't have more specific handling, such as `1`, or `foo`
+      is PsiExpression ->
+          loadIfVariableOr(node.text) {
+            match<PsiExpression>().apply {
+              addChildMatcher { expression -> expression.text == node.text }
+            }
+          }
+      // for example `Bar` in `final Bar bar = new Bar(5);`
+      is PsiTypeElement ->
+          loadIfVariableOr(node.text) {
+            match<PsiTypeElement>().apply {
+              addChildMatcher { typeElemenet -> typeElemenet.text == node.text }
+            }
+          }
+      // for example: `@Magic` or `@Foo(1)`
+      is PsiAnnotation ->
+          loadIfVariableOr(node.nameReferenceElement?.referenceName) {
+            match<PsiAnnotation>().apply {
+              node.nameReferenceElement?.referenceName?.let { referenceName ->
+                addChildMatcher { it.nameReferenceElement?.referenceName == referenceName }
+              }
+            }
+          }
+      else -> error("unsupported: ${node.javaClass}")
+    }
+        as PsiAstMatcher<T>
+  }
+
   /**
    * true if this expression is a selector in a qualified expression, for example `doIt()` in
    * `foo.doIt()`
@@ -282,7 +427,9 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
 
   /** Checks is an identifier is a marker for a variable from the from `$foo$` */
   private fun isVarName(string: String?) =
-      string != null && string.startsWith("`$") && string.endsWith("$`")
+      string != null &&
+          (string.startsWith("`$") && string.endsWith("$`") ||
+              string.startsWith("$") && string.endsWith("$"))
 
   /**
    * For a given node, check if it represents a variable such as $name$, and if so, load it and
@@ -297,7 +444,7 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
       return ifNotVariableBlock()
     }
 
-    val varName = textContent.removePrefix("`$").removeSuffix("$`")
+    val varName = textContent.removePrefix("`$").removeSuffix("$`").removeSurrounding("$")
     val matcherFromVariable = variableNamesToVariables[varName]?.matcher
     if (matcherFromVariable == ANY_SENTINEL) {
       return match<T>().also { it.variableName = varName }
@@ -313,13 +460,13 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
     return matcherFromVariable as PsiAstMatcher<T>
   }
 
-  class Variable<T : Any>(val name: String, val matcher: PsiAstMatcher<T>) {
+  class Variable<T : Any>(val name: String, val matcher: PsiAstMatcher<T>, val isKotlin: Boolean) {
     init {
       matcher.variableName = name
     }
 
     override fun toString(): String {
-      return "`$$name$`"
+      return if (isKotlin) "`$$name$`" else "$$name$"
     }
   }
 }

@@ -16,9 +16,12 @@
 
 package com.facebook.matching
 
+import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import com.google.errorprone.annotations.CheckReturnValue
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiJavaFile
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
@@ -245,14 +248,33 @@ fun <Element : PsiElement> KtFile.replaceAllWithVariables(
     matcher: PsiAstMatcher<Element>,
     replaceWith: (Pair<Element, Map<String, String>>) -> String
 ): KtFile {
+  return replaceAllWithVariables(
+      this, matcher, replaceWith, reloadFile = { text -> KotlinParserUtil.parseAsFile(text) })
+}
 
-  var currentPsiFile = this
+@CheckReturnValue
+fun <Element : PsiElement> PsiJavaFile.replaceAllWithVariables(
+    matcher: PsiAstMatcher<Element>,
+    replaceWith: (Pair<Element, Map<String, String>>) -> String
+): PsiJavaFile {
+  return replaceAllWithVariables(
+      this, matcher, replaceWith, reloadFile = { text -> JavaPsiParserUtil.parseAsFile(text) })
+}
+
+@CheckReturnValue
+private fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
+    psiFile: PsiFileType,
+    matcher: PsiAstMatcher<Element>,
+    replaceWith: (Pair<Element, Map<String, String>>) -> String,
+    reloadFile: (String) -> PsiFileType
+): PsiFileType {
+  var currentPsiFile: PsiFileType = psiFile
   var remainingMatches = Int.MAX_VALUE
   while (remainingMatches > 0) {
     val elements: List<Pair<Element, Map<String, String>>> =
         currentPsiFile.findAllWithVariables(matcher)
     if (elements.isEmpty()) {
-      return this
+      return psiFile
     }
     if (elements.size > remainingMatches) {
       throw IllegalArgumentException(
@@ -271,7 +293,8 @@ fun <Element : PsiElement> KtFile.replaceAllWithVariables(
           "Cannot apply patches, some patches intersect, and applying them creates new candidates")
     }
     remainingMatches = newRemainingElements
-    currentPsiFile = currentPsiFile.replaceAllWithVariables(nonIntersectingElements, replaceWith)
+    currentPsiFile =
+        replaceAllWithVariables(currentPsiFile, nonIntersectingElements, replaceWith, reloadFile)
   }
   return currentPsiFile
 }
@@ -282,8 +305,28 @@ fun <Element : PsiElement> KtFile.replaceAllWithVariables(
     elements: List<Pair<Element, Map<String, String>>>,
     replaceWith: (Pair<Element, Map<String, String>>) -> String
 ): KtFile {
+  return replaceAllWithVariables(
+      this, elements, replaceWith, reloadFile = { text -> KotlinParserUtil.parseAsFile(text) })
+}
+
+@CheckReturnValue
+fun <Element : PsiElement> PsiJavaFile.replaceAllWithVariables(
+    elements: List<Pair<Element, Map<String, String>>>,
+    replaceWith: (Pair<Element, Map<String, String>>) -> String
+): PsiJavaFile {
+  return replaceAllWithVariables(
+      this, elements, replaceWith, reloadFile = { text -> JavaPsiParserUtil.parseAsFile(text) })
+}
+
+@CheckReturnValue
+private fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
+    psiFile: PsiFileType,
+    elements: List<Pair<Element, Map<String, String>>>,
+    replaceWith: (Pair<Element, Map<String, String>>) -> String,
+    reloadFile: (String) -> PsiFileType,
+): PsiFileType {
   if (elements.isEmpty()) {
-    return this
+    return psiFile
   }
 
   val sortedPatches: List<Pair<PsiElement, String>> =
@@ -304,9 +347,9 @@ fun <Element : PsiElement> KtFile.replaceAllWithVariables(
     previousPatchEndOffset = patch.first.endOffset
   }
 
-  var text = this.text
+  var text = psiFile.text
   for ((element, replacement) in sortedPatches.reversed()) {
     text = text.substring(0, element.startOffset) + replacement + text.substring(element.endOffset)
   }
-  return KotlinParserUtil.parseAsFile(text)
+  return reloadFile(text)
 }
