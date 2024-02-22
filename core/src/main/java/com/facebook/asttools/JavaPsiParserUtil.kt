@@ -18,10 +18,12 @@ package com.facebook.asttools
 
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.openapi.util.Disposer
+import com.intellij.psi.PsiAnnotation
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiExpression
+import com.intellij.psi.PsiField
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiMethod
@@ -95,6 +97,30 @@ object JavaPsiParserUtil {
             Something s = $code;
           }
         }
+        """
+                .trimIndent()),
+        code)
+  }
+
+  fun parseAsField(code: String): PsiField {
+    val fixedCode = if (code.endsWith(";")) code else "$code;"
+    return extract(
+        parseAsFile(
+            """
+        class Dummy {
+          $fixedCode
+        }
+        """
+                .trimIndent()),
+        fixedCode)
+  }
+
+  fun parseAsAnnotation(code: String): PsiAnnotation {
+    return extract(
+        parseAsFile(
+            """
+        $code
+        class Dummy {}
         """
                 .trimIndent()),
         code)

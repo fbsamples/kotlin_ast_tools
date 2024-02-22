@@ -16,8 +16,10 @@
 
 package com.facebook.asttools
 
+import com.intellij.psi.PsiAnnotation
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiExpression
+import com.intellij.psi.PsiField
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiStatement
 import java.lang.IllegalStateException
@@ -103,6 +105,20 @@ class JavaPsiParserUtilTest {
     val statement = JavaPsiParserUtil.parseAsExpression("doThing(a)")
     assertThat(statement).isInstanceOf(PsiExpression::class.java)
     assertThat(statement.text).isEqualTo("doThing(a)")
+  }
+
+  @Test
+  fun `parse as field`() {
+    val statement = JavaPsiParserUtil.parseAsField("final String a = \"a\"")
+    assertThat(statement).isInstanceOf(PsiField::class.java)
+    assertThat(statement.text).isEqualTo("final String a = \"a\";")
+  }
+
+  @Test
+  fun `parse as annotation`() {
+    val statement = JavaPsiParserUtil.parseAsAnnotation("@Magic(a = 5)")
+    assertThat(statement).isInstanceOf(PsiAnnotation::class.java)
+    assertThat(statement.text).isEqualTo("@Magic(a = 5)")
   }
 
   @Test
