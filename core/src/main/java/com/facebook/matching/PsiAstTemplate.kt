@@ -294,9 +294,6 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
     }
 
     val varName = textContent.removePrefix("`$").removeSuffix("$`")
-    if (varName.isEmpty()) {
-      return match()
-    }
     val matcherFromVariable = variableNamesToVariables[varName]?.matcher
     if (matcherFromVariable == ANY_SENTINEL) {
       return match<T>().also { it.variableName = varName }
