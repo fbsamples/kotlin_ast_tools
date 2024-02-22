@@ -162,10 +162,10 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
 
   fun <T : Any> parse(clazz: Class<T>, template: String): PsiAstMatcher<T> {
     return when (clazz) {
-      KtProperty::class.java -> parseRecursive(KotlinParserUtil.parseAsProperty(template))
-      KtExpression::class.java -> parseRecursive(KotlinParserUtil.parseAsExpression(template))
+      KtProperty::class.java -> parseKotlinRecursive(KotlinParserUtil.parseAsProperty(template))
+      KtExpression::class.java -> parseKotlinRecursive(KotlinParserUtil.parseAsExpression(template))
       KtAnnotationEntry::class.java ->
-          parseRecursive(KotlinParserUtil.parseAsAnnotationEntry(template))
+          parseKotlinRecursive(KotlinParserUtil.parseAsAnnotationEntry(template))
       else -> error("unsupported: $clazz")
     }
         as PsiAstMatcher<T>
@@ -181,7 +181,7 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
    * For the edge case, we compare on the text of the node, or see if it represents a template
    * variable which means its matcher is defined outside the template.
    */
-  private fun <T : Any> parseRecursive(node: T): PsiAstMatcher<T> {
+  private fun <T : Any> parseKotlinRecursive(node: T): PsiAstMatcher<T> {
     return when (node) {
       // for example: `private val foo: Foo = Foo(5)`
       is KtProperty ->
@@ -195,17 +195,19 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
               .apply {
                 node.delegateExpression?.let {
                   addChildMatcher(
-                      transform = { it.delegateExpression }, matcher = parseRecursive(it))
+                      transform = { it.delegateExpression }, matcher = parseKotlinRecursive(it))
                 }
                 node.initializer?.let {
-                  addChildMatcher(transform = { it.initializer }, matcher = parseRecursive(it))
+                  addChildMatcher(
+                      transform = { it.initializer }, matcher = parseKotlinRecursive(it))
                 }
               }
       // for example: `doIt(1, b)`
       is KtCallExpression ->
           match<KtCallExpression>().apply {
             node.referenceExpression()?.let { referenceExpression ->
-              addChildMatcher({ it.referenceExpression() }, parseRecursive(referenceExpression))
+              addChildMatcher(
+                  { it.referenceExpression() }, parseKotlinRecursive(referenceExpression))
             }
             if (!isSelectorExpression(node)) {
               addCustomMatcher { !(isSelectorExpression(it)) }
@@ -213,27 +215,29 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
             addIndexedMatchersList(
                 { it.valueArguments },
                 node.valueArguments.withIndex().map { indexedValue ->
-                  Pair(Index.at(indexedValue.index), parseRecursive(indexedValue.value))
+                  Pair(Index.at(indexedValue.index), parseKotlinRecursive(indexedValue.value))
                 })
             addChildMatcher { it.valueArguments.size == node.valueArguments.size }
           }
       is KtQualifiedExpression ->
           match<KtQualifiedExpression>().apply {
-            addChildMatcher({ it.receiverExpression }, parseRecursive(node.receiverExpression))
+            addChildMatcher(
+                { it.receiverExpression }, parseKotlinRecursive(node.receiverExpression))
             addChildMatcher { it.operationSign.value == node.operationSign.value }
             node.selectorExpression?.let { selectorExpression ->
-              addChildMatcher({ it.selectorExpression }, parseRecursive(selectorExpression))
+              addChildMatcher({ it.selectorExpression }, parseKotlinRecursive(selectorExpression))
             }
           }
       is KtClassLiteralExpression ->
           match<KtClassLiteralExpression>().apply {
             node.receiverExpression?.let { expression ->
-              addChildMatcher({ it.receiverExpression }, parseRecursive(expression))
+              addChildMatcher({ it.receiverExpression }, parseKotlinRecursive(expression))
             }
           }
       is KtUnaryExpression -> {
         match<KtUnaryExpression>().apply {
-          addChildMatcher({ it.baseExpression }, parseRecursive(checkNotNull(node.baseExpression)))
+          addChildMatcher(
+              { it.baseExpression }, parseKotlinRecursive(checkNotNull(node.baseExpression)))
           addChildMatcher { it is KtPostfixExpression == node is KtPostfixExpression }
           addChildMatcher { it.operationReference.text == node.operationReference.text }
         }
@@ -245,11 +249,11 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
               addChildMatcher { expression -> expression.text == node.text }
             }
           }
-      // for example: `doIt(1, b)`
+      // for example: `1` in `doIt(1, b)`
       is KtValueArgument ->
           match<KtValueArgument>().apply {
             node.getArgumentExpression()?.let { expression ->
-              addChildMatcher({ it.getArgumentExpression() }, parseRecursive(expression))
+              addChildMatcher({ it.getArgumentExpression() }, parseKotlinRecursive(expression))
             }
             node.getArgumentName()?.asName?.identifier?.let { identifier ->
               addChildMatcher { it.getArgumentName()?.asName?.identifier == identifier }
