@@ -16,6 +16,7 @@
 
 package com.facebook.matching
 
+import com.facebook.asttools.KotlinParserUtil
 import java.lang.IllegalArgumentException
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.psi.KtBinaryExpression
@@ -42,7 +43,7 @@ class PsiAstMatcherTest {
   @Test
   fun `example test showing multiple feature matching a class object`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |class Foo {
           |  fun doThat() = "yes"
@@ -71,7 +72,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on properties with delegates`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |class Foo {
           |  val bar: Bar by SuperDelegate
@@ -95,7 +96,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on suspend function modifier`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |suspend fun foo(): Int {
           |  return 10
@@ -126,7 +127,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on function annotation`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |@FixMe fun foo(): Int {
           |  return 10
@@ -147,7 +148,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on function return type`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo(): Int = 10
           |fun foo2(): String = "10"
@@ -166,7 +167,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match call expression on indexed value arguments`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |suspend fun foo(): Int {
           |  withContext(Dispatchers.IO, ViewerContext, Env) {
@@ -204,7 +205,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match call expression on first value arguments`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |suspend fun foo(): Unit {
           |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
@@ -236,7 +237,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match call expression on last value arguments`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |suspend fun foo(): Unit {
           |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
@@ -270,7 +271,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match call expression on any value arguments`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |suspend fun foo(): Unit {
           |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
@@ -301,7 +302,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on modifiers for properties`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |private val foo = 5
         """
@@ -318,7 +319,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on owners`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |object Foo {
           |  private val foo = 5
@@ -347,7 +348,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on supertypes`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |object Foo : Super1 {}
           |object Bar : Super1, Super2 {}
@@ -366,7 +367,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on supertypes by typ reference`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |object Foo : Super1() {}
           |object Bar : Super1("a"), Super2("a") {}
@@ -387,7 +388,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on specific types of receiver and selector`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  (1 + 2).toFloat() // yes
@@ -408,7 +409,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on specific types of qualification`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  a?.b() // yes
@@ -428,7 +429,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on value arguments`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  doIt("yay", num = 1) // yes
@@ -454,7 +455,7 @@ class PsiAstMatcherTest {
   @Test
   fun `replace an integer constant with +1`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  doIt(1)
@@ -485,7 +486,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on binary expressions`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  println(1 + 2) // yes
@@ -510,7 +511,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on unary expressions`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  i++ // yes
@@ -534,7 +535,7 @@ class PsiAstMatcherTest {
   @Test
   fun `match on class literal expressions`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  println(Foo::class) // yes
@@ -556,7 +557,7 @@ class PsiAstMatcherTest {
   @Test
   fun `replace when patches intersect`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  invoke(invoke(invoke() + invoke(2)))
@@ -582,7 +583,7 @@ class PsiAstMatcherTest {
   @Test(expected = IllegalArgumentException::class)
   fun `replace when patches intersect and throw`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun f() {
           |  println(invoke(invoke()))

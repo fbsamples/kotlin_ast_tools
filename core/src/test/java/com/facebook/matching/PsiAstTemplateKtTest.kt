@@ -16,6 +16,7 @@
 
 package com.facebook.matching
 
+import com.facebook.asttools.KotlinParserUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtExpression
@@ -28,7 +29,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `various ways to starts a search with a convenient API`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |class Foo {
           |  @Magic val bar: Bar by SuperDelegate
@@ -52,7 +53,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `parse variables from # syntax and match`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |class Foo {
           |  @Magic("yay") val barString = "Bar".uppercase()
@@ -76,7 +77,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `when parsing from template, match on properties`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |class Foo {
           |  val bar: Bar by SuperDelegate
@@ -101,7 +102,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `when parsing from template, match on expression`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |class Foo {
           |  val bar: Int = doIt(1 + 1)
@@ -116,7 +117,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `match template for annotation entry`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo() {
           |  @Magic val a = 5
@@ -133,7 +134,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `match template for function call`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo(b: String): Int {
           |  val a = doIt(1, name = b) // yes
@@ -150,7 +151,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `match template for function call with variables`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo() {
           |  doIt(1 + 1) // yes
@@ -169,7 +170,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `replace using template and variables`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo() {
           |  doIt(1, 2)
@@ -192,7 +193,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `match template for qualified calls`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo() {
           |  a?.b() // yes
@@ -210,7 +211,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `match template for a class expressions`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo() {
           |  println(Bar::class)
@@ -230,7 +231,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `do not match on call expression with receiver`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo(bar: Bar) {
           |  doIt(1)
@@ -247,7 +248,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `match with unsafe dereference`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo(bar: Bar) {
           |  doIt(1)!!
@@ -264,7 +265,7 @@ class PsiAstTemplateKtTest {
   @Test
   fun `match with prefix and postfix unary expressions`() {
     val ktFile =
-        load(
+        KotlinParserUtil.parseAsFile(
             """
           |fun foo(i: Int) {
           |  i++

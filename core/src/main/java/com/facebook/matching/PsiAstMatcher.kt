@@ -16,6 +16,7 @@
 
 package com.facebook.matching
 
+import com.facebook.asttools.KotlinParserUtil
 import com.google.errorprone.annotations.CheckReturnValue
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtFile
@@ -307,5 +308,5 @@ fun <Element : PsiElement> KtFile.replaceAllWithVariables(
   for ((element, replacement) in sortedPatches.reversed()) {
     text = text.substring(0, element.startOffset) + replacement + text.substring(element.endOffset)
   }
-  return load(text)
+  return KotlinParserUtil.parseAsFile(text)
 }
