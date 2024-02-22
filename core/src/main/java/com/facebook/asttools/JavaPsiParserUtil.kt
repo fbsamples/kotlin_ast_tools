@@ -27,6 +27,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiStatement
 import com.intellij.testFramework.LightVirtualFile
+import org.intellij.lang.annotations.Language
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
@@ -50,7 +51,7 @@ object JavaPsiParserUtil {
   }
 
   @JvmStatic
-  fun parseAsFile(code: String): PsiJavaFile {
+  fun parseAsFile(@Language("java") code: String): PsiJavaFile {
     val file = LightVirtualFile("temp.java", JavaFileType.INSTANCE, code)
     return PsiManager.getInstance(kotlinCoreEnvironment.project).findFile(file) as PsiJavaFile
   }

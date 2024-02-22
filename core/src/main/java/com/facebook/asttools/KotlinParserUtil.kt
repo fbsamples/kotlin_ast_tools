@@ -21,6 +21,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiManager
 import com.intellij.testFramework.LightVirtualFile
+import org.intellij.lang.annotations.Language
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
@@ -49,7 +50,7 @@ object KotlinParserUtil {
         disposable, getConfiguration(), EnvironmentConfigFiles.JVM_CONFIG_FILES)
   }
 
-  fun parseAsFile(code: String): KtFile {
+  fun parseAsFile(@Language("kotlin") code: String): KtFile {
     val file = LightVirtualFile("temp.kt", KotlinFileType.INSTANCE, code)
     return PsiManager.getInstance(kotlinCoreEnvironment.project).findFile(file) as KtFile
   }
