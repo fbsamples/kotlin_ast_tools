@@ -170,7 +170,7 @@ inline fun <reified T : Any> parseTemplateWithVariables(
       TEMPLATE_VARIABLE_REGEX.findAll(template)
           .map { v ->
             PsiAstTemplate.Variable(
-                v.value.removeSurrounding("#"),
+                v.groupValues[1],
                 unusedVariables.remove(v.value) ?: ANY_SENTINEL,
                 isKotlin = KtElement::class.java.isAssignableFrom(T::class.java))
           }
@@ -185,7 +185,7 @@ inline fun <reified T : Any> parseTemplateWithVariables(
 
   val newTemplate =
       templateVariables.fold(template) { template, variable ->
-        template.replace("#${variable.name}#", variable.toString())
+        template.replace(variable.templateString, variable.parsableCodeString)
       }
   return PsiAstTemplate(templateVariables).parse(T::class.java, newTemplate)
 }
@@ -436,7 +436,7 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
       return ifNotVariableBlock()
     }
 
-    val varName = textContent.removePrefix("`$").removeSuffix("$`").removeSurrounding("$")
+    val varName = textContent.removeSurrounding("`$", "$`").removeSurrounding("$")
     val matcherFromVariable = variableNamesToVariables[varName]?.matcher
     if (matcherFromVariable == ANY_SENTINEL) {
       return match<T>().also { it.variableName = varName }
@@ -457,11 +457,10 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
       matcher.variableName = name
     }
 
-    override fun toString(): String {
-      return if (isKotlin) "`$$name$`" else "$$name$"
-    }
+    val parsableCodeString: String = if (isKotlin) "`$$name$`" else "$$name$"
+    val templateString: String = "#$name#"
   }
 }
 
 val ANY_SENTINEL: PsiAstMatcher<PsiElement> = PsiAstMatcher(PsiElement::class.java)
-val TEMPLATE_VARIABLE_REGEX: Regex = "#[A-Za-z0-9_]+#".toRegex()
+val TEMPLATE_VARIABLE_REGEX: Regex = "#([A-Za-z0-9_]+)#".toRegex()
