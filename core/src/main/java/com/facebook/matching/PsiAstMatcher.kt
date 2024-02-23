@@ -68,6 +68,11 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
   internal var variableName: String? = null
 
   /**
+   * Whether this matcher will match a null ot not, this is useful for building optional matchers
+   */
+  internal var shouldMatchToNull: Boolean = false
+
+  /**
    * Adds a new child matcher that needs to be satisfied for this matcher to be satisfied
    *
    * This is used by the various extension properties to define what useful child matchers each node
@@ -142,6 +147,9 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
   }
 
   internal fun matches(obj: Any?): Map<String, String>? {
+    if (shouldMatchToNull && obj == null) {
+      return mutableMapOf()
+    }
     val element = if (targetType.isInstance(obj)) targetType.cast(obj) else return null
     element ?: return null
     val result = mutableMapOf<String, String>()

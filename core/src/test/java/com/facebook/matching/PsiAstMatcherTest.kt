@@ -555,6 +555,14 @@ class PsiAstMatcherTest {
   }
 
   @Test
+  fun `match on null works as intended`() {
+    val matcher = match<KtExpression>().apply { shouldMatchToNull = true }
+    assertThat(matcher.matches(null)).isNotNull()
+    val matcher2 = match<KtExpression>()
+    assertThat(matcher2.matches(null)).isNull()
+  }
+
+  @Test
   fun `replace when patches intersect`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(
