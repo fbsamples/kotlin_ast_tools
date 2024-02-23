@@ -172,6 +172,7 @@ inline fun <reified T : Any> parseTemplateWithVariables(
             PsiAstTemplate.Variable(
                 v.groupValues[1],
                 unusedVariables.remove(v.value) ?: ANY_SENTINEL,
+                isOptional = v.groupValues[2] == "?",
                 isKotlin = KtElement::class.java.isAssignableFrom(T::class.java))
           }
           .toList()
@@ -199,7 +200,7 @@ fun parseReplacementTemplate(
   "#[A-Za-z0-9_]+#".toRegex().findAll(template).forEach { matchResult ->
     val target = matchResult.value
     val variableValue =
-        templateVariablesToText[matchResult.value.removeSurrounding("#")]
+        templateVariablesToText[matchResult.value.removeSurrounding("#").removeSuffix("?")]
             ?: error(
                 "undeclared variable ${matchResult.value}, known variables: ${templateVariablesToText.keys}")
     processedReplacment = processedReplacment.replace(target, variableValue)
@@ -306,7 +307,10 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
       is KtValueArgument ->
           match<KtValueArgument>().apply {
             node.getArgumentExpression()?.let { expression ->
-              addChildMatcher({ it.getArgumentExpression() }, parseKotlinRecursive(expression))
+              addChildMatcher(
+                  { it.getArgumentExpression() },
+                  parseKotlinRecursive(expression),
+                  inheritShouldMatchNull = true)
             }
             node.getArgumentName()?.asName?.identifier?.let { identifier ->
               addChildMatcher { it.getArgumentName()?.asName?.identifier == identifier }
@@ -437,9 +441,13 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
     }
 
     val varName = textContent.removeSurrounding("`$", "$`").removeSurrounding("$")
-    val matcherFromVariable = variableNamesToVariables[varName]?.matcher
+    val variable = variableNamesToVariables[varName]
+    val matcherFromVariable = variable?.matcher
     if (matcherFromVariable == ANY_SENTINEL) {
-      return match<T>().also { it.variableName = varName }
+      return match<T>().also {
+        it.variableName = variable.name
+        it.shouldMatchToNull = variable.isOptional
+      }
     }
     matcherFromVariable
         ?: error(
@@ -452,15 +460,21 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
     return matcherFromVariable as PsiAstMatcher<T>
   }
 
-  class Variable<T : Any>(val name: String, val matcher: PsiAstMatcher<T>, val isKotlin: Boolean) {
+  class Variable<T : Any>(
+      val name: String,
+      val matcher: PsiAstMatcher<T>,
+      val isOptional: Boolean,
+      val isKotlin: Boolean
+  ) {
     init {
       matcher.variableName = name
+      matcher.shouldMatchToNull = isOptional
     }
 
     val parsableCodeString: String = if (isKotlin) "`$$name$`" else "$$name$"
-    val templateString: String = "#$name#"
+    val templateString: String = "#$name${if (isOptional) "?" else ""}#"
   }
 }
 
 val ANY_SENTINEL: PsiAstMatcher<PsiElement> = PsiAstMatcher(PsiElement::class.java)
-val TEMPLATE_VARIABLE_REGEX: Regex = "#([A-Za-z0-9_]+)#".toRegex()
+val TEMPLATE_VARIABLE_REGEX: Regex = "#([A-Za-z0-9_]+)([?]?)#".toRegex()

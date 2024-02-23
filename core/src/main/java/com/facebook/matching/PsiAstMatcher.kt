@@ -116,11 +116,15 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    */
   internal fun <T : Any> addChildMatcher(
       transform: (Element) -> T?,
-      matcher: PsiAstMatcher<out T>
+      matcher: PsiAstMatcher<out T>,
+      inheritShouldMatchNull: Boolean = false,
   ) {
     matcherFunctions += {
       val t: T? = transform(it)
       if (t == null) null else matcher.matches(t)
+    }
+    if (inheritShouldMatchNull && matcher.shouldMatchToNull) {
+      shouldMatchToNull = true
     }
   }
 

@@ -173,6 +173,28 @@ class PsiAstTemplateKtTest {
   }
 
   @Test
+  fun `match template for function call with optional arguments`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo() {
+          |  doIt()
+          |  doIt(1)
+          |  doIt(1, 2)
+          |  doIt(1, 2, 3)
+          |}
+        """
+                .trimMargin())
+
+    assertThat(ktFile.findAllExpressions("doIt(#a?#)").map { it.text })
+        .containsExactly("doIt()", "doIt(1)")
+    assertThat(ktFile.findAllExpressions("doIt(#a#, #b?#)").map { it.text })
+        .containsExactly("doIt(1)", "doIt(1, 2)")
+    assertThat(ktFile.findAllExpressions("doIt(#a?#, #b?#)").map { it.text })
+        .containsExactly("doIt()", "doIt(1)", "doIt(1, 2)")
+  }
+
+  @Test
   fun `replace using template and variables`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(
@@ -424,6 +446,30 @@ class PsiAstTemplateKtTest {
             "doIt(#a#)", "#a#" to match<PsiExpression> { expression -> expression.text == "1 + 1" })
 
     assertThat(results.map { it.text }).containsExactly("doIt(1 + 1)")
+  }
+
+  @Test
+  fun `match template for function call with optional arguments for Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+          |public class Test {
+          |  void foo() {
+          |    doIt();
+          |    doIt(1);
+          |    doIt(1, 2);
+          |    doIt(1, 2, 3);
+          |  }
+          |}
+        """
+                .trimMargin())
+
+    assertThat(psiJavaFile.findAllExpressions("doIt(#a?#)").map { it.text })
+        .containsExactly("doIt()", "doIt(1)")
+    assertThat(psiJavaFile.findAllExpressions("doIt(#a#, #b?#)").map { it.text })
+        .containsExactly("doIt(1)", "doIt(1, 2)")
+    assertThat(psiJavaFile.findAllExpressions("doIt(#a?#, #b?#)").map { it.text })
+        .containsExactly("doIt()", "doIt(1)", "doIt(1, 2)")
   }
 
   @Test
