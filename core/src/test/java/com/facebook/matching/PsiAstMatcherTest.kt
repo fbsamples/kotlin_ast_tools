@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
+import org.jetbrains.kotlin.psi.KtConstantExpression
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtObjectDeclaration
@@ -31,6 +32,7 @@ import org.jetbrains.kotlin.psi.KtPostfixExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
 import org.jetbrains.kotlin.psi.KtUnaryExpression
+import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 import org.jetbrains.kotlin.psi.psiUtil.isAncestor
 import org.jetbrains.kotlin.psi.psiUtil.parents
@@ -602,5 +604,52 @@ class PsiAstMatcherTest {
     ktFile.replaceAllWithVariables(
         matcher = match<KtCallExpression> { it.referenceExpression()?.text == "invoke" },
         replaceWith = { (it, _) -> it.node.text.replaceFirst("invoke", "${it.text} + ${it.text}") })
+  }
+
+  @Test
+  fun `test matchAllInOrder`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun f() {
+          |  val a = 5
+          |  val b = 6
+          |}
+        """
+                .trimMargin())
+    val ktExpressions = ktFile.collectDescendantsOfType<KtConstantExpression>()
+    assertThat(ktExpressions.map { it.text }).containsExactly("5", "6")
+
+    val matcher = match<KtExpression>()
+    assertThat(matchAllInOrder(listOf(), ktExpressions)).isNull()
+    assertThat(matchAllInOrder(listOf(matcher), ktExpressions)).isNull()
+    assertThat(matchAllInOrder(listOf(matcher, matcher), ktExpressions)).isNotNull
+    assertThat(matchAllInOrder(listOf(matcher, matcher, matcher), ktExpressions)).isNull()
+  }
+
+  @Test
+  fun `test matchAllInOrder with optional matchers`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun f() {
+          |  val a = 5
+          |  val b = 6
+          |}
+        """
+                .trimMargin())
+    val ktExpressions = ktFile.collectDescendantsOfType<KtConstantExpression>()
+    assertThat(ktExpressions.map { it.text }).containsExactly("5", "6")
+
+    val matcher = match<KtExpression>()
+    val optionalMatcher = match<KtExpression>().apply { shouldMatchToNull = true }
+
+    assertThat(matchAllInOrder(listOf(matcher, matcher, optionalMatcher), ktExpressions)).isNotNull
+    assertThat(matchAllInOrder(listOf(matcher, optionalMatcher, optionalMatcher), ktExpressions))
+        .isNotNull
+    assertThat(matchAllInOrder(listOf(matcher, optionalMatcher), ktExpressions)).isNotNull
+    assertThat(matchAllInOrder(listOf(optionalMatcher), ktExpressions)).isNull()
+
+    assertThat(matchAllInOrder(listOf(optionalMatcher, optionalMatcher), listOf())).isNotNull
   }
 }

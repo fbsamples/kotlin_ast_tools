@@ -268,12 +268,9 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
             if (!isSelectorExpression(node)) {
               addCustomMatcher { !(isSelectorExpression(it)) }
             }
-            addIndexedMatchersList(
+            addMatchersInOrderList(
                 { it.valueArguments },
-                node.valueArguments.withIndex().map { indexedValue ->
-                  Pair(Index.at(indexedValue.index), parseKotlinRecursive(indexedValue.value))
-                })
-            addChildMatcher { it.valueArguments.size == node.valueArguments.size }
+                node.valueArguments.map { valueArgument -> parseKotlinRecursive(valueArgument) })
           }
       is KtQualifiedExpression ->
           match<KtQualifiedExpression>().apply {
@@ -348,14 +345,9 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
       is PsiMethodCallExpression ->
           match<PsiMethodCallExpression>().apply {
             addChildMatcher({ it.methodExpression }, parseJavaRecursive(node.methodExpression))
-            addIndexedMatchersList(
+            addMatchersInOrderList(
                 { it.argumentList.expressions.toList() },
-                node.argumentList.expressions.withIndex().map { indexedValue ->
-                  Pair(Index.at(indexedValue.index), parseJavaRecursive(indexedValue.value))
-                })
-            addChildMatcher {
-              it.argumentList.expressions.size == node.argumentList.expressions.size
-            }
+                node.argumentList.expressions.map { expression -> parseJavaRecursive(expression) })
           }
       // for example `foo.bar`
       is PsiReferenceExpression ->

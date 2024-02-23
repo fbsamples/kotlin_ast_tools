@@ -130,11 +130,11 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    * Similar to [addChildMatcher] but the transform is expected to return a list, and the matcher
    * will be satisfied using a strategy of matching subsequences as in [matchAllInOrder]
    */
-  internal fun <T : Any> addIndexedMatchersList(
+  internal fun <T : Any> addMatchersInOrderList(
       transform: (Element) -> List<T>,
-      list: List<Pair<Index, PsiAstMatcher<T>>>
+      list: List<PsiAstMatcher<T>>
   ) {
-    matcherFunctions += { matchAllIndexed(list, transform(it)) }
+    matcherFunctions += { matchAllInOrder(list, transform(it)) }
   }
 
   /**
@@ -175,35 +175,38 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
 }
 
 /**
- * Helper method to match a list of indexed matchers with a list of all nodes
+ * Helper method to match a list of matchers with a list of all nodes
  *
  * This will try to satisfy each matcher in order, and once matched will removed the node it matched
- * from for future matchers. This means the order of the matchers is meaningful.
+ * from for future matchers. This means the order of the matchers is meaningful. If some matchers
+ * are optional, and are unmatched at the end this will still count as a match
  */
-internal fun <T : Any> matchAllIndexed(
-    indexedMatchers: List<Pair<Index, PsiAstMatcher<T>>>,
+internal fun <T : Any> matchAllInOrder(
+    matchers: List<PsiAstMatcher<T>>,
     nodes: List<T>
 ): Map<String, String>? {
   val variableMatches = mutableMapOf<String, String>()
-  for (indexedMatcher in indexedMatchers) {
-    val index = indexedMatcher.first
-    if (!index.isValid(nodes)) {
-      return null
-    }
-    val matcher = indexedMatcher.second
-    val nodesToMatch = index.getValue(nodes)
-    var hasMatch = false
-    for (nodeToMatch in nodesToMatch) {
-      val match = matcher.matches(nodeToMatch) ?: continue
+  var matcherIndex = 0
+  var nodesIndex = 0
+  while (matcherIndex < matchers.size && nodesIndex < nodes.size) {
+    val matcher = matchers[matcherIndex]
+    val node = nodes[nodesIndex]
+    val match = matcher.matches(node)
+    if (match == null) {
+      matcherIndex++
+      continue
+    } else {
+      matcherIndex++
+      nodesIndex++
       variableMatches.putAll(match)
-      hasMatch = true
-      break
-    }
-    if (!hasMatch) {
-      return null
     }
   }
-  return variableMatches
+  return if (nodesIndex == nodes.size &&
+      (matcherIndex until matchers.size).all { index -> (matchers[index].matches(null) != null) }) {
+    variableMatches
+  } else {
+    null
+  }
 }
 
 @CheckReturnValue
