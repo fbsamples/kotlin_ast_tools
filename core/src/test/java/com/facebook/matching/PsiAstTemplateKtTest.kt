@@ -497,6 +497,32 @@ class PsiAstTemplateKtTest {
   }
 
   @Test
+  fun `match template on function call type arguments for Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+          |class Test {
+          |  void foo() {
+          |    Foo.<String>doIt();
+          |    Foo.<Int>doIt();
+          |    Foo.<String, Int>doIt();
+          |    Foo.doIt();
+          |  }
+          |}
+        """
+                .trimMargin())
+
+    assertThat(psiJavaFile.findAllExpressions("Foo.<String>doIt()").map { it.text })
+        .containsExactly("Foo.<String>doIt()")
+    assertThat(psiJavaFile.findAllExpressions("Foo.<#a#>doIt()").map { it.text })
+        .containsExactly("Foo.<String>doIt()", "Foo.<Int>doIt()")
+    assertThat(psiJavaFile.findAllExpressions("Foo.<#a#, #b#>doIt()").map { it.text })
+        .containsExactly("Foo.<String, Int>doIt()")
+    assertThat(psiJavaFile.findAllExpressions("Foo.<#a?#>doIt()").map { it.text })
+        .containsExactly("Foo.<String>doIt()", "Foo.<Int>doIt()", "Foo.doIt()")
+  }
+
+  @Test
   fun `replace using template and variables for Java`() {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(

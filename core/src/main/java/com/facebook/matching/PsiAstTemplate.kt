@@ -370,6 +370,11 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
             addMatchersInOrderList(
                 { it.argumentList.expressions.toList() },
                 node.argumentList.expressions.map { expression -> parseJavaRecursive(expression) })
+            addMatchersInOrderList(
+                { it.typeArgumentList.typeParameterElements.toList() },
+                node.typeArgumentList.typeParameterElements.map { typeElement ->
+                  parseJavaRecursive(typeElement)
+                })
           }
       // for example `foo.bar`
       is PsiReferenceExpression ->
