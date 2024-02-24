@@ -195,6 +195,30 @@ class PsiAstTemplateKtTest {
   }
 
   @Test
+  fun `match template on function call type arguments`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo() {
+          |  doIt<String>()
+          |  doIt<Int>()
+          |  doIt<String, Int>()
+          |  doIt()
+          |}
+        """
+                .trimMargin())
+
+    assertThat(ktFile.findAllExpressions("doIt<String>()").map { it.text })
+        .containsExactly("doIt<String>()")
+    assertThat(ktFile.findAllExpressions("doIt<#a#>()").map { it.text })
+        .containsExactly("doIt<String>()", "doIt<Int>()")
+    assertThat(ktFile.findAllExpressions("doIt<#a#, #b#>()").map { it.text })
+        .containsExactly("doIt<String, Int>()")
+    assertThat(ktFile.findAllExpressions("doIt<#a?#>()").map { it.text })
+        .containsExactly("doIt<String>()", "doIt<Int>()", "doIt()")
+  }
+
+  @Test
   fun `replace using template and variables`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(

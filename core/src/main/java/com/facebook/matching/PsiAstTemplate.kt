@@ -39,6 +39,8 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPostfixExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
+import org.jetbrains.kotlin.psi.KtTypeProjection
+import org.jetbrains.kotlin.psi.KtTypeReference
 import org.jetbrains.kotlin.psi.KtUnaryExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
@@ -272,6 +274,9 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
             addMatchersInOrderList(
                 { it.valueArguments },
                 node.valueArguments.map { valueArgument -> parseKotlinRecursive(valueArgument) })
+            addMatchersInOrderList(
+                { it.typeArguments },
+                node.typeArguments.map { typeProjection -> parseKotlinRecursive(typeProjection) })
           }
       is KtQualifiedExpression ->
           match<KtQualifiedExpression>().apply {
@@ -324,6 +329,19 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
                 addChildMatcher { it.shortName?.identifier == identifier }
               }
             }
+          }
+      // for example "Bar<*>" in `doIt<Bar<*>>()`
+      is KtTypeProjection ->
+          match<KtTypeProjection>().apply {
+            addChildMatcher(
+                { it.typeReference },
+                parseKotlinRecursive(checkNotNull(node.typeReference)),
+                inheritShouldMatchNull = true)
+          }
+      // for example "Bar" in `val bar: Bar`
+      is KtTypeReference ->
+          loadIfVariableOr(node.text) {
+            match<KtTypeReference>().apply { addChildMatcher { it.text == node.text } }
           }
       else -> error("unsupported: ${node.javaClass}")
     }
