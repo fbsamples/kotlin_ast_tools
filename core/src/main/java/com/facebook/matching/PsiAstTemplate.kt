@@ -168,19 +168,19 @@ inline fun <reified T : Any> parseTemplateWithVariables(
 ): PsiAstMatcher<T> {
   val unusedVariables = variables.toMap(mutableMapOf())
 
-  val rangesTotemplateVariables: List<Pair<IntRange, PsiAstTemplate.Variable<*>>> =
-      TEMPLATE_VARIABLE_REGEX.findAll(template)
+  val rangesToTemplateVariables: List<Pair<IntRange, Variable>> =
+      Variable.TEMPLATE_VARIABLE_REGEX.findAll(template)
           .map { v ->
             v.range to
-                PsiAstTemplate.Variable(
+                Variable(
                     checkNotNull(v.groups["name"]).value,
-                    unusedVariables.remove(v.value) ?: ANY_SENTINEL,
+                    unusedVariables.remove(v.value) ?: Variable.ANY_SENTINEL,
                     isOptional = checkNotNull(v.groups["isOptional"]).value == "?",
                     isKotlin = KtElement::class.java.isAssignableFrom(T::class.java),
                     arguments = v.groups["arguments"]?.value)
           }
           .toList()
-  val templateVariables = rangesTotemplateVariables.map { it.second }
+  val templateVariables = rangesToTemplateVariables.map { it.second }
   check(unusedVariables.isEmpty()) {
     "The following variables were not found in the template: " +
         unusedVariables.keys.joinToString(separator = ", ") +
@@ -193,7 +193,7 @@ inline fun <reified T : Any> parseTemplateWithVariables(
   }
 
   val newTemplate =
-      rangesTotemplateVariables.reversed().fold(template) { template, variable ->
+      rangesToTemplateVariables.reversed().fold(template) { template, variable ->
         template.replaceRange(variable.first, variable.second.parsableCodeString)
       }
   return PsiAstTemplate(templateVariables).parse(T::class.java, newTemplate)
@@ -217,9 +217,9 @@ fun parseReplacementTemplate(
 }
 
 /** Scope object to allow template building reference local matchers as arguments */
-class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
+class PsiAstTemplate(variables: List<Variable> = listOf()) {
 
-  private val variableNamesToVariables: MutableMap<String, Variable<*>> =
+  private val variableNamesToVariables: MutableMap<String, Variable> =
       variables.associateByTo(mutableMapOf()) { it.name }
 
   fun <T : Any> parse(clazz: Class<T>, template: String): PsiAstMatcher<T> {
@@ -472,7 +472,7 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
     val varName = textContent.removeSurrounding("`$", "$`").removeSurrounding("$")
     val variable = variableNamesToVariables[varName]
     val matcherFromVariable = variable?.matcher
-    if (matcherFromVariable == ANY_SENTINEL) {
+    if (matcherFromVariable == Variable.ANY_SENTINEL) {
       return match<T>().also {
         it.variableName = variable.name
         it.shouldMatchToNull = variable.isOptional
@@ -490,50 +490,4 @@ class PsiAstTemplate(variables: List<Variable<*>> = listOf()) {
     }
     return matcherFromVariable as PsiAstMatcher<T>
   }
-
-  class Variable<T : Any>(
-      val name: String,
-      val matcher: PsiAstMatcher<T>,
-      val isOptional: Boolean,
-      val isKotlin: Boolean,
-      arguments: String?
-  ) {
-
-    private var textMatchArgument: Regex? = null
-
-    init {
-      matcher.variableName = name
-      matcher.shouldMatchToNull = isOptional
-      if (arguments != null) {
-        val argumentsClean = arguments.removeSurrounding("{", "}")
-        val regex = " *(?<name>[a-zA-Z0-9]+) *= *(?<value>[^,]+)".toRegex()
-        var i = 0
-        while (i < argumentsClean.length) {
-          val match =
-              regex.matchAt(argumentsClean, i)
-                  ?: error("Syntax error in matcher argument string $argumentsClean, $i")
-          i = match.range.last + 1
-          val argumentName = checkNotNull(match.groups["name"]).value
-          val argumentValue = checkNotNull(match.groups["value"]).value
-          when (argumentName) {
-            "text" -> textMatchArgument = argumentValue.toRegex()
-            else -> error("Unknown template argument to variable $name: $argumentName")
-          }
-        }
-      }
-    }
-
-    fun addConditionsFromVariable(matcher: PsiAstMatcher<*>) {
-      textMatchArgument?.let { regex ->
-        matcher.addChildMatcher { it is PsiElement && it.text.matches(regex) }
-      }
-    }
-
-    val parsableCodeString: String = if (isKotlin) "`$$name$`" else "$$name$"
-    val templateString: String = "#$name${if (isOptional) "?" else ""}#"
-  }
 }
-
-val ANY_SENTINEL: PsiAstMatcher<PsiElement> = PsiAstMatcher(PsiElement::class.java)
-val TEMPLATE_VARIABLE_REGEX: Regex =
-    "#(?<name>[A-Za-z0-9_]+)(?<arguments>\\{[^}]*\\})?(?<isOptional>[?]?)#".toRegex()
