@@ -180,7 +180,9 @@ inline fun <reified T : Any> parseTemplateWithVariables(
           .toList()
   check(unusedVariables.isEmpty()) {
     "The following variables were not found in the template: " +
-        unusedVariables.keys.joinToString(separator = ", ")
+        unusedVariables.keys.joinToString(separator = ", ") +
+        "\nVariables found in template: " +
+        templateVariables.joinToString { it.templateString }
   }
   check(templateVariables.map { it.name }.toSet().size == templateVariables.size) {
     "Multiple reference to the same template variable are not supported yet"
