@@ -332,6 +332,23 @@ class PsiAstTemplateKtTest {
   }
 
   @Test
+  fun `match with variable syntax for text `() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo(i) {
+          |  doIt() // yes
+          |  doThat() // yes
+          |  invokeIt() // no
+          |}
+        """
+                .trimMargin())
+    val reults: List<KtExpression> = ktFile.findAllExpressions("#a{text=do.*}#()")
+
+    assertThat(reults.map { it.text }).containsExactly("doIt()", "doThat()")
+  }
+
+  @Test
   fun `various ways to starts a search with a convenient API for Java`() {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
