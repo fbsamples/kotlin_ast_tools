@@ -16,14 +16,9 @@
 
 package com.facebook.matching
 
-import com.facebook.asttools.JavaPsiParserUtil
-import com.facebook.asttools.KotlinParserUtil
 import com.google.errorprone.annotations.CheckReturnValue
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiJavaFile
-import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.isAncestor
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
@@ -214,70 +209,7 @@ internal fun <T : Any> matchAllInOrder(
 }
 
 @CheckReturnValue
-fun <Element : PsiElement> PsiElement.findAllWithVariables(
-    matcher: PsiAstMatcher<Element>
-): List<Pair<Element, Map<String, String>>> {
-  val results = mutableListOf<Pair<Element, Map<String, String>>>()
-  this.accept(
-      object : KtTreeVisitorVoid() {
-        override fun visitElement(element: PsiElement) {
-          val result = matcher.matches(element)
-          if (result != null) {
-            results.add(Pair(element as Element, result))
-          }
-          super.visitElement(element)
-        }
-      })
-  return results
-}
-
-/**
- * Finds all the elements matching the given matcher inside under this element
- *
- * @see [PsiAstMatcher]
- */
-@CheckReturnValue
-fun <Element : PsiElement> PsiElement.findAll(matcher: PsiAstMatcher<Element>): List<Element> {
-  return findAllWithVariables(matcher).map { it.first }
-}
-
-/** Finds and replaces elements in a Kotlin file using a [PsiAstMatcher] */
-@CheckReturnValue
-fun <Element : PsiElement> KtFile.replaceAll(
-    matcher: PsiAstMatcher<Element>,
-    replaceWith: (Element) -> String
-): KtFile = replaceAllWithVariables(matcher, replaceWith = { (result, _) -> replaceWith(result) })
-
-/**
- * Finds and replaces elements in a Kotlin file using a [PsiAstMatcher]
- *
- * Some elements may intersect, making this complicated. In such cases we try converting outer
- * elements first, then rerun the matcher. If we detect any conversion created new matches, we abort
- * and throw just to make sure we don't do something weird, or go into a infinite loop.
- *
- * This abort mechanism is limited, is some instances remove future instances, and others generate
- * new instances we can be thrown off.
- */
-@CheckReturnValue
-fun <Element : PsiElement> KtFile.replaceAllWithVariables(
-    matcher: PsiAstMatcher<Element>,
-    replaceWith: (Pair<Element, Map<String, String>>) -> String
-): KtFile {
-  return replaceAllWithVariables(
-      this, matcher, replaceWith, reloadFile = { text -> KotlinParserUtil.parseAsFile(text) })
-}
-
-@CheckReturnValue
-fun <Element : PsiElement> PsiJavaFile.replaceAllWithVariables(
-    matcher: PsiAstMatcher<Element>,
-    replaceWith: (Pair<Element, Map<String, String>>) -> String
-): PsiJavaFile {
-  return replaceAllWithVariables(
-      this, matcher, replaceWith, reloadFile = { text -> JavaPsiParserUtil.parseAsFile(text) })
-}
-
-@CheckReturnValue
-private fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
+internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
     matcher: PsiAstMatcher<Element>,
     replaceWith: (Pair<Element, Map<String, String>>) -> String,
@@ -314,27 +246,8 @@ private fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariable
   return currentPsiFile
 }
 
-/** Replaces match results using a transform function */
 @CheckReturnValue
-fun <Element : PsiElement> KtFile.replaceAllWithVariables(
-    elements: List<Pair<Element, Map<String, String>>>,
-    replaceWith: (Pair<Element, Map<String, String>>) -> String
-): KtFile {
-  return replaceAllWithVariables(
-      this, elements, replaceWith, reloadFile = { text -> KotlinParserUtil.parseAsFile(text) })
-}
-
-@CheckReturnValue
-fun <Element : PsiElement> PsiJavaFile.replaceAllWithVariables(
-    elements: List<Pair<Element, Map<String, String>>>,
-    replaceWith: (Pair<Element, Map<String, String>>) -> String
-): PsiJavaFile {
-  return replaceAllWithVariables(
-      this, elements, replaceWith, reloadFile = { text -> JavaPsiParserUtil.parseAsFile(text) })
-}
-
-@CheckReturnValue
-private fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
+internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
     elements: List<Pair<Element, Map<String, String>>>,
     replaceWith: (Pair<Element, Map<String, String>>) -> String,

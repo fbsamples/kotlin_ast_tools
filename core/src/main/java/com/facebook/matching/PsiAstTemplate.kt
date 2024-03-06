@@ -23,7 +23,6 @@ import com.intellij.psi.PsiClassObjectAccessExpression
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiField
-import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiMethodCallExpression
 import com.intellij.psi.PsiPostfixExpression
 import com.intellij.psi.PsiReferenceExpression
@@ -35,7 +34,6 @@ import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
-import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPostfixExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
@@ -44,119 +42,6 @@ import org.jetbrains.kotlin.psi.KtTypeReference
 import org.jetbrains.kotlin.psi.KtUnaryExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
-
-/**
- * Returns a list of all expressions in a Kotlin file that match the given string template.
- *
- * For example, the template `#a#.apply(#b#)` will return all `KtExpression` nodes that are of a
- * qualified method call where the method is name `apply` and takes one argument.
- *
- * For each variable in the template an extra matcher can be define under `variables` to allow more
- * accurate matching.
- *
- * See [com.facebook.matching.PsiAstTemplateTest] for a lot of examples using these templates
- */
-fun KtFile.findAllExpressions(
-    template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): List<KtExpression> {
-  return findAll(parseTemplateWithVariables<KtExpression>(template, *variables))
-}
-
-fun PsiJavaFile.findAllExpressions(
-    template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): List<PsiExpression> {
-  return findAll(parseTemplateWithVariables<PsiExpression>(template, *variables))
-}
-
-/**
- * Replaces all expressions that match the given template with the given replacement
- *
- * See [findAllExpressions] for more details on the template
- */
-fun KtFile.replaceAllExpressions(
-    template: String,
-    replaceWith: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): KtFile = replaceAllExpressions(template, { _, _ -> replaceWith }, *variables)
-
-fun PsiJavaFile.replaceAllExpressions(
-    template: String,
-    replaceWith: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): PsiJavaFile = replaceAllExpressions(template, { _, _ -> replaceWith }, *variables)
-
-/**
- * Replaces all expressions that match the given template with the given replacement which is given
- * as a lambda
- *
- * Use this version instead of [replaceAllExpressions] for cases in which the replacement depends on
- * the actual matched expression
- */
-fun KtFile.replaceAllExpressions(
-    template: String,
-    replaceWith: (match: KtExpression, templateVariablesToText: Map<String, String>) -> String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): KtFile {
-  return replaceAllWithVariables(parseTemplateWithVariables<KtExpression>(template, *variables)) {
-      (match, templateVariablesToText) ->
-    parseReplacementTemplate(
-        template, replaceWith(match, templateVariablesToText), templateVariablesToText)
-  }
-}
-
-fun PsiJavaFile.replaceAllExpressions(
-    template: String,
-    replaceWith: (match: PsiExpression, templateVariablesToText: Map<String, String>) -> String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): PsiJavaFile {
-  return replaceAllWithVariables(parseTemplateWithVariables<PsiExpression>(template, *variables)) {
-      (match, templateVariablesToText) ->
-    parseReplacementTemplate(
-        template, replaceWith(match, templateVariablesToText), templateVariablesToText)
-  }
-}
-
-/**
- * Like [findAllExpressions] but instead matches on property declarations (i.e. `val a = 5`)
- *
- * See [com.facebook.matching.PsiAstTemplateTest] for a lot of examples using these templates
- */
-fun KtFile.findAllProperties(
-    template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): List<KtProperty> {
-  val matcher: PsiAstMatcher<KtProperty> =
-      parseTemplateWithVariables<KtProperty>(template, *variables)
-  return findAll(matcher)
-}
-
-fun PsiJavaFile.findAllFields(
-    template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): List<PsiField> {
-  return findAll(parseTemplateWithVariables<PsiField>(template, *variables))
-}
-
-/**
- * Like [findAllExpressions] but instead matches on anontations (i.e. `@Magic(param1 = 5`)
- *
- * See [com.facebook.matching.PsiAstTemplateTest] for a lot of examples using these templates
- */
-fun KtFile.findAllAnnotations(
-    template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): List<KtAnnotationEntry> {
-  return findAll(parseTemplateWithVariables<KtAnnotationEntry>(template, *variables))
-}
-
-fun PsiJavaFile.findAllAnnotations(
-    template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
-): List<PsiAnnotation> {
-  return findAll(parseTemplateWithVariables<PsiAnnotation>(template, *variables))
-}
 
 /**
  * Takes a template string and an optional list of matchers per variavle and builds a
