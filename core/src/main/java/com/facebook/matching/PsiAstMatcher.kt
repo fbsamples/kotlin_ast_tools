@@ -19,6 +19,7 @@ package com.facebook.matching
 import com.google.errorprone.annotations.CheckReturnValue
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.isAncestor
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
@@ -66,6 +67,32 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    * Whether this matcher will match a null ot not, this is useful for building optional matchers
    */
   internal var shouldMatchToNull: Boolean = false
+
+  /**
+   * Finds all the elements matching the given matcher inside under this element
+   *
+   * @see [PsiAstMatcher]
+   */
+  @CheckReturnValue
+  fun findAll(element: PsiElement): List<Element> {
+    return findAllWithVariables(element).map { it.first }
+  }
+
+  @CheckReturnValue
+  fun findAllWithVariables(element: PsiElement): List<Pair<Element, Map<String, String>>> {
+    val results = mutableListOf<Pair<Element, Map<String, String>>>()
+    element.accept(
+        object : KtTreeVisitorVoid() {
+          override fun visitElement(element: PsiElement) {
+            val result = matches(element)
+            if (result != null) {
+              results.add(Pair(element as Element, result))
+            }
+            super.visitElement(element)
+          }
+        })
+    return results
+  }
 
   /**
    * Adds a new child matcher that needs to be satisfied for this matcher to be satisfied
@@ -219,7 +246,7 @@ internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariabl
   var remainingMatches = Int.MAX_VALUE
   while (remainingMatches > 0) {
     val elements: List<Pair<Element, Map<String, String>>> =
-        currentPsiFile.findAllWithVariables(matcher)
+        matcher.findAllWithVariables(currentPsiFile)
     if (elements.isEmpty()) {
       return psiFile
     }

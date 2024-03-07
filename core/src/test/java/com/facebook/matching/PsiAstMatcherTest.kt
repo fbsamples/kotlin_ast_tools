@@ -54,8 +54,8 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtClassOrObject>().apply {
+        match<KtClassOrObject>()
+            .apply {
               addChildMatcher { it.name?.matches("F.*".toRegex()) == true }
               addChildMatcher { it.getDeclarationKeyword()?.text == "class" }
               addChildMatcher { it.declarations.any { it is KtNamedFunction && it.name == "doIt" } }
@@ -64,7 +64,8 @@ class PsiAstMatcherTest {
                   it is KtNamedFunction && it.name?.endsWith("That") == true && !it.isTopLevel
                 }
               }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(1)
     assertThat(results[0].name).isEqualTo("Foo")
@@ -84,12 +85,13 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtProperty>().apply {
+        match<KtProperty>()
+            .apply {
               addChildMatcher { it.valOrVarKeyword.text == "val" }
               addChildMatcher { it.delegateExpression?.text == "SuperDelegate" }
               addChildMatcher { it.typeReference?.text == "Bar" }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(1)
     assertThat(results[0].delegateExpression?.text).isEqualTo("SuperDelegate")
@@ -114,10 +116,11 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtNamedFunction>().apply {
+        match<KtNamedFunction>()
+            .apply {
               addChildMatcher { it.modifierList?.text?.matches(".*suspend.*".toRegex()) == true }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(2)
     assertThat(results[0]).isInstanceOf(KtNamedFunction::class.java)
@@ -137,10 +140,9 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtNamedFunction>().apply {
-              addCustomMatcher { it.annotationEntries.any { it.text == "@FixMe" } }
-            })
+        match<KtNamedFunction>()
+            .apply { addCustomMatcher { it.annotationEntries.any { it.text == "@FixMe" } } }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(1)
     assertThat(results[0]).isInstanceOf(KtNamedFunction::class.java)
@@ -158,8 +160,9 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtNamedFunction>().apply { addChildMatcher { it.typeReference?.text == "Int" } })
+        match<KtNamedFunction>()
+            .apply { addChildMatcher { it.typeReference?.text == "Int" } }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(1)
     assertThat(results[0]).isInstanceOf(KtNamedFunction::class.java)
@@ -180,14 +183,15 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val matchResults =
-        ktFile.findAll(
-            match<KtCallExpression>().apply {
+        match<KtCallExpression>()
+            .apply {
               addChildMatcher { it.referenceExpression()?.text == "withContext" }
               addChildMatcher { it.valueArguments.getOrNull(0)?.text == "Dispatchers.IO" }
               addChildMatcher { it.valueArguments.getOrNull(1)?.text == "ViewerContext" }
               addChildMatcher { it.valueArguments.getOrNull(2)?.text == "Env" }
               addChildMatcher { it.valueArguments.size == 4 }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(matchResults).hasSize(1)
     assertThat(matchResults[0]).isInstanceOf(KtCallExpression::class.java)
@@ -195,11 +199,12 @@ class PsiAstMatcherTest {
     assertThat(matchResults[0].valueArgumentList?.children).hasSize(3)
 
     val noMatchResults =
-        ktFile.findAll(
-            match<KtCallExpression>().apply {
+        match<KtCallExpression>()
+            .apply {
               addChildMatcher { it.referenceExpression()?.text == "withContext" }
               addChildMatcher { it.valueArguments.getOrNull(3)?.text == "Env" }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(noMatchResults).hasSize(0)
   }
@@ -223,11 +228,12 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results: List<KtCallExpression> =
-        ktFile.findAll(
-            match<KtCallExpression>().apply {
+        match<KtCallExpression>()
+            .apply {
               addChildMatcher { it.referenceExpression()?.text != null }
               addChildMatcher { it.valueArguments.firstOrNull()?.text == "Dispatchers.IO" }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(2)
     assertThat(results[0]).isInstanceOf(KtCallExpression::class.java)
@@ -257,11 +263,12 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtCallExpression>().apply {
+        match<KtCallExpression>()
+            .apply {
               addChildMatcher { it.referenceExpression()?.text != null }
               addChildMatcher { it.valueArguments.lastOrNull()?.text == "Env" }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(2)
     assertThat(results[0]).isInstanceOf(KtCallExpression::class.java)
@@ -289,10 +296,9 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtCallExpression>().apply {
-              addChildMatcher { it.valueArguments.any { it.text == "Env" } }
-            })
+        match<KtCallExpression>()
+            .apply { addChildMatcher { it.valueArguments.any { it.text == "Env" } } }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(2)
     assertThat(results[0]).isInstanceOf(KtCallExpression::class.java)
@@ -310,10 +316,11 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results: List<KtProperty> =
-        ktFile.findAll(
-            match<KtProperty>().apply {
+        match<KtProperty>()
+            .apply {
               addChildMatcher { it.modifierList?.text?.matches("private.*".toRegex()) == true }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results.map { it.text }).containsExactly("private val foo = 5")
   }
@@ -333,10 +340,11 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll<KtProperty>(
-            match<KtProperty>().apply {
+        match<KtProperty>()
+            .apply {
               addChildMatcher { it.parents.any { it is KtClassOrObject && it.name == "Foo" } }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results).hasSize(1)
     assertThat(results[0].text).isEqualTo("private val foo = 5")
@@ -358,10 +366,9 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtClassOrObject>().apply {
-              addCustomMatcher { it.superTypeListEntries.any { it.text == "Super1" } }
-            })
+        match<KtClassOrObject>()
+            .apply { addCustomMatcher { it.superTypeListEntries.any { it.text == "Super1" } } }
+            .findAll(ktFile)
 
     assertThat(results.map { it.name }).containsExactly("Foo", "Bar")
   }
@@ -377,12 +384,13 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtClassOrObject>().apply {
+        match<KtClassOrObject>()
+            .apply {
               addCustomMatcher {
                 it.superTypeListEntries.any { it.typeReference?.text == "Super1" }
               }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results.map { it.name }).containsExactly("Foo", "Bar")
   }
@@ -399,11 +407,12 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtQualifiedExpression>().apply {
+        match<KtQualifiedExpression>()
+            .apply {
               addChildMatcher { it.receiverExpression is KtParenthesizedExpression }
               addChildMatcher { it.selectorExpression is KtCallExpression }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results.map { it.text }).containsExactly("(1 + 2).toFloat()")
   }
@@ -420,10 +429,9 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtQualifiedExpression>().apply {
-              addChildMatcher { it.operationSign.value == "?." }
-            })
+        match<KtQualifiedExpression>()
+            .apply { addChildMatcher { it.operationSign.value == "?." } }
+            .findAll(ktFile)
 
     assertThat(results.map { it.text }).containsExactly("a?.b()")
   }
@@ -441,15 +449,16 @@ class PsiAstMatcherTest {
         """
                 .trimMargin())
     val results =
-        ktFile.findAll(
-            match<KtCallExpression>().apply {
+        match<KtCallExpression>()
+            .apply {
               addChildMatcher {
                 it.valueArguments.getOrNull(0)?.getArgumentExpression()?.text == "\"yay\""
               }
               addChildMatcher {
                 it.valueArguments.getOrNull(1)?.getArgumentName()?.asName?.identifier == "num"
               }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results.map { it.text }).containsExactly("doIt(\"yay\", num = 1)")
   }
@@ -500,12 +509,13 @@ class PsiAstMatcherTest {
                 .trimMargin())
 
     val results =
-        ktFile.findAll(
-            match<KtBinaryExpression>().apply {
+        match<KtBinaryExpression>()
+            .apply {
               addChildMatcher { it.left?.text == "1" }
               addChildMatcher { it.right?.text == "2" }
               addChildMatcher { it.operationReference.text == "+" }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results.map { it.text }).containsExactly("1 + 2")
   }
@@ -524,12 +534,13 @@ class PsiAstMatcherTest {
                 .trimMargin())
 
     val results =
-        ktFile.findAll(
-            match<KtUnaryExpression>().apply {
+        match<KtUnaryExpression>()
+            .apply {
               addChildMatcher { it.baseExpression?.text == "i" }
               addChildMatcher { it.operationReference.text == "++" }
               addChildMatcher { it is KtPostfixExpression }
-            })
+            }
+            .findAll(ktFile)
 
     assertThat(results.map { it.text }).containsExactly("i++")
   }
@@ -548,10 +559,9 @@ class PsiAstMatcherTest {
                 .trimMargin())
 
     val results =
-        ktFile.findAll(
-            match<KtClassLiteralExpression>().apply {
-              addChildMatcher { it.receiverExpression?.text == "Foo" }
-            })
+        match<KtClassLiteralExpression>()
+            .apply { addChildMatcher { it.receiverExpression?.text == "Foo" } }
+            .findAll(ktFile)
 
     assertThat(results.map { it.text }).containsExactly("Foo::class", "Foo :: class")
   }

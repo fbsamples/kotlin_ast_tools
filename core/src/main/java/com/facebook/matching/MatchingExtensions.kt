@@ -28,7 +28,6 @@ import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtProperty
-import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 
 /**
  * Returns a list of all expressions in a Kotlin file that match the given string template.
@@ -45,14 +44,14 @@ fun KtFile.findAllExpressions(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<KtExpression> {
-  return findAll(parseTemplateWithVariables<KtExpression>(template, *variables))
+  return parseTemplateWithVariables<KtExpression>(template, *variables).findAll(this)
 }
 
 fun PsiJavaFile.findAllExpressions(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<PsiExpression> {
-  return findAll(parseTemplateWithVariables<PsiExpression>(template, *variables))
+  return parseTemplateWithVariables<PsiExpression>(template, *variables).findAll(this)
 }
 
 /**
@@ -114,14 +113,14 @@ fun KtFile.findAllProperties(
 ): List<KtProperty> {
   val matcher: PsiAstMatcher<KtProperty> =
       parseTemplateWithVariables<KtProperty>(template, *variables)
-  return findAll(matcher)
+  return matcher.findAll(this)
 }
 
 fun PsiJavaFile.findAllFields(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<PsiField> {
-  return findAll(parseTemplateWithVariables<PsiField>(template, *variables))
+  return parseTemplateWithVariables<PsiField>(template, *variables).findAll(this)
 }
 
 /**
@@ -133,42 +132,14 @@ fun KtFile.findAllAnnotations(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<KtAnnotationEntry> {
-  return findAll(parseTemplateWithVariables<KtAnnotationEntry>(template, *variables))
+  return parseTemplateWithVariables<KtAnnotationEntry>(template, *variables).findAll(this)
 }
 
 fun PsiJavaFile.findAllAnnotations(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<PsiAnnotation> {
-  return findAll(parseTemplateWithVariables<PsiAnnotation>(template, *variables))
-}
-
-@CheckReturnValue
-fun <Element : PsiElement> PsiElement.findAllWithVariables(
-    matcher: PsiAstMatcher<Element>
-): List<Pair<Element, Map<String, String>>> {
-  val results = mutableListOf<Pair<Element, Map<String, String>>>()
-  this.accept(
-      object : KtTreeVisitorVoid() {
-        override fun visitElement(element: PsiElement) {
-          val result = matcher.matches(element)
-          if (result != null) {
-            results.add(Pair(element as Element, result))
-          }
-          super.visitElement(element)
-        }
-      })
-  return results
-}
-
-/**
- * Finds all the elements matching the given matcher inside under this element
- *
- * @see [PsiAstMatcher]
- */
-@CheckReturnValue
-fun <Element : PsiElement> PsiElement.findAll(matcher: PsiAstMatcher<Element>): List<Element> {
-  return findAllWithVariables(matcher).map { it.first }
+  return parseTemplateWithVariables<PsiAnnotation>(template, *variables).findAll(this)
 }
 
 /** Finds and replaces elements in a Kotlin file using a [PsiAstMatcher] */
