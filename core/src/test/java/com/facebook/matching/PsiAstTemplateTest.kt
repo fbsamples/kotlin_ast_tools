@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.psi.KtProperty
 import org.junit.Test
 
 /** Tests [PsiAstTemplate] */
-class PsiAstTemplateKtTest {
+class PsiAstTemplateTest {
 
   @Test
   fun `various ways to starts a search with a convenient API`() {
