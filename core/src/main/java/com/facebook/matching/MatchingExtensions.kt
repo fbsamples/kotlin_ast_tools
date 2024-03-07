@@ -44,14 +44,18 @@ fun KtFile.findAllExpressions(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<KtExpression> {
-  return parseTemplateWithVariables<KtExpression>(template, *variables).findAll(this)
+  return PsiAstTemplateParser()
+      .parseTemplateWithVariables<KtExpression>(template, *variables)
+      .findAll(this)
 }
 
 fun PsiJavaFile.findAllExpressions(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<PsiExpression> {
-  return parseTemplateWithVariables<PsiExpression>(template, *variables).findAll(this)
+  return PsiAstTemplateParser()
+      .parseTemplateWithVariables<PsiExpression>(template, *variables)
+      .findAll(this)
 }
 
 /**
@@ -83,11 +87,13 @@ fun KtFile.replaceAllExpressions(
     replaceWith: (match: KtExpression, templateVariablesToText: Map<String, String>) -> String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): KtFile {
-  return replaceAllWithVariables(parseTemplateWithVariables<KtExpression>(template, *variables)) {
-      (match, templateVariablesToText) ->
-    parseReplacementTemplate(
-        template, replaceWith(match, templateVariablesToText), templateVariablesToText)
-  }
+  return replaceAllWithVariables(
+      PsiAstTemplateParser().parseTemplateWithVariables<KtExpression>(template, *variables)) {
+          (match, templateVariablesToText) ->
+        PsiAstTemplateParser()
+            .parseReplacementTemplate(
+                template, replaceWith(match, templateVariablesToText), templateVariablesToText)
+      }
 }
 
 fun PsiJavaFile.replaceAllExpressions(
@@ -95,11 +101,13 @@ fun PsiJavaFile.replaceAllExpressions(
     replaceWith: (match: PsiExpression, templateVariablesToText: Map<String, String>) -> String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): PsiJavaFile {
-  return replaceAllWithVariables(parseTemplateWithVariables<PsiExpression>(template, *variables)) {
-      (match, templateVariablesToText) ->
-    parseReplacementTemplate(
-        template, replaceWith(match, templateVariablesToText), templateVariablesToText)
-  }
+  return replaceAllWithVariables(
+      PsiAstTemplateParser().parseTemplateWithVariables<PsiExpression>(template, *variables)) {
+          (match, templateVariablesToText) ->
+        PsiAstTemplateParser()
+            .parseReplacementTemplate(
+                template, replaceWith(match, templateVariablesToText), templateVariablesToText)
+      }
 }
 
 /**
@@ -112,7 +120,7 @@ fun KtFile.findAllProperties(
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<KtProperty> {
   val matcher: PsiAstMatcher<KtProperty> =
-      parseTemplateWithVariables<KtProperty>(template, *variables)
+      PsiAstTemplateParser().parseTemplateWithVariables<KtProperty>(template, *variables)
   return matcher.findAll(this)
 }
 
@@ -120,7 +128,9 @@ fun PsiJavaFile.findAllFields(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<PsiField> {
-  return parseTemplateWithVariables<PsiField>(template, *variables).findAll(this)
+  return PsiAstTemplateParser()
+      .parseTemplateWithVariables<PsiField>(template, *variables)
+      .findAll(this)
 }
 
 /**
@@ -132,14 +142,18 @@ fun KtFile.findAllAnnotations(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<KtAnnotationEntry> {
-  return parseTemplateWithVariables<KtAnnotationEntry>(template, *variables).findAll(this)
+  return PsiAstTemplateParser()
+      .parseTemplateWithVariables<KtAnnotationEntry>(template, *variables)
+      .findAll(this)
 }
 
 fun PsiJavaFile.findAllAnnotations(
     template: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): List<PsiAnnotation> {
-  return parseTemplateWithVariables<PsiAnnotation>(template, *variables).findAll(this)
+  return PsiAstTemplateParser()
+      .parseTemplateWithVariables<PsiAnnotation>(template, *variables)
+      .findAll(this)
 }
 
 /** Finds and replaces elements in a Kotlin file using a [PsiAstMatcher] */
