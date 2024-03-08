@@ -32,10 +32,12 @@ class Variable(
     val matcher: PsiAstMatcher<*>,
     val isOptional: Boolean,
     val isKotlin: Boolean,
+    val resolver: Resolver,
     arguments: String?
 ) {
 
   private var textMatchArgument: Regex? = null
+  private var typeMatchArgument: String? = null
 
   init {
     matcher.variableName = name
@@ -53,6 +55,7 @@ class Variable(
         val argumentValue = checkNotNull(match.groups["value"]).value
         when (argumentName) {
           "text" -> textMatchArgument = argumentValue.toRegex()
+          "type" -> typeMatchArgument = argumentValue
           else -> error("Unknown template argument to variable $name: $argumentName")
         }
       }
@@ -62,6 +65,12 @@ class Variable(
   fun addConditionsFromVariable(matcher: PsiAstMatcher<*>) {
     textMatchArgument?.let { regex ->
       matcher.addChildMatcher { it is PsiElement && it.text.matches(regex) }
+    }
+    typeMatchArgument?.let {
+      check(resolver != Resolver.DEFAULT) { "Missing resolver, cannot deduce types" }
+      matcher.addChildMatcher {
+        it is PsiElement && resolver.resolveToFullyQualifiedType(it) == typeMatchArgument
+      }
     }
   }
 

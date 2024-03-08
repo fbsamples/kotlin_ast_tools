@@ -18,7 +18,7 @@ package com.facebook.matching
 
 import org.jetbrains.kotlin.psi.KtElement
 
-class PsiAstTemplateParser {
+class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
 
   /**
    * Takes a template string and an optional list of matchers per variavle and builds a
@@ -39,6 +39,7 @@ class PsiAstTemplateParser {
                       unusedVariables.remove(v.value) ?: Variable.ANY_SENTINEL,
                       isOptional = checkNotNull(v.groups["isOptional"]).value == "?",
                       isKotlin = KtElement::class.java.isAssignableFrom(T::class.java),
+                      resolver = resolver,
                       arguments = v.groups["arguments"]?.value)
             }
             .toList()
