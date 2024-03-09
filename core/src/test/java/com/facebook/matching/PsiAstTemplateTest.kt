@@ -349,6 +349,32 @@ class PsiAstTemplateTest {
   }
 
   @Test
+  fun `replace with variable syntax for text `() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo(i) {
+          |  doIt() // yes
+          |  doThat() // yes
+          |  invokeIt() // no
+          |}
+        """
+                .trimMargin())
+    val newKtFile = ktFile.replaceAllExpressions("#a{text=do.*}#()", "#a#New()")
+
+    assertThat(newKtFile.text)
+        .isEqualTo(
+            """
+                      |fun foo(i) {
+                      |  doItNew() // yes
+                      |  doThatNew() // yes
+                      |  invokeIt() // no
+                      |}
+                      """
+                .trimMargin())
+  }
+
+  @Test
   fun `various ways to starts a search with a convenient API for Java`() {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
