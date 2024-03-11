@@ -375,6 +375,23 @@ class PsiAstTemplateTest {
   }
 
   @Test
+  fun `match on expression with nested functions `() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo(i) {
+          |  foo.doIt(1) // no
+          |  foo.doIt(1, 2) // no
+          |  foo.doIt(Wrapper(1), 2) // yes
+          |}
+        """
+                .trimMargin())
+    val reults: List<KtExpression> = ktFile.findAllExpressions("foo.doIt(Wrapper(#a#), #b#)")
+
+    assertThat(reults.map { it.text }).containsExactly("foo.doIt(Wrapper(1), 2)")
+  }
+
+  @Test
   fun `various ways to starts a search with a convenient API for Java`() {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(

@@ -219,8 +219,12 @@ internal fun <T : Any> matchAllInOrder(
     val node = nodes[nodesIndex]
     val match = matcher.matches(node)
     if (match == null) {
-      matcherIndex++
-      continue
+      if (matcher.matches(null) != null) {
+        matcherIndex++
+        continue
+      } else {
+        return null
+      }
     } else {
       matcherIndex++
       nodesIndex++
