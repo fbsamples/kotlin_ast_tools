@@ -24,6 +24,7 @@ import com.intellij.psi.PsiField
 import com.intellij.psi.PsiMethodCallExpression
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
+import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.junit.Test
@@ -318,7 +319,7 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(i) {
+          |fun foo(i: Int) {
           |  i++
           |  ++i
           |}
@@ -329,6 +330,49 @@ class PsiAstTemplateTest {
 
     assertThat(resultsPrefix.map { it.text }).containsExactly("++i")
     assertThat(resultsPostfix.map { it.text }).containsExactly("i++")
+  }
+
+  @Test
+  fun `match with statements on block expressions`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun f() {
+          |  println(1)
+          |}
+          |
+          |fun f() {
+          |  println(1)
+          |  println(2)
+          |}
+          |
+          |fun f() {
+          |  println(1)
+          |  println(2)
+          |  println(3)
+          |}
+        """
+                .trimMargin())
+    val results =
+        PsiAstTemplateParser()
+            .parseTemplateWithVariables<KtBlockExpression>(
+                """
+          |{
+          |  #a#
+          |  #b#
+          |}"""
+                    .trimMargin())
+            .findAllWithVariables(ktFile)
+
+    assertThat(results.map { it.first.text })
+        .containsExactly(
+            """{
+          |  println(1)
+          |  println(2)
+          |}"""
+                .trimMargin())
+    assertThat(results.single().second["a"]).isEqualTo("println(1)")
+    assertThat(results.single().second["b"]).isEqualTo("println(2)")
   }
 
   @Test

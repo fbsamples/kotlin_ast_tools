@@ -59,6 +59,13 @@ class KotlinParserUtilTest {
   }
 
   @Test
+  fun `parse as KtBlockExpression`() {
+    val ktExpression = KotlinParserUtil.parseAsBlockExpression("""{ doIt(1 + 1); doIt(2) }""")
+
+    assertThat(ktExpression.text).isEqualTo("{ doIt(1 + 1); doIt(2) }")
+  }
+
+  @Test
   fun `parse as KtAnnotationEntry`() {
     val ktAnnotationEntry = KotlinParserUtil.parseAsAnnotationEntry("""@Magic""")
     assertThat(ktAnnotationEntry.text).isEqualTo("@Magic")

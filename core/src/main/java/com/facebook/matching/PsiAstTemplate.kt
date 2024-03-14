@@ -29,6 +29,7 @@ import com.intellij.psi.PsiReferenceExpression
 import com.intellij.psi.PsiTypeElement
 import com.intellij.psi.PsiUnaryExpression
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
+import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -51,6 +52,8 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
   fun <T : Any> parse(clazz: Class<T>, template: String): PsiAstMatcher<T> {
     return when (clazz) {
       KtProperty::class.java -> parseKotlinRecursive(KotlinParserUtil.parseAsProperty(template))
+      KtBlockExpression::class.java ->
+          parseKotlinRecursive(KotlinParserUtil.parseAsBlockExpression(template))
       KtExpression::class.java -> parseKotlinRecursive(KotlinParserUtil.parseAsExpression(template))
       KtAnnotationEntry::class.java ->
           parseKotlinRecursive(KotlinParserUtil.parseAsAnnotationEntry(template))
@@ -109,6 +112,10 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
             addMatchersInOrderList(
                 { it.typeArguments },
                 node.typeArguments.map { typeProjection -> parseKotlinRecursive(typeProjection) })
+            node.lambdaArguments.singleOrNull()?.let { lambdaArgument ->
+              addChildMatcher(
+                  { it.lambdaArguments.singleOrNull() }, parseKotlinRecursive(lambdaArgument))
+            }
           }
       is KtQualifiedExpression ->
           match<KtQualifiedExpression>().apply {
@@ -131,6 +138,13 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               { it.baseExpression }, parseKotlinRecursive(checkNotNull(node.baseExpression)))
           addChildMatcher { it is KtPostfixExpression == node is KtPostfixExpression }
           addChildMatcher { it.operationReference.text == node.operationReference.text }
+        }
+      }
+      is KtBlockExpression -> {
+        match<KtBlockExpression>().apply {
+          addMatchersInOrderList(
+              { it.statements },
+              node.statements.map { statement -> parseKotlinRecursive(statement) })
         }
       }
       // any expression for which we don't have more specific handling, such as `1`, or `foo`

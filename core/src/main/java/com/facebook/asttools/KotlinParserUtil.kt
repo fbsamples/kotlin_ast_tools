@@ -30,6 +30,7 @@ import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
+import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtExpression
@@ -99,6 +100,16 @@ object KotlinParserUtil {
         parseAsFile(
             """
       val `DUMMY NAME` = $code
+    """
+                .trimIndent()),
+        code)
+  }
+
+  fun parseAsBlockExpression(code: String): KtBlockExpression {
+    return extract(
+        parseAsFile(
+            """
+      fun `DUMMY NAME`() $code
     """
                 .trimIndent()),
         code)
