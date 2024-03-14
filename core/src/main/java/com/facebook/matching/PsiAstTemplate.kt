@@ -34,6 +34,8 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.psi.KtLambdaArgument
+import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtPostfixExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
@@ -147,11 +149,31 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               node.statements.map { statement -> parseKotlinRecursive(statement) })
         }
       }
+      // for example: `{ it.doIt() }` in `doIt(1, b) { it.doIt() }`
+      is KtLambdaExpression -> {
+        match<KtLambdaExpression>().apply {
+          addMatchersInOrderList(
+              { it.valueParameters },
+              node.valueParameters.map { parameter -> parseKotlinRecursive(parameter) })
+          addChildMatcher(
+              { it.bodyExpression }, parseKotlinRecursive(checkNotNull(node.bodyExpression)))
+        }
+      }
       // any expression for which we don't have more specific handling, such as `1`, or `foo`
       is KtExpression ->
           loadIfVariableOr(node.text) {
             match<KtExpression>().apply {
               addChildMatcher { expression -> expression.text == node.text }
+            }
+          }
+      // for example: `{ it.doIt() }` in `doIt(1, b) { it.doIt() }` (this wraps KtLambdaExpression)
+      is KtLambdaArgument ->
+          match<KtLambdaArgument>().apply {
+            node.getLambdaExpression()?.let { lambdaExpression ->
+              addChildMatcher(
+                  { it.getLambdaExpression() },
+                  parseKotlinRecursive(lambdaExpression),
+                  inheritShouldMatchNull = true)
             }
           }
       // for example: `1` in `doIt(1, b)`

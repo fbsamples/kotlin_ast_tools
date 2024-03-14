@@ -376,6 +376,22 @@ class PsiAstTemplateTest {
   }
 
   @Test
+  fun `match with lambda arguments`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun f(foo: Foo) {
+          |  foo.let { it.doIt() }
+          |  foo.doIt()
+          |}
+        """
+                .trimMargin())
+    val resultsPrefix: List<KtExpression> = ktFile.findAllExpressions("#a#.let { #b# }")
+
+    assertThat(resultsPrefix.map { it.text }).containsExactly("foo.let { it.doIt() }")
+  }
+
+  @Test
   fun `match with variable syntax for text `() {
     val ktFile =
         KotlinParserUtil.parseAsFile(
