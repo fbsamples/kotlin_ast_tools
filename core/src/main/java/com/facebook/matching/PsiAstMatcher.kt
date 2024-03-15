@@ -240,7 +240,7 @@ internal fun <T : Any> matchAllInOrder(
 }
 
 @CheckReturnValue
-internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
+fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
     matcher: PsiAstMatcher<Element>,
     replaceWith: (Pair<Element, Map<String, String>>) -> String,
