@@ -89,6 +89,11 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
                 }
               }
               .apply {
+                node.typeReference?.let { typeReference ->
+                  addChildMatcher(
+                      transform = { it.typeReference },
+                      matcher = parseKotlinRecursive(typeReference))
+                }
                 node.delegateExpression?.let {
                   addChildMatcher(
                       transform = { it.delegateExpression }, matcher = parseKotlinRecursive(it))

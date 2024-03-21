@@ -106,6 +106,24 @@ class PsiAstTemplateTest {
   }
 
   @Test
+  fun `match on property type`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |class Foo {
+          |  val bar: Bar = init()
+          |  val foo: Foo = initAgain()
+          |}
+        """
+                .trimMargin())
+
+    assertThat(ktFile.findAllProperties("val #name#: Bar").map { it.text })
+        .containsExactly("val bar: Bar = init()")
+    assertThat(ktFile.findAllProperties("val #name#: #type#").map { it.text })
+        .containsExactly("val bar: Bar = init()", "val foo: Foo = initAgain()")
+  }
+
+  @Test
   fun `when parsing from template, match on expression`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(
