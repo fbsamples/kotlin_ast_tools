@@ -26,6 +26,7 @@ import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiField
 import com.intellij.psi.PsiInstanceOfExpression
 import com.intellij.psi.PsiMethodCallExpression
+import com.intellij.psi.PsiParenthesizedExpression
 import com.intellij.psi.PsiPostfixExpression
 import com.intellij.psi.PsiReferenceExpression
 import com.intellij.psi.PsiTypeCastExpression
@@ -42,6 +43,7 @@ import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtIsExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
+import org.jetbrains.kotlin.psi.KtParenthesizedExpression
 import org.jetbrains.kotlin.psi.KtPostfixExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
@@ -167,6 +169,12 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               { it.baseExpression }, parseKotlinRecursive(checkNotNull(node.baseExpression)))
           addChildMatcher { it is KtPostfixExpression == node is KtPostfixExpression }
           addChildMatcher { it.operationReference.text == node.operationReference.text }
+        }
+      }
+      // for example `(a)`
+      is KtParenthesizedExpression -> {
+        match<KtParenthesizedExpression>().apply {
+          addChildMatcher({ it.expression }, parseKotlinRecursive(checkNotNull(node.expression)))
         }
       }
       // for example `foo is Bar`
@@ -334,6 +342,12 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
           addChildMatcher({ it.operand }, parseJavaRecursive(checkNotNull(node.operand)))
           addChildMatcher { it is PsiPostfixExpression == node is PsiPostfixExpression }
           addChildMatcher { it.operationSign.text == node.operationSign.text }
+        }
+      }
+      // for example `(a)`
+      is PsiParenthesizedExpression -> {
+        match<PsiParenthesizedExpression>().apply {
+          addChildMatcher({ it.expression }, parseJavaRecursive(checkNotNull(node.expression)))
         }
       }
       // any expression for which we don't have more specific handling, such as `1`, or `foo`

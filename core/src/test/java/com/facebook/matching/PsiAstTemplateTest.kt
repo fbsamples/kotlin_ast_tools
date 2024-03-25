@@ -392,6 +392,23 @@ class PsiAstTemplateTest {
   }
 
   @Test
+  fun `match on parenthesis expression`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo() {
+          |  val s = "a" + (doIt())
+          |  val a = 1 + (1 + 1)
+          |}
+        """
+                .trimMargin())
+    assertThat(ktFile.findAllExpressions("(#any#)").map { it.text })
+        .containsExactly("(doIt())", "(1 + 1)")
+    assertThat(ktFile.findAllExpressions("(#any# + #any2#)").map { it.text })
+        .containsExactly("(1 + 1)")
+  }
+
+  @Test
   fun `match with statements on block expressions`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(
@@ -843,5 +860,24 @@ class PsiAstTemplateTest {
         .containsExactly("foo instanceof Bar")
     assertThat(psiJavaFile.findAllExpressions("#any# instanceof #any2#").map { it.text })
         .containsExactly("foo instanceof Bar", "foo instanceof Integer")
+  }
+
+  @Test
+  fun `match on parenthesis expression for Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+          |public class Test {
+          |  void foo() {
+          |    String s = "a" + (doIt());
+          |    int a = 1 + (1 + 1);
+          |  }
+          |}
+        """
+                .trimMargin())
+    assertThat(psiJavaFile.findAllExpressions("(#any#)").map { it.text })
+        .containsExactly("(doIt())", "(1 + 1)")
+    assertThat(psiJavaFile.findAllExpressions("(#any# + #any2#)").map { it.text })
+        .containsExactly("(1 + 1)")
   }
 }
