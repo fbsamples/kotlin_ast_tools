@@ -372,6 +372,26 @@ class PsiAstTemplateTest {
   }
 
   @Test
+  fun `match on is expressions`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo(foo: Foo) {
+          |  println(foo is Bar)
+          |  println(foo !is Bar)
+          |  println(foo is Int)
+          |}
+        """
+                .trimMargin())
+    assertThat(ktFile.findAllExpressions("#any# is Bar").map { it.text })
+        .containsExactly("foo is Bar")
+    assertThat(ktFile.findAllExpressions("#any# is #any2#").map { it.text })
+        .containsExactly("foo is Bar", "foo is Int")
+    assertThat(ktFile.findAllExpressions("#any# !is #any2#").map { it.text })
+        .containsExactly("foo !is Bar")
+  }
+
+  @Test
   fun `match with statements on block expressions`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(
@@ -788,20 +808,40 @@ class PsiAstTemplateTest {
   }
 
   @Test
-  fun `match with prefix and postfix binary expressions for Java`() {
+  fun `match on cast expressions for Java`() {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
           |public class Test {
-          |  void foo(int i, Foo foo) {
-          |    println(i + 5);
-          |    println(i - 2);
+          |  void foo(Foo foo) {
+          |    println((Bar) foo);
+          |    println((Integer) foo);
           |  }
           |}
         """
                 .trimMargin())
-    assertThat(psiJavaFile.findAllExpressions("#any# + 5").map { it.text }).containsExactly("i + 5")
-    assertThat(psiJavaFile.findAllExpressions("#any# - #any2#").map { it.text })
-        .containsExactly("i - 2")
+    assertThat(psiJavaFile.findAllExpressions("(Bar) #any#").map { it.text })
+        .containsExactly("(Bar) foo")
+    assertThat(psiJavaFile.findAllExpressions("(#any2#) #any#").map { it.text })
+        .containsExactly("(Bar) foo", "(Integer) foo")
+  }
+
+  @Test
+  fun `match on instanceof expressions for Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+          |public class Test {
+          |  void foo(Foo foo) {
+          |    println(foo instanceof Bar);
+          |    println(foo instanceof Integer);
+          |  }
+          |}
+        """
+                .trimMargin())
+    assertThat(psiJavaFile.findAllExpressions("#any# instanceof Bar").map { it.text })
+        .containsExactly("foo instanceof Bar")
+    assertThat(psiJavaFile.findAllExpressions("#any# instanceof #any2#").map { it.text })
+        .containsExactly("foo instanceof Bar", "foo instanceof Integer")
   }
 }

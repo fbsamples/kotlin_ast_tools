@@ -24,9 +24,11 @@ import com.intellij.psi.PsiClassObjectAccessExpression
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiField
+import com.intellij.psi.PsiInstanceOfExpression
 import com.intellij.psi.PsiMethodCallExpression
 import com.intellij.psi.PsiPostfixExpression
 import com.intellij.psi.PsiReferenceExpression
+import com.intellij.psi.PsiTypeCastExpression
 import com.intellij.psi.PsiTypeElement
 import com.intellij.psi.PsiUnaryExpression
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -37,6 +39,7 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.psi.KtIsExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtPostfixExpression
@@ -164,6 +167,16 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               { it.baseExpression }, parseKotlinRecursive(checkNotNull(node.baseExpression)))
           addChildMatcher { it is KtPostfixExpression == node is KtPostfixExpression }
           addChildMatcher { it.operationReference.text == node.operationReference.text }
+        }
+      }
+      // for example `foo is Bar`
+      is KtIsExpression -> {
+        match<KtIsExpression>().apply {
+          addChildMatcher(
+              { it.leftHandSide }, parseKotlinRecursive(checkNotNull(node.leftHandSide)))
+          addChildMatcher { it.isNegated == node.isNegated }
+          addChildMatcher(
+              { it.typeReference }, parseKotlinRecursive(checkNotNull(node.typeReference)))
         }
       }
       is KtBlockExpression -> {
@@ -301,6 +314,21 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
           addChildMatcher { it.operationSign.text == node.operationSign.text }
         }
       }
+      // for example `a instanceof Bar`
+      is PsiInstanceOfExpression -> {
+        match<PsiInstanceOfExpression>().apply {
+          addChildMatcher({ it.operand }, parseJavaRecursive(checkNotNull(node.operand)))
+          addChildMatcher({ it.checkType }, parseJavaRecursive(checkNotNull(node.checkType)))
+        }
+      }
+      // for example `(Foo) bar`
+      is PsiTypeCastExpression -> {
+        match<PsiTypeCastExpression>().apply {
+          addChildMatcher({ it.operand }, parseJavaRecursive(checkNotNull(node.operand)))
+          addChildMatcher({ it.castType }, parseJavaRecursive(checkNotNull(node.castType)))
+        }
+      }
+      // for example `a++` or `-b`
       is PsiUnaryExpression -> {
         match<PsiUnaryExpression>().apply {
           addChildMatcher({ it.operand }, parseJavaRecursive(checkNotNull(node.operand)))
