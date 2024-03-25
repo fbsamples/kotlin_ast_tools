@@ -19,6 +19,7 @@ package com.facebook.matching
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiBinaryExpression
 import com.intellij.psi.PsiClassObjectAccessExpression
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiExpression
@@ -29,6 +30,8 @@ import com.intellij.psi.PsiReferenceExpression
 import com.intellij.psi.PsiTypeElement
 import com.intellij.psi.PsiUnaryExpression
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
+import org.jetbrains.kotlin.psi.KtBinaryExpression
+import org.jetbrains.kotlin.psi.KtBinaryExpressionWithTypeRHS
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
@@ -139,6 +142,22 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               addChildMatcher({ it.receiverExpression }, parseKotlinRecursive(expression))
             }
           }
+      // for example `foo + bar`
+      is KtBinaryExpression -> {
+        match<KtBinaryExpression>().apply {
+          addChildMatcher({ it.left }, parseKotlinRecursive(checkNotNull(node.left)))
+          addChildMatcher { it.operationReference.text == node.operationReference.text }
+          addChildMatcher({ it.right }, parseKotlinRecursive(checkNotNull(node.right)))
+        }
+      }
+      // for example `foo as Bar`
+      is KtBinaryExpressionWithTypeRHS -> {
+        match<KtBinaryExpressionWithTypeRHS>().apply {
+          addChildMatcher({ it.left }, parseKotlinRecursive(checkNotNull(node.left)))
+          addChildMatcher { it.operationReference.text == node.operationReference.text }
+          addChildMatcher({ it.right }, parseKotlinRecursive(checkNotNull(node.right)))
+        }
+      }
       is KtUnaryExpression -> {
         match<KtUnaryExpression>().apply {
           addChildMatcher(
@@ -275,6 +294,13 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
           match<PsiClassObjectAccessExpression>().apply {
             addChildMatcher({ it.operand }, parseJavaRecursive(node.operand))
           }
+      is PsiBinaryExpression -> {
+        match<PsiBinaryExpression>().apply {
+          addChildMatcher({ it.lOperand }, parseJavaRecursive(checkNotNull(node.lOperand)))
+          addChildMatcher({ it.rOperand }, parseJavaRecursive(checkNotNull(node.rOperand)))
+          addChildMatcher { it.operationSign.text == node.operationSign.text }
+        }
+      }
       is PsiUnaryExpression -> {
         match<PsiUnaryExpression>().apply {
           addChildMatcher({ it.operand }, parseJavaRecursive(checkNotNull(node.operand)))

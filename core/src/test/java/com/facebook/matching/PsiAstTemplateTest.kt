@@ -351,6 +351,27 @@ class PsiAstTemplateTest {
   }
 
   @Test
+  fun `match with prefix and postfix binary expressions`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo(i: Int, foo: Foo) {
+          |  println(i + 5)
+          |  println(i - 2)
+          |  println(foo as FooImpl)
+          |  println(foo as? FooImpl)
+          |}
+        """
+                .trimMargin())
+    assertThat(ktFile.findAllExpressions("#any# + 5").map { it.text }).containsExactly("i + 5")
+    assertThat(ktFile.findAllExpressions("#any# - #any2#").map { it.text }).containsExactly("i - 2")
+    assertThat(ktFile.findAllExpressions("#any# as #any2#").map { it.text })
+        .containsExactly("foo as FooImpl")
+    assertThat(ktFile.findAllExpressions("#any# as? #any2#").map { it.text })
+        .containsExactly("foo as? FooImpl")
+  }
+
+  @Test
   fun `match with statements on block expressions`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(
@@ -764,5 +785,23 @@ class PsiAstTemplateTest {
 
     assertThat(resultsPrefix.map { it.text }).containsExactly("++i")
     assertThat(resultsPostfix.map { it.text }).containsExactly("i++")
+  }
+
+  @Test
+  fun `match with prefix and postfix binary expressions for Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+          |public class Test {
+          |  void foo(int i, Foo foo) {
+          |    println(i + 5);
+          |    println(i - 2);
+          |  }
+          |}
+        """
+                .trimMargin())
+    assertThat(psiJavaFile.findAllExpressions("#any# + 5").map { it.text }).containsExactly("i + 5")
+    assertThat(psiJavaFile.findAllExpressions("#any# - #any2#").map { it.text })
+        .containsExactly("i - 2")
   }
 }
