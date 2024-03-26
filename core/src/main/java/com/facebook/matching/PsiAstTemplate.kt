@@ -24,6 +24,7 @@ import com.intellij.psi.PsiClassObjectAccessExpression
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiField
+import com.intellij.psi.PsiIdentifier
 import com.intellij.psi.PsiInstanceOfExpression
 import com.intellij.psi.PsiMethodCallExpression
 import com.intellij.psi.PsiParenthesizedExpression
@@ -290,27 +291,40 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
                 })
           }
       // for example `foo.bar`
-      is PsiReferenceExpression ->
-          node.qualifierExpression?.let { qualifierExpression ->
-            match<PsiReferenceExpression>().apply {
-              addChildMatcher({ it.qualifierExpression }, parseJavaRecursive(qualifierExpression))
-              if (node.referenceNameElement is PsiExpression) {
-                addChildMatcher(
-                    { it.referenceNameElement }, parseJavaRecursive(node.referenceNameElement!!))
-              } else {
-                addChildMatcher({
-                  it.referenceNameElement?.text == node.referenceNameElement?.text
-                })
-              }
+      is PsiReferenceExpression -> {
+        val qualifierExpression = node.qualifierExpression
+        if (qualifierExpression != null) {
+          match<PsiReferenceExpression>().apply {
+            addChildMatcher({ it.qualifierExpression }, parseJavaRecursive(qualifierExpression))
+            when (val referenceNameElement = node.referenceNameElement) {
+              is PsiExpression ->
+                  addChildMatcher(
+                      { it.referenceNameElement }, parseJavaRecursive(referenceNameElement))
+              is PsiIdentifier ->
+                  addChildMatcher(
+                      { it.referenceNameElement as PsiElement },
+                      loadIfVariableOr(referenceNameElement.text) {
+                            match<PsiElement>().apply {
+                              addChildMatcher { it.text == referenceNameElement.text }
+                            }
+                          }
+                          .apply {
+                            addCustomMatcher { it is PsiExpression || it is PsiIdentifier }
+                          })
+              else -> error("unexpected")
             }
           }
-              ?: run {
-                loadIfVariableOr(node.text) {
-                  match<PsiExpression>().apply {
-                    addChildMatcher { expression -> expression.text == node.text }
-                  }
+        } else {
+          loadIfVariableOr(node.text) {
+                match<PsiExpression>().apply {
+                  addChildMatcher { expression -> expression.text == node.text }
                 }
               }
+              .apply {
+                addChildMatcher { it !is PsiReferenceExpression || it.qualifierExpression == null }
+              }
+        }
+      }
       is PsiClassObjectAccessExpression ->
           match<PsiClassObjectAccessExpression>().apply {
             addChildMatcher({ it.operand }, parseJavaRecursive(node.operand))
