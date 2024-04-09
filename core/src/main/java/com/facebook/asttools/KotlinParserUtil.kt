@@ -51,8 +51,8 @@ object KotlinParserUtil {
         disposable, getConfiguration(), EnvironmentConfigFiles.JVM_CONFIG_FILES)
   }
 
-  fun parseAsFile(@Language("kotlin") code: String): KtFile {
-    val file = LightVirtualFile("temp.kt", KotlinFileType.INSTANCE, code)
+  fun parseAsFile(@Language("kotlin") code: String, path: String = "temp.kt"): KtFile {
+    val file = LightVirtualFile(path, KotlinFileType.INSTANCE, code)
     return PsiManager.getInstance(kotlinCoreEnvironment.project).findFile(file) as KtFile
   }
 
