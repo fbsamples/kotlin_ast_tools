@@ -65,7 +65,7 @@ class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
   fun parseReplacementTemplate(
       template: String,
       replacement: String,
-      templateVariablesToText: Map<String, String>,
+      templateVariablesToText: MatchResult,
   ): String {
     var processedReplacment = replacement
     Variable.TEMPLATE_VARIABLE_REGEX.findAll(template).forEach { matchResult ->
@@ -74,13 +74,13 @@ class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
       val isOptional = matchResult.groups["isOptional"]?.value == "?"
       val target = "#$variableName#"
       val variableValue =
-          templateVariablesToText[
+          templateVariablesToText.getVariableResult(
               matchResult.groups["name"]?.value
-                  ?: error("Error parsing variable ${matchResult.value}")]
+                  ?: error("Error parsing variable ${matchResult.value}"))
               ?: if (isOptional) ""
               else
                   error(
-                      "undeclared variable ${matchResult.value}, known variables: ${templateVariablesToText.keys}")
+                      "undeclared variable ${matchResult.value}, known variables: ${templateVariablesToText.matchedVariables.keys}")
       processedReplacment = processedReplacment.replace(target, variableValue)
     }
     return processedReplacment

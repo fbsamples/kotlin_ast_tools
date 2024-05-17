@@ -37,6 +37,15 @@ inline fun <reified T : Any> match(
   return matcher
 }
 
+class MatchResult(internal val matchedVariables: Map<String, PsiElement>) {
+
+  fun getVariableResult(variableName: String): String? = matchedVariables[variableName]?.text
+
+  fun hasValue(variableName: String): Boolean = matchedVariables.containsKey(variableName)
+
+  operator fun get(variableName: String): String? = getVariableResult(variableName)
+}
+
 /** Set this to true to print debug messages on what comparisons succeed and which ones do not */
 var enableKtAstMatcherDebugPrints = false
 
@@ -58,7 +67,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    * The value is method that takes our Element, and returns a non null result for a match (which
    * serves as the "proof" for the match), or a null in case of no match
    */
-  private val matcherFunctions: MutableList<(Element) -> Map<String, String>?> = mutableListOf()
+  private val matcherFunctions: MutableList<(Element) -> MatchResult?> = mutableListOf()
 
   /** A name for this matcher that may be used to retrieve its result later */
   internal var variableName: String? = null
@@ -79,8 +88,8 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
   }
 
   @CheckReturnValue
-  fun findAllWithVariables(element: PsiElement): List<Pair<Element, Map<String, String>>> {
-    val results = mutableListOf<Pair<Element, Map<String, String>>>()
+  fun findAllWithVariables(element: PsiElement): List<Pair<Element, MatchResult>> {
+    val results = mutableListOf<Pair<Element, MatchResult>>()
     element.accept(
         object : KtTreeVisitorVoid() {
           override fun visitElement(element: PsiElement) {
@@ -113,7 +122,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
   ) {
     matcherFunctions += {
       val t: T? = transform(it)
-      if (t != null && predicate(t)) mapOf() else null
+      if (t != null && predicate(t)) MatchResult(mapOf()) else null
     }
   }
 
@@ -128,7 +137,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
   internal fun addChildMatcher(
       predicate: (Element) -> Boolean,
   ) {
-    matcherFunctions += { if (predicate(it)) mapOf() else null }
+    matcherFunctions += { if (predicate(it)) MatchResult(mapOf()) else null }
   }
 
   /**
@@ -172,13 +181,13 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
     addChildMatcher({ it }, predicate)
   }
 
-  internal fun matches(obj: Any?): Map<String, String>? {
+  internal fun matches(obj: Any?): MatchResult? {
     if (shouldMatchToNull && obj == null) {
-      return mutableMapOf()
+      return MatchResult(mutableMapOf())
     }
     val element = if (targetType.isInstance(obj)) targetType.cast(obj) else return null
     element ?: return null
-    val result = mutableMapOf<String, String>()
+    val result = mutableMapOf<String, PsiElement>()
     for (matcherFunction in matcherFunctions) {
       val childResult = matcherFunction(element)
       if (enableKtAstMatcherDebugPrints) {
@@ -187,10 +196,10 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
                 "on ${if (obj is PsiElement) "'${obj.text}'" else obj} -> $childResult")
       }
       childResult ?: return null
-      result.putAll(childResult)
+      result.putAll(childResult.matchedVariables)
     }
-    variableName?.let { result[it] = (element as? PsiElement)?.text ?: element.toString() }
-    return result
+    variableName?.let { result[it] = (element as PsiElement) }
+    return MatchResult(result)
   }
 
   override fun toString(): String {
@@ -210,8 +219,8 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
 internal fun <T : Any> matchAllInOrder(
     matchers: List<PsiAstMatcher<T>>,
     nodes: List<T>
-): Map<String, String>? {
-  val variableMatches = mutableMapOf<String, String>()
+): MatchResult? {
+  val variableMatches = mutableMapOf<String, PsiElement>()
   var matcherIndex = 0
   var nodesIndex = 0
   while (matcherIndex < matchers.size && nodesIndex < nodes.size) {
@@ -228,12 +237,12 @@ internal fun <T : Any> matchAllInOrder(
     } else {
       matcherIndex++
       nodesIndex++
-      variableMatches.putAll(match)
+      variableMatches.putAll(match.matchedVariables)
     }
   }
   return if (nodesIndex == nodes.size &&
       (matcherIndex until matchers.size).all { index -> (matchers[index].matches(null) != null) }) {
-    variableMatches
+    MatchResult(variableMatches)
   } else {
     null
   }
@@ -243,14 +252,13 @@ internal fun <T : Any> matchAllInOrder(
 fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
     matcher: PsiAstMatcher<Element>,
-    replaceWith: (Pair<Element, Map<String, String>>) -> String,
+    replaceWith: (Pair<Element, MatchResult>) -> String,
     reloadFile: (String) -> PsiFileType
 ): PsiFileType {
   var currentPsiFile: PsiFileType = psiFile
   var remainingMatches = Int.MAX_VALUE
   while (remainingMatches > 0) {
-    val elements: List<Pair<Element, Map<String, String>>> =
-        matcher.findAllWithVariables(currentPsiFile)
+    val elements: List<Pair<Element, MatchResult>> = matcher.findAllWithVariables(currentPsiFile)
     if (elements.isEmpty()) {
       return psiFile
     }
@@ -280,8 +288,8 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
 @CheckReturnValue
 internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
-    elements: List<Pair<Element, Map<String, String>>>,
-    replaceWith: (Pair<Element, Map<String, String>>) -> String,
+    elements: List<Pair<Element, MatchResult>>,
+    replaceWith: (Pair<Element, MatchResult>) -> String,
     reloadFile: (String) -> PsiFileType,
 ): PsiFileType {
   if (elements.isEmpty()) {
