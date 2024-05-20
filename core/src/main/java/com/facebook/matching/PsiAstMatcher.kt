@@ -37,7 +37,10 @@ inline fun <reified T : Any> match(
   return matcher
 }
 
-class MatchResult(internal val matchedVariables: Map<String, PsiElement>) {
+class MatchResult(
+    val psiElement: PsiElement?,
+    internal val matchedVariables: Map<String, PsiElement>
+) {
 
   fun getVariableResult(variableName: String): String? = matchedVariables[variableName]?.text
 
@@ -122,7 +125,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
   ) {
     matcherFunctions += {
       val t: T? = transform(it)
-      if (t != null && predicate(t)) MatchResult(mapOf()) else null
+      if (t != null && predicate(t)) MatchResult(t as? PsiElement, mapOf()) else null
     }
   }
 
@@ -137,7 +140,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
   internal fun addChildMatcher(
       predicate: (Element) -> Boolean,
   ) {
-    matcherFunctions += { if (predicate(it)) MatchResult(mapOf()) else null }
+    matcherFunctions += { if (predicate(it)) MatchResult(it as? PsiElement, mapOf()) else null }
   }
 
   /**
@@ -183,7 +186,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
 
   internal fun matches(obj: Any?): MatchResult? {
     if (shouldMatchToNull && obj == null) {
-      return MatchResult(mutableMapOf())
+      return MatchResult(obj, mutableMapOf())
     }
     val element = if (targetType.isInstance(obj)) targetType.cast(obj) else return null
     element ?: return null
@@ -199,7 +202,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
       result.putAll(childResult.matchedVariables)
     }
     variableName?.let { result[it] = (element as PsiElement) }
-    return MatchResult(result)
+    return MatchResult(obj as? PsiElement, result)
   }
 
   override fun toString(): String {
@@ -242,7 +245,7 @@ internal fun <T : Any> matchAllInOrder(
   }
   return if (nodesIndex == nodes.size &&
       (matcherIndex until matchers.size).all { index -> (matchers[index].matches(null) != null) }) {
-    MatchResult(variableMatches)
+    MatchResult(null, variableMatches)
   } else {
     null
   }
