@@ -16,6 +16,7 @@
 
 package com.facebook.matching
 
+import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtElement
 
 class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
@@ -24,7 +25,7 @@ class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
    * Takes a template string and an optional list of matchers per variavle and builds a
    * [PsiAstMatcher] for that template
    */
-  inline fun <reified T : Any> parseTemplateWithVariables(
+  inline fun <reified T : PsiElement> parseTemplateWithVariables(
       template: String,
       vararg variables: Pair<String, PsiAstMatcher<*>>
   ): PsiAstMatcher<T> {
@@ -65,7 +66,7 @@ class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
   fun parseReplacementTemplate(
       template: String,
       replacement: String,
-      templateVariablesToText: MatchResult,
+      templateVariablesToText: MatchResult<*>,
   ): String {
     var processedReplacment = replacement
     Variable.TEMPLATE_VARIABLE_REGEX.findAll(template).forEach { matchResult ->

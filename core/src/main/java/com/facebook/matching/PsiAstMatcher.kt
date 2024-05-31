@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.psi.psiUtil.startOffset
  *
  * Additional conditions can be then added with [PsiAstMatcher.addCustomMatcher]
  */
-inline fun <reified T : Any> match(
+inline fun <reified T : PsiElement> match(
     noinline predicate: (T) -> Boolean = { true }
 ): PsiAstMatcher<T> {
   val matcher = PsiAstMatcher(T::class.java)
@@ -37,8 +37,8 @@ inline fun <reified T : Any> match(
   return matcher
 }
 
-class MatchResult(
-    val psiElement: PsiElement?,
+class MatchResult<Element : PsiElement?>(
+    val psiElement: Element,
     internal val matchedVariables: Map<String, PsiElement>
 ) {
 
@@ -60,7 +60,7 @@ var enableKtAstMatcherDebugPrints = false
  *
  * Create one of these matchers using [match]
  */
-class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
+class PsiAstMatcher<Element : PsiElement>(internal val targetType: Class<Element>) {
 
   /**
    * Stores all the match conditions that need to be satisfied
@@ -70,7 +70,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    * The value is method that takes our Element, and returns a non null result for a match (which
    * serves as the "proof" for the match), or a null in case of no match
    */
-  private val matcherFunctions: MutableList<(Element) -> MatchResult?> = mutableListOf()
+  private val matcherFunctions: MutableList<(Element) -> MatchResult<*>?> = mutableListOf()
 
   /** A name for this matcher that may be used to retrieve its result later */
   internal var variableName: String? = null
@@ -91,14 +91,14 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
   }
 
   @CheckReturnValue
-  fun findAllWithVariables(element: PsiElement): List<Pair<Element, MatchResult>> {
-    val results = mutableListOf<Pair<Element, MatchResult>>()
+  fun findAllWithVariables(element: PsiElement): List<Pair<Element, MatchResult<Element>>> {
+    val results = mutableListOf<Pair<Element, MatchResult<Element>>>()
     element.accept(
         object : KtTreeVisitorVoid() {
           override fun visitElement(element: PsiElement) {
             val result = matches(element)
             if (result != null) {
-              results.add(Pair(element as Element, result))
+              results.add(Pair(element as Element, result as MatchResult<Element>))
             }
             super.visitElement(element)
           }
@@ -148,7 +148,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    *
    * Similar to [addChildMatcher] but takes an actual KtAstMatcher instead of a predicate
    */
-  internal fun <T : Any> addChildMatcher(
+  internal fun <T : PsiElement> addChildMatcher(
       transform: (Element) -> T?,
       matcher: PsiAstMatcher<out T>,
       inheritShouldMatchNull: Boolean = false,
@@ -168,7 +168,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
    * Similar to [addChildMatcher] but the transform is expected to return a list, and the matcher
    * will be satisfied using a strategy of matching subsequences as in [matchAllInOrder]
    */
-  internal fun <T : Any> addMatchersInOrderList(
+  internal fun <T : PsiElement> addMatchersInOrderList(
       transform: (Element) -> List<T>,
       list: List<PsiAstMatcher<T>>
   ) {
@@ -184,7 +184,7 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
     addChildMatcher({ it }, predicate)
   }
 
-  internal fun matches(obj: Any?): MatchResult? {
+  internal fun matches(obj: Any?): MatchResult<*>? {
     if (shouldMatchToNull && obj == null) {
       return MatchResult(obj, mutableMapOf())
     }
@@ -219,10 +219,10 @@ class PsiAstMatcher<Element : Any>(internal val targetType: Class<Element>) {
  * from for future matchers. This means the order of the matchers is meaningful. If some matchers
  * are optional, and are unmatched at the end this will still count as a match
  */
-internal fun <T : Any> matchAllInOrder(
+internal fun <T : PsiElement> matchAllInOrder(
     matchers: List<PsiAstMatcher<T>>,
     nodes: List<T>
-): MatchResult? {
+): MatchResult<*>? {
   val variableMatches = mutableMapOf<String, PsiElement>()
   var matcherIndex = 0
   var nodesIndex = 0
@@ -255,13 +255,14 @@ internal fun <T : Any> matchAllInOrder(
 fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
     matcher: PsiAstMatcher<Element>,
-    replaceWith: (Pair<Element, MatchResult>) -> String,
+    replaceWith: (Pair<Element, MatchResult<Element>>) -> String,
     reloadFile: (String) -> PsiFileType
 ): PsiFileType {
   var currentPsiFile: PsiFileType = psiFile
   var remainingMatches = Int.MAX_VALUE
   while (remainingMatches > 0) {
-    val elements: List<Pair<Element, MatchResult>> = matcher.findAllWithVariables(currentPsiFile)
+    val elements: List<Pair<Element, MatchResult<Element>>> =
+        matcher.findAllWithVariables(currentPsiFile)
     if (elements.isEmpty()) {
       return psiFile
     }
@@ -291,8 +292,8 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
 @CheckReturnValue
 internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
-    elements: List<Pair<Element, MatchResult>>,
-    replaceWith: (Pair<Element, MatchResult>) -> String,
+    elements: List<Pair<Element, MatchResult<Element>>>,
+    replaceWith: (Pair<Element, MatchResult<Element>>) -> String,
     reloadFile: (String) -> PsiFileType,
 ): PsiFileType {
   if (elements.isEmpty()) {

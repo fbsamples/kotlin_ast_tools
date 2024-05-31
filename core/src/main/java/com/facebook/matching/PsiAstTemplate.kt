@@ -60,7 +60,7 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
   private val variableNamesToVariables: MutableMap<String, Variable> =
       variables.associateByTo(mutableMapOf()) { it.name }
 
-  fun <T : Any> parse(clazz: Class<T>, template: String): PsiAstMatcher<T> {
+  fun <T : PsiElement> parse(clazz: Class<T>, template: String): PsiAstMatcher<T> {
     return when (clazz) {
       KtProperty::class.java -> parseKotlinRecursive(KotlinParserUtil.parseAsProperty(template))
       KtBlockExpression::class.java ->
@@ -86,7 +86,7 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
    * For the edge case, we compare on the text of the node, or see if it represents a template
    * variable which means its matcher is defined outside the template.
    */
-  private fun <T : Any> parseKotlinRecursive(node: T): PsiAstMatcher<T> {
+  private fun <T : PsiElement> parseKotlinRecursive(node: T): PsiAstMatcher<T> {
     return when (node) {
       // for example: `private val foo: Foo = Foo(5)`
       is KtProperty ->
@@ -263,7 +263,7 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
   }
 
   /** Same as [parseKotlinRecursive] but for Java ASTs */
-  private fun <T : Any> parseJavaRecursive(node: T): PsiAstMatcher<T> {
+  private fun <T : PsiElement> parseJavaRecursive(node: T): PsiAstMatcher<T> {
     return when (node) {
       // for example: `private final Foo foo = new Foo(5);`
       is PsiField ->
