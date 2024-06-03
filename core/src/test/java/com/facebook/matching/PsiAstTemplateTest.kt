@@ -258,6 +258,29 @@ class PsiAstTemplateTest {
   }
 
   @Test
+  fun `match template on function call with optional receiver`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |fun foo() {
+          |  a.doIt(1)
+          |  b.doIt(2).doIt(3)
+          |  doIt(4)
+          |  c.apply { doIt(5) }
+          |}
+        """
+                .trimMargin())
+
+    val results =
+        PsiAstTemplateParser()
+            .parseTemplateWithVariables<KtExpression>("#a?#.doIt(#arg#)")
+            .findAllWithVariables(ktFile)
+    assertThat(results.map { it.psiElement.text })
+        .containsOnly("a.doIt(1)", "b.doIt(2)", "b.doIt(2).doIt(3)", "doIt(4)", "doIt(5)")
+    assertThat(results.map { it["arg"] }).containsOnly("1", "2", "3", "4", "5")
+  }
+
+  @Test
   fun `replace using template and variables`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(

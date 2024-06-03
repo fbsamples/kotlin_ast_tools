@@ -133,15 +133,27 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
                   { it.lambdaArguments.singleOrNull() }, parseKotlinRecursive(lambdaArgument))
             }
           }
-      is KtQualifiedExpression ->
-          match<KtQualifiedExpression>().apply {
-            addChildMatcher(
-                { it.receiverExpression }, parseKotlinRecursive(node.receiverExpression))
-            addChildMatcher { it.operationSign.value == node.operationSign.value }
-            node.selectorExpression?.let { selectorExpression ->
-              addChildMatcher({ it.selectorExpression }, parseKotlinRecursive(selectorExpression))
-            }
-          }
+      is KtQualifiedExpression -> {
+        // If the template is like `#a?#.doIt()` then we might need to match either a
+        // KtQualifiedExpression or a KtCallExpression
+        val receiverMatcher = parseKotlinRecursive(node.receiverExpression)
+        OrPsiAstMatcher(
+            KtExpression::class.java,
+            match<KtQualifiedExpression>().apply {
+              addChildMatcher({ it.receiverExpression }, receiverMatcher)
+              addChildMatcher { it.operationSign.value == node.operationSign.value }
+              node.selectorExpression?.let { selectorExpression ->
+                addChildMatcher({ it.selectorExpression }, parseKotlinRecursive(selectorExpression))
+              }
+            },
+            match<KtCallExpression>().apply {
+              addChildMatcher({ null }, receiverMatcher)
+              addChildMatcher { it.parent !is KtQualifiedExpression }
+              node.selectorExpression?.let { selectorExpression ->
+                addChildMatcher({ it }, parseKotlinRecursive(selectorExpression))
+              }
+            })
+      }
       is KtClassLiteralExpression ->
           match<KtClassLiteralExpression>().apply {
             node.receiverExpression?.let { expression ->

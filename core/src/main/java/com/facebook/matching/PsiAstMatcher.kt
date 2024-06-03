@@ -60,7 +60,7 @@ var enableKtAstMatcherDebugPrints = false
  *
  * Create one of these matchers using [match]
  */
-class PsiAstMatcher<Element : PsiElement>(internal val targetType: Class<Element>) {
+open class PsiAstMatcher<Element : PsiElement>(internal val targetType: Class<Element>) {
 
   /**
    * Stores all the match conditions that need to be satisfied
@@ -155,7 +155,7 @@ class PsiAstMatcher<Element : PsiElement>(internal val targetType: Class<Element
   ) {
     matcherFunctions += {
       val t: T? = transform(it)
-      if (t == null) null else matcher.matches(t)
+      if (t == null && !matcher.shouldMatchToNull) null else matcher.matches(t)
     }
     if (inheritShouldMatchNull && matcher.shouldMatchToNull) {
       shouldMatchToNull = true
@@ -190,7 +190,7 @@ class PsiAstMatcher<Element : PsiElement>(internal val targetType: Class<Element
    *   satisfy variables that are part of this matcher.
    * - If the element does not match a `null` is returned
    */
-  fun matches(obj: PsiElement?): MatchResult<Element?>? {
+  open fun matches(obj: PsiElement?): MatchResult<Element?>? {
     if (shouldMatchToNull && obj == null) {
       return MatchResult(obj, mutableMapOf())
     }
