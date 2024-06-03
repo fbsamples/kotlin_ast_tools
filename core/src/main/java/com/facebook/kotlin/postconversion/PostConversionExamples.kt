@@ -70,9 +70,9 @@ object PostConversionExamples {
     return ktFile
         .replaceAllExpressions(
             "TextUtils.equals(#a#, #b#)",
-            replaceWith = { result, _ ->
-              val needsParenthesis =
-                  result.parent is KtBinaryExpression || result.parent is KtQualifiedExpression
+            replaceWith = { match ->
+              val parent = match.psiElement.parent
+              val needsParenthesis = parent is KtBinaryExpression || parent is KtQualifiedExpression
               if (needsParenthesis) "(#a# == #b#)" else "#a# == #b#"
             })
         .replaceAllExpressions("TextUtils.isEmpty(#a#)", "#a#.isNullOrEmpty()")

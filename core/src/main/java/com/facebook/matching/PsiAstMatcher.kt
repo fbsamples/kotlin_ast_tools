@@ -87,18 +87,18 @@ class PsiAstMatcher<Element : PsiElement>(internal val targetType: Class<Element
    */
   @CheckReturnValue
   fun findAll(element: PsiElement): List<Element> {
-    return findAllWithVariables(element).map { it.first }
+    return findAllWithVariables(element).map { it.psiElement as Element }
   }
 
   @CheckReturnValue
-  fun findAllWithVariables(element: PsiElement): List<Pair<Element, MatchResult<Element>>> {
-    val results = mutableListOf<Pair<Element, MatchResult<Element>>>()
+  fun findAllWithVariables(element: PsiElement): List<MatchResult<Element>> {
+    val results = mutableListOf<MatchResult<Element>>()
     element.accept(
         object : KtTreeVisitorVoid() {
           override fun visitElement(element: PsiElement) {
             val result = matches(element)
             if (result != null) {
-              results.add(Pair(element as Element, result as MatchResult<Element>))
+              results.add(result as MatchResult<Element>)
             }
             super.visitElement(element)
           }
@@ -255,14 +255,13 @@ internal fun <T : PsiElement> matchAllInOrder(
 fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
     matcher: PsiAstMatcher<Element>,
-    replaceWith: (Pair<Element, MatchResult<Element>>) -> String,
+    replaceWith: (MatchResult<Element>) -> String,
     reloadFile: (String) -> PsiFileType
 ): PsiFileType {
   var currentPsiFile: PsiFileType = psiFile
   var remainingMatches = Int.MAX_VALUE
   while (remainingMatches > 0) {
-    val elements: List<Pair<Element, MatchResult<Element>>> =
-        matcher.findAllWithVariables(currentPsiFile)
+    val elements: List<MatchResult<Element>> = matcher.findAllWithVariables(currentPsiFile)
     if (elements.isEmpty()) {
       return psiFile
     }
@@ -271,9 +270,10 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
           "Cannot apply patches, some patches intersect, and applying them creates new candidates")
     }
     val nonIntersectingElements =
-        elements.filter { element ->
-          elements.none { anotherElement ->
-            anotherElement.first.isAncestor(element.first, strict = true)
+        elements.filter { matchResult ->
+          elements.none { matchResult2 ->
+            val element = matchResult.psiElement
+            element != null && matchResult2.psiElement.isAncestor(element, strict = true)
           }
         }
     val newRemainingElements = elements.size - nonIntersectingElements.size
@@ -292,8 +292,8 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
 @CheckReturnValue
 internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
-    elements: List<Pair<Element, MatchResult<Element>>>,
-    replaceWith: (Pair<Element, MatchResult<Element>>) -> String,
+    elements: List<MatchResult<Element>>,
+    replaceWith: (MatchResult<Element>) -> String,
     reloadFile: (String) -> PsiFileType,
 ): PsiFileType {
   if (elements.isEmpty()) {
@@ -301,7 +301,7 @@ internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariabl
   }
 
   val sortedPatches: List<Pair<PsiElement, String>> =
-      elements.map { Pair(it.first, replaceWith(it)) }
+      elements.map { Pair(checkNotNull(it.psiElement), replaceWith(it)) }
 
   var previousPatchEndOffset = -1
   for (patch in sortedPatches) {

@@ -67,13 +67,13 @@ fun KtFile.replaceAllExpressions(
     template: String,
     replaceWith: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
-): KtFile = replaceAllExpressions(template, { _, _ -> replaceWith }, *variables)
+): KtFile = replaceAllExpressions(template, { replaceWith }, *variables)
 
 fun PsiJavaFile.replaceAllExpressions(
     template: String,
     replaceWith: String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
-): PsiJavaFile = replaceAllExpressions(template, { _, _ -> replaceWith }, *variables)
+): PsiJavaFile = replaceAllExpressions(template, { replaceWith }, *variables)
 
 /**
  * Replaces all expressions that match the given template with the given replacement which is given
@@ -84,30 +84,25 @@ fun PsiJavaFile.replaceAllExpressions(
  */
 fun KtFile.replaceAllExpressions(
     template: String,
-    replaceWith:
-        (match: KtExpression, templateVariablesToText: MatchResult<KtExpression>) -> String,
+    replaceWith: (match: MatchResult<KtExpression>) -> String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): KtFile {
   return replaceAllWithVariables(
-      PsiAstTemplateParser().parseTemplateWithVariables<KtExpression>(template, *variables)) {
-          (match, templateVariablesToText) ->
-        PsiAstTemplateParser()
-            .parseReplacementTemplate(
-                template, replaceWith(match, templateVariablesToText), templateVariablesToText)
+      PsiAstTemplateParser().parseTemplateWithVariables<KtExpression>(template, *variables)) { match
+        ->
+        PsiAstTemplateParser().parseReplacementTemplate(template, replaceWith(match), match)
       }
 }
 
 fun PsiJavaFile.replaceAllExpressions(
     template: String,
-    replaceWith: (match: PsiExpression, templateVariablesToText: MatchResult<*>) -> String,
+    replaceWith: (match: MatchResult<PsiExpression>) -> String,
     vararg variables: Pair<String, PsiAstMatcher<*>>
 ): PsiJavaFile {
   return replaceAllWithVariables(
       PsiAstTemplateParser().parseTemplateWithVariables<PsiExpression>(template, *variables)) {
-          (match, templateVariablesToText) ->
-        PsiAstTemplateParser()
-            .parseReplacementTemplate(
-                template, replaceWith(match, templateVariablesToText), templateVariablesToText)
+          match ->
+        PsiAstTemplateParser().parseReplacementTemplate(template, replaceWith(match), match)
       }
 }
 
@@ -162,7 +157,9 @@ fun PsiJavaFile.findAllAnnotations(
 fun <Element : PsiElement> KtFile.replaceAll(
     matcher: PsiAstMatcher<Element>,
     replaceWith: (Element) -> String
-): KtFile = replaceAllWithVariables(matcher, replaceWith = { (result, _) -> replaceWith(result) })
+): KtFile =
+    replaceAllWithVariables(
+        matcher, replaceWith = { result -> replaceWith(result.psiElement as Element) })
 
 /**
  * Finds and replaces elements in a Kotlin file using a [PsiAstMatcher]
@@ -177,7 +174,7 @@ fun <Element : PsiElement> KtFile.replaceAll(
 @CheckReturnValue
 fun <Element : PsiElement> KtFile.replaceAllWithVariables(
     matcher: PsiAstMatcher<Element>,
-    replaceWith: (Pair<Element, MatchResult<Element>>) -> String
+    replaceWith: (MatchResult<Element>) -> String
 ): KtFile {
   return replaceAllWithVariables(
       this, matcher, replaceWith, reloadFile = { text -> KotlinParserUtil.parseAsFile(text) })
@@ -186,7 +183,7 @@ fun <Element : PsiElement> KtFile.replaceAllWithVariables(
 @CheckReturnValue
 fun <Element : PsiElement> PsiJavaFile.replaceAllWithVariables(
     matcher: PsiAstMatcher<Element>,
-    replaceWith: (Pair<Element, MatchResult<Element>>) -> String
+    replaceWith: (MatchResult<Element>) -> String
 ): PsiJavaFile {
   return replaceAllWithVariables(
       this, matcher, replaceWith, reloadFile = { text -> JavaPsiParserUtil.parseAsFile(text) })
@@ -195,8 +192,8 @@ fun <Element : PsiElement> PsiJavaFile.replaceAllWithVariables(
 /** Replaces match results using a transform function */
 @CheckReturnValue
 fun <Element : PsiElement> KtFile.replaceAllWithVariables(
-    elements: List<Pair<Element, MatchResult<Element>>>,
-    replaceWith: (Pair<Element, MatchResult<Element>>) -> String
+    elements: List<MatchResult<Element>>,
+    replaceWith: (MatchResult<Element>) -> String
 ): KtFile {
   return replaceAllWithVariables(
       this, elements, replaceWith, reloadFile = { text -> KotlinParserUtil.parseAsFile(text) })
@@ -204,8 +201,8 @@ fun <Element : PsiElement> KtFile.replaceAllWithVariables(
 
 @CheckReturnValue
 fun <Element : PsiElement> PsiJavaFile.replaceAllWithVariables(
-    elements: List<Pair<Element, MatchResult<Element>>>,
-    replaceWith: (Pair<Element, MatchResult<Element>>) -> String
+    elements: List<MatchResult<Element>>,
+    replaceWith: (MatchResult<Element>) -> String
 ): PsiJavaFile {
   return replaceAllWithVariables(
       this, elements, replaceWith, reloadFile = { text -> JavaPsiParserUtil.parseAsFile(text) })

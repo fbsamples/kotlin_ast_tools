@@ -460,15 +460,15 @@ class PsiAstTemplateTest {
                     .trimMargin())
             .findAllWithVariables(ktFile)
 
-    assertThat(results.map { it.first.text })
+    assertThat(results.map { it.psiElement.text })
         .containsExactly(
             """{
           |  println(1)
           |  println(2)
           |}"""
                 .trimMargin())
-    assertThat(results.single().second["a"]).isEqualTo("println(1)")
-    assertThat(results.single().second["b"]).isEqualTo("println(2)")
+    assertThat(results.single()["a"]).isEqualTo("println(1)")
+    assertThat(results.single()["b"]).isEqualTo("println(2)")
   }
 
   @Test
