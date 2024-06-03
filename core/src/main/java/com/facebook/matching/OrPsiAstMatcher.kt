@@ -24,10 +24,13 @@ import com.intellij.psi.PsiElement
  */
 internal class OrPsiAstMatcher<
     CommonAncestorElement : PsiElement, E1 : CommonAncestorElement, E2 : CommonAncestorElement>(
-    targetType: Class<CommonAncestorElement>,
     private val matcher1: PsiAstMatcher<E1>,
-    private val matcher2: PsiAstMatcher<E2>
-) : PsiAstMatcher<CommonAncestorElement>(targetType) {
+    private val matcher2: PsiAstMatcher<E2>,
+) : PsiAstMatcher<CommonAncestorElement> {
+
+  override val shouldMatchToNull: Boolean
+    get() = matcher1.shouldMatchToNull || matcher2.shouldMatchToNull
+
   override fun matches(obj: PsiElement?): MatchResult<CommonAncestorElement?>? {
     return (matcher1.matches(obj) ?: matcher2.matches(obj)) as MatchResult<CommonAncestorElement?>?
   }

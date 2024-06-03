@@ -27,7 +27,7 @@ class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
    */
   inline fun <reified T : PsiElement> parseTemplateWithVariables(
       template: String,
-      vararg variables: Pair<String, PsiAstMatcher<*>>
+      vararg variables: Pair<String, PsiAstMatcherImpl<*>>
   ): PsiAstMatcher<T> {
     val unusedVariables = variables.toMap(mutableMapOf())
 

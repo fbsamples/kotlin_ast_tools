@@ -138,7 +138,6 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
         // KtQualifiedExpression or a KtCallExpression
         val receiverMatcher = parseKotlinRecursive(node.receiverExpression)
         OrPsiAstMatcher(
-            KtExpression::class.java,
             match<KtQualifiedExpression>().apply {
               addChildMatcher({ it.receiverExpression }, receiverMatcher)
               addChildMatcher { it.operationSign.value == node.operationSign.value }
@@ -424,8 +423,8 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
    */
   private inline fun <reified T : PsiElement> loadIfVariableOr(
       textContent: String?,
-      ifNotVariableBlock: () -> PsiAstMatcher<T>
-  ): PsiAstMatcher<T> {
+      ifNotVariableBlock: () -> PsiAstMatcherImpl<T>
+  ): PsiAstMatcherImpl<T> {
     if (textContent == null || !isVarName(textContent)) {
       return ifNotVariableBlock()
     }
@@ -449,6 +448,6 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
       "Template references variable $$varName as a matcher of ${T::class.java.simpleName}, " +
           "but variable was defined as a matcher of ${matcherFromVariable.targetType.simpleName}"
     }
-    return matcherFromVariable as PsiAstMatcher<T>
+    return matcherFromVariable as PsiAstMatcherImpl<T>
   }
 }

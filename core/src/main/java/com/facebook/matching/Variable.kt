@@ -29,7 +29,7 @@ import com.intellij.psi.PsiElement
  */
 class Variable(
     val name: String,
-    val matcher: PsiAstMatcher<*>,
+    val matcher: PsiAstMatcherImpl<*>,
     val isOptional: Boolean,
     val isKotlin: Boolean,
     val resolver: Resolver,
@@ -62,7 +62,7 @@ class Variable(
     }
   }
 
-  fun addConditionsFromVariable(matcher: PsiAstMatcher<*>) {
+  fun addConditionsFromVariable(matcher: PsiAstMatcherImpl<*>) {
     textMatchArgument?.let { regex ->
       matcher.addChildMatcher { it is PsiElement && it.text.matches(regex) }
     }
@@ -78,7 +78,7 @@ class Variable(
   val templateString: String = "#$name${if (isOptional) "?" else ""}#"
 
   companion object {
-    val ANY_SENTINEL: PsiAstMatcher<PsiElement> = PsiAstMatcher(PsiElement::class.java)
+    val ANY_SENTINEL: PsiAstMatcherImpl<PsiElement> = PsiAstMatcherImpl(PsiElement::class.java)
     val TEMPLATE_VARIABLE_REGEX: Regex =
         "#(?<name>[A-Za-z0-9_]+)(?<arguments>\\{[^}]*\\})?(?<isOptional>[?]?)#".toRegex()
   }

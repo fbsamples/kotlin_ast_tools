@@ -42,7 +42,7 @@ import org.jetbrains.kotlin.psi.KtProperty
  */
 fun KtFile.findAllExpressions(
     template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): List<KtExpression> {
   return PsiAstTemplateParser()
       .parseTemplateWithVariables<KtExpression>(template, *variables)
@@ -51,7 +51,7 @@ fun KtFile.findAllExpressions(
 
 fun PsiJavaFile.findAllExpressions(
     template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): List<PsiExpression> {
   return PsiAstTemplateParser()
       .parseTemplateWithVariables<PsiExpression>(template, *variables)
@@ -66,13 +66,13 @@ fun PsiJavaFile.findAllExpressions(
 fun KtFile.replaceAllExpressions(
     template: String,
     replaceWith: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): KtFile = replaceAllExpressions(template, { replaceWith }, *variables)
 
 fun PsiJavaFile.replaceAllExpressions(
     template: String,
     replaceWith: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): PsiJavaFile = replaceAllExpressions(template, { replaceWith }, *variables)
 
 /**
@@ -85,7 +85,7 @@ fun PsiJavaFile.replaceAllExpressions(
 fun KtFile.replaceAllExpressions(
     template: String,
     replaceWith: (match: MatchResult<KtExpression>) -> String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): KtFile {
   return replaceAllWithVariables(
       PsiAstTemplateParser().parseTemplateWithVariables<KtExpression>(template, *variables)) { match
@@ -97,7 +97,7 @@ fun KtFile.replaceAllExpressions(
 fun PsiJavaFile.replaceAllExpressions(
     template: String,
     replaceWith: (match: MatchResult<PsiExpression>) -> String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): PsiJavaFile {
   return replaceAllWithVariables(
       PsiAstTemplateParser().parseTemplateWithVariables<PsiExpression>(template, *variables)) {
@@ -113,7 +113,7 @@ fun PsiJavaFile.replaceAllExpressions(
  */
 fun KtFile.findAllProperties(
     template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): List<KtProperty> {
   val matcher: PsiAstMatcher<KtProperty> =
       PsiAstTemplateParser().parseTemplateWithVariables<KtProperty>(template, *variables)
@@ -122,7 +122,7 @@ fun KtFile.findAllProperties(
 
 fun PsiJavaFile.findAllFields(
     template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): List<PsiField> {
   return PsiAstTemplateParser()
       .parseTemplateWithVariables<PsiField>(template, *variables)
@@ -136,7 +136,7 @@ fun PsiJavaFile.findAllFields(
  */
 fun KtFile.findAllAnnotations(
     template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): List<KtAnnotationEntry> {
   return PsiAstTemplateParser()
       .parseTemplateWithVariables<KtAnnotationEntry>(template, *variables)
@@ -145,7 +145,7 @@ fun KtFile.findAllAnnotations(
 
 fun PsiJavaFile.findAllAnnotations(
     template: String,
-    vararg variables: Pair<String, PsiAstMatcher<*>>
+    vararg variables: Pair<String, PsiAstMatcherImpl<*>>
 ): List<PsiAnnotation> {
   return PsiAstTemplateParser()
       .parseTemplateWithVariables<PsiAnnotation>(template, *variables)
