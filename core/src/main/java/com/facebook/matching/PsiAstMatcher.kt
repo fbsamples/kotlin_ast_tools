@@ -184,7 +184,13 @@ class PsiAstMatcher<Element : PsiElement>(internal val targetType: Class<Element
     addChildMatcher({ it }, predicate)
   }
 
-  internal fun matches(obj: Any?): MatchResult<*>? {
+  /**
+   * Checks if the given element satisfies the conditions of this matcher
+   * - If it is, a [MatchResult] is returned, which points to `obj` and contains all references to
+   *   satisfy variables that are part of this matcher.
+   * - If the element does not match a `null` is returned
+   */
+  fun matches(obj: PsiElement?): MatchResult<Element?>? {
     if (shouldMatchToNull && obj == null) {
       return MatchResult(obj, mutableMapOf())
     }
@@ -202,7 +208,7 @@ class PsiAstMatcher<Element : PsiElement>(internal val targetType: Class<Element
       result.putAll(childResult.matchedVariables)
     }
     variableName?.let { result[it] = (element as PsiElement) }
-    return MatchResult(obj as? PsiElement, result)
+    return MatchResult(obj as? Element, result)
   }
 
   override fun toString(): String {
