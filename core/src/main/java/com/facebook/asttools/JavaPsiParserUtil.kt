@@ -53,8 +53,8 @@ object JavaPsiParserUtil {
   }
 
   @JvmStatic
-  fun parseAsFile(@Language("java") code: String): PsiJavaFile {
-    val file = LightVirtualFile("temp.java", JavaFileType.INSTANCE, code)
+  fun parseAsFile(@Language("java") code: String, path: String = "temp.java"): PsiJavaFile {
+    val file = LightVirtualFile(path, JavaFileType.INSTANCE, code)
     return PsiManager.getInstance(kotlinCoreEnvironment.project).findFile(file) as PsiJavaFile
   }
 

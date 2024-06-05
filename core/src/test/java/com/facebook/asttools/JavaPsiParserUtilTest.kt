@@ -32,7 +32,7 @@ import org.junit.Test
 class JavaPsiParserUtilTest {
 
   @Test
-  fun `parse as file returns a KtFile with correct class name`() {
+  fun `parse as file returns a JavaPsiFile with correct class name and file name`() {
     val javaPsiFile =
         JavaPsiParserUtil.parseAsFile(
             """
@@ -42,10 +42,12 @@ class JavaPsiParserUtilTest {
       |  int a = 1;
       |}
     """
-                .trimMargin())
+                .trimMargin(),
+            "Foo.java")
     val classOrObject = javaPsiFile.findDescendantOfType<PsiClass>()
     assertThat(classOrObject).isNotNull
     assertThat(classOrObject?.name).isEqualTo("Foo")
+    assertThat(javaPsiFile.virtualFile.path).endsWith("Foo.java")
   }
 
   @Test
