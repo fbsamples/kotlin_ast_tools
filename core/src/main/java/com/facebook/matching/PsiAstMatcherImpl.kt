@@ -29,10 +29,10 @@ import org.jetbrains.kotlin.psi.psiUtil.startOffset
  * Additional conditions can be then added with [PsiAstMatcher.addCustomMatcher]
  */
 inline fun <reified T : PsiElement> match(
-    noinline predicate: (T) -> Boolean = { true }
+    noinline predicate: ((T) -> Boolean)? = null
 ): PsiAstMatcherImpl<T> {
   val matcher = PsiAstMatcherImpl(T::class.java)
-  matcher.addCustomMatcher(predicate)
+  predicate?.let { matcher.addCustomMatcher(it) }
   return matcher
 }
 
@@ -58,7 +58,12 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
    * The value is method that takes our Element, and returns a non null result for a match (which
    * serves as the "proof" for the match), or a null in case of no match
    */
-  private val matcherFunctions: MutableList<(Element) -> MatchResult<*>?> = mutableListOf()
+  class MatcherFunctionAndTime<Element>(
+      val matcherFunction: (Element) -> MatchResult<*>?,
+      var estimatedTime: Long = 0
+  )
+
+  private val matcherFunctions: MutableList<MatcherFunctionAndTime<Element>> = mutableListOf()
 
   /** A name for this matcher that may be used to retrieve its result later */
   internal var variableName: String? = null
@@ -85,10 +90,11 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       transform: (Element) -> T?,
       predicate: (T) -> Boolean,
   ) {
-    matcherFunctions += {
-      val t: T? = transform(it)
-      if (t != null && predicate(t)) MatchResult(t as? PsiElement, mapOf()) else null
-    }
+    matcherFunctions +=
+        MatcherFunctionAndTime({
+          val t: T? = transform(it)
+          if (t != null && predicate(t)) MatchResult(t as? PsiElement, mapOf()) else null
+        })
   }
 
   /**
@@ -102,7 +108,10 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
   internal fun addChildMatcher(
       predicate: (Element) -> Boolean,
   ) {
-    matcherFunctions += { if (predicate(it)) MatchResult(it as? PsiElement, mapOf()) else null }
+    matcherFunctions +=
+        MatcherFunctionAndTime({
+          if (predicate(it)) MatchResult(it as? PsiElement, mapOf()) else null
+        })
   }
 
   /**
@@ -115,10 +124,11 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       matcher: PsiAstMatcher<out T>,
       inheritShouldMatchNull: Boolean = false,
   ) {
-    matcherFunctions += {
-      val t: T? = transform(it)
-      if (t == null && !matcher.shouldMatchToNull) null else matcher.matches(t)
-    }
+    matcherFunctions +=
+        MatcherFunctionAndTime({
+          val t: T? = transform(it)
+          if (t == null && !matcher.shouldMatchToNull) null else matcher.matches(t)
+        })
     if (inheritShouldMatchNull && matcher.shouldMatchToNull) {
       shouldMatchToNull = true
     }
@@ -134,7 +144,7 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       transform: (Element) -> List<T>,
       list: List<PsiAstMatcher<T>>
   ) {
-    matcherFunctions += { matchAllInOrder(list, transform(it)) }
+    matcherFunctions += MatcherFunctionAndTime({ matchAllInOrder(list, transform(it)) })
   }
 
   /**
@@ -159,8 +169,13 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
     val element = if (targetType.isInstance(obj)) targetType.cast(obj) else return null
     element ?: return null
     val result = mutableMapOf<String, PsiElement>()
-    for (matcherFunction in matcherFunctions) {
+    for (matcherFunctionAndTime in matcherFunctions) {
+      val matcherFunction = matcherFunctionAndTime.matcherFunction
+      val start = System.nanoTime()
       val childResult = matcherFunction(element)
+      val end = System.nanoTime()
+      matcherFunctionAndTime.estimatedTime =
+          (matcherFunctionAndTime.estimatedTime + end - start) / 2
       if (enableKtAstMatcherDebugPrints) {
         println(
             "KtAstMatcher-debug: Match $matcherFunction " +
@@ -170,6 +185,7 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       result.putAll(childResult.matchedVariables)
     }
     variableName?.let { result[it] = (element as PsiElement) }
+    matcherFunctions.sortBy { it.estimatedTime }
     return MatchResult(obj as? Element, result)
   }
 
