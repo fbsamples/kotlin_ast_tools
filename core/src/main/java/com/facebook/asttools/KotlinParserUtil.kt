@@ -16,7 +16,6 @@
 
 package com.facebook.asttools
 
-import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiManager
@@ -25,8 +24,6 @@ import org.intellij.lang.annotations.Language
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
-import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -45,15 +42,9 @@ import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 /** Helper methods to easily generate Kotlin AST node objects from a String */
 object KotlinParserUtil {
 
-  private val kotlinCoreEnvironment: KotlinCoreEnvironment by lazy {
-    val disposable = Disposer.newDisposable()
-    KotlinCoreEnvironment.createForProduction(
-        disposable, getConfiguration(), EnvironmentConfigFiles.JVM_CONFIG_FILES)
-  }
-
   fun parseAsFile(@Language("kotlin") code: String, path: String = "temp.kt"): KtFile {
     val file = LightVirtualFile(path, KotlinFileType.INSTANCE, code)
-    return PsiManager.getInstance(kotlinCoreEnvironment.project).findFile(file) as KtFile
+    return PsiManager.getInstance(ProjectHelper.getProject()).findFile(file) as KtFile
   }
 
   fun parseAsClassOrObject(code: String): KtClassOrObject {

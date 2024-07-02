@@ -17,7 +17,6 @@
 package com.facebook.asttools
 
 import com.intellij.ide.highlighter.JavaFileType
-import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiAnnotation
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -30,12 +29,6 @@ import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiStatement
 import com.intellij.testFramework.LightVirtualFile
 import org.intellij.lang.annotations.Language
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
-import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
-import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
-import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
-import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 
 /**
@@ -46,16 +39,10 @@ import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
  */
 object JavaPsiParserUtil {
 
-  private val kotlinCoreEnvironment: KotlinCoreEnvironment by lazy {
-    val disposable = Disposer.newDisposable()
-    KotlinCoreEnvironment.createForProduction(
-        disposable, getConfiguration(), EnvironmentConfigFiles.JVM_CONFIG_FILES)
-  }
-
   @JvmStatic
   fun parseAsFile(@Language("java") code: String, path: String = "temp.java"): PsiJavaFile {
     val file = LightVirtualFile(path, JavaFileType.INSTANCE, code)
-    return PsiManager.getInstance(kotlinCoreEnvironment.project).findFile(file) as PsiJavaFile
+    return PsiManager.getInstance(ProjectHelper.getProject()).findFile(file) as PsiJavaFile
   }
 
   fun parseAsClassOrInterface(code: String): PsiClass {
@@ -135,13 +122,5 @@ object JavaPsiParserUtil {
 
   private fun throwParseError(type: String, code: String): Nothing {
     error("Cannot parse as $type: '$code'")
-  }
-
-  private fun getConfiguration(): CompilerConfiguration {
-    val configuration = CompilerConfiguration()
-    configuration.put(
-        CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY,
-        PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false))
-    return configuration
   }
 }
