@@ -17,73 +17,11 @@
 package com.facebook.asttools
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.kotlin.kdoc.psi.api.KDoc
-import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtClassOrObject
-import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
-import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
-import org.jetbrains.kotlin.psi.psiUtil.getStartOffsetIn
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
-import org.jetbrains.kotlin.psi.psiUtil.startsWithComment
-
-/**
- * Inserts the annotation after the provided PsiElement's leading comment, if any, and returns the
- * resulting text. If an annotation with the same name is already present, returns the original
- * text. For example, given a declaration like
- *
- * ```
- * @Bar("dog") fun doThing() = Unit
- * ```
- *
- * and annotation text `@Foo("cat")`, this method would return
- *
- * ```
- * @Foo("cat") @Bar("dog") fun doThing() = Unit
- * ```
- *
- * However, if the passed annotation text were instead `@Bar("cat")`, this method would return the
- * original declaration's text unchanged.
- */
-inline fun <reified T : KtDeclaration> T.withAnnotation(annotationText: String): T =
-    this.withAnnotation(KotlinParserUtil.parseAsAnnotationEntry(annotationText))
-
-/**
- * Inserts the annotation after the provided PsiElement's leading comment, if any, and returns the
- * resulting text. If an annotation with the same name is already present, returns the original
- * text. For example, given a declaration like
- *
- * ```
- * @Bar("dog") fun doThing() = Unit
- * ```
- *
- * and annotation text `@Foo("cat")`, this method would return
- *
- * ```
- * @Foo("cat") @Bar("dog") fun doThing() = Unit
- * ```
- *
- * However, if the passed annotation text were instead `@Bar("cat")`, this method would return the
- * original declaration's text unchanged.
- */
-inline fun <reified T : KtDeclaration> T.withAnnotation(annotation: KtAnnotationEntry): T {
-  return if (this.annotationEntries.any { it.shortName == annotation.shortName }) {
-    this
-  } else {
-    val updatedText =
-        if (this.startsWithComment()) {
-          val commentChild = this.getChildOfType<KDoc>() ?: PsiTreeUtil.firstChild(this)
-          val commentChildOffset = commentChild.getStartOffsetIn(this) + commentChild.textLength
-          "${this.text.substring(0, commentChildOffset)}\n${annotation.text} ${this.text.substring(commentChildOffset + 1)}"
-        } else {
-          "${annotation.text} ${this.text}"
-        }
-    KotlinParserUtil.parseAsDeclaration(updatedText) as T
-  }
-}
 
 /**
  * Inserts the supertype after existing supertypes, if any, and returns the resulting text. If a
