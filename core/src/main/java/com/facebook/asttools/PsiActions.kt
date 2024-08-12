@@ -18,53 +18,8 @@ package com.facebook.asttools
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtClassOrObject
-import org.jetbrains.kotlin.psi.KtNameReferenceExpression
-import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
-
-/**
- * Inserts the supertype after existing supertypes, if any, and returns the resulting text. If a
- * supertype with the same name is already present, returns the original text. For example, given a
- * declaration like
- *
- * ```
- * class Foo(val name: String) : SuperFoo(name)
- * ```
- *
- * and supertype text `Cat`, this method would return
- *
- * ```
- * class Foo(val name: String) : SuperFoo(name), Cat
- * ```
- */
-fun KtClassOrObject.withSupertype(supertypeText: String): KtClassOrObject {
-  val newSupertypeName =
-      KotlinParserUtil.parseAsSupertype(supertypeText)
-          .collectDescendantsOfType<KtNameReferenceExpression>()
-          .map { it.text }
-          .firstOrNull() ?: return this
-
-  if (this.superTypeListEntries.any {
-    it.collectDescendantsOfType<KtNameReferenceExpression>().map { it.text }.firstOrNull() ==
-        newSupertypeName
-  }) {
-    return this
-  }
-
-  val lastSupertype = this.superTypeListEntries.lastOrNull()
-  val classBody = this.body
-  val updatedClassText =
-      when {
-        lastSupertype != null ->
-            replaceNodeInAncestor(this, lastSupertype, "${lastSupertype.text}, $supertypeText")
-        classBody != null ->
-            replaceNodeInAncestor(this, classBody, ": $supertypeText ${classBody.text}")
-        else -> "${this.text} : $supertypeText"
-      }
-
-  return KotlinParserUtil.parseAsClassOrObject(updatedClassText)
-}
 
 /**
  * Inserts the method after all other properties/methods and returns the resulting text. If a method
