@@ -17,35 +17,8 @@
 package com.facebook.asttools
 
 import com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.startOffset
-
-/**
- * Inserts the method after all other properties/methods and returns the resulting text. If a method
- * with the same signature is already present, the new method will be added anyway. For example,
- * given a class like
- *
- * ```
- * class Foo(val name: String) {
- *   fun getFoo(name: String): Foo = Foo(name)
- * }
- * ```
- *
- * and method text `fun getFoo(a: String): Foo = Foo(a)`, this method would the original class text
- */
-fun KtClassOrObject.withFunction(methodText: String): KtClassOrObject {
-  val updatedClassText =
-      when {
-        this.body == null -> "${this.text} {\n  $methodText\n}"
-        this.declarations.isEmpty() ->
-            this.text.replaceAfterLast("}", "").removeSuffix("}") + "\n  $methodText\n}"
-        else ->
-            replaceNodeInAncestor(
-                this, this.declarations.last(), "${this.declarations.last().text}\n\n  $methodText")
-      }
-  return KotlinParserUtil.parseAsClassOrObject(updatedClassText)
-}
 
 /**
  * Replaces multiple given nodes in a any code (kotlin or java) with the given replacements
@@ -84,19 +57,4 @@ fun replaceElements(code: String, elements: List<PsiElement>, replacements: List
     text = text.substring(0, element.startOffset) + replacement + text.substring(element.endOffset)
   }
   return text
-}
-
-private fun replaceNodeInAncestor(
-    parentNode: PsiElement,
-    node: PsiElement,
-    replacement: String
-): String {
-  val parentText = parentNode.text
-  val parentStartOffset = parentNode.startOffset
-  val relativeStartOffset = node.startOffset - parentStartOffset
-  val relativeEndOffset = node.endOffset - parentStartOffset - 1
-  return parentText.substring(0, relativeStartOffset) +
-      replacement +
-      if (relativeEndOffset < parentText.lastIndex) parentText.substring(relativeEndOffset + 1)
-      else ""
 }
