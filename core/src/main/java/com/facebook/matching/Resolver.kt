@@ -19,12 +19,27 @@ package com.facebook.matching
 import com.intellij.psi.PsiElement
 
 interface Resolver {
+  /** Tries to return the fully qualified name of the type of this PsiElement */
   fun resolveToFullyQualifiedType(psiElement: PsiElement): String?
+
+  /**
+   * Tries to return the fully qualified name of the type of this PsiElement, along with every type
+   * it extends. e.g. class A extends BClass implements CInterface. class BClass extends
+   * DAbstractClass. Calling this on an instance of A would return
+   * [com.fqn.A, com.fqn.BClass, com.fqn.CInterface, com.fqn.DAbstractClass]
+   */
+  fun resolveToFullyQualifiedTypeAndSupertypes(psiElement: PsiElement): List<String>?
 
   companion object {
     val DEFAULT =
         object : Resolver {
           override fun resolveToFullyQualifiedType(psiElement: PsiElement): String? {
+            error("Template was not built with a resolver to allow resolving of symbols")
+          }
+
+          override fun resolveToFullyQualifiedTypeAndSupertypes(
+              psiElement: PsiElement
+          ): List<String>? {
             error("Template was not built with a resolver to allow resolving of symbols")
           }
         }

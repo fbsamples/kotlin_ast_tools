@@ -47,6 +47,15 @@ class PsiAstTemplateParserTest {
                     "foo.getMore()" -> "com.facebook.bar.NotBar"
                     else -> null
                   }
+
+              override fun resolveToFullyQualifiedTypeAndSupertypes(
+                  psiElement: PsiElement
+              ): List<String>? =
+                  when (psiElement.text) {
+                    "foo.get()" -> listOf("com.facebook.bar.Bar", "com.facebook.bar.Baz")
+                    "foo.getMore()" -> listOf("com.facebook.bar.NotBar", "com.facebook.bar.NotBaz")
+                    else -> null
+                  }
             })
 
     assertThat(
