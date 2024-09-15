@@ -64,5 +64,12 @@ class PsiAstTemplateParserTest {
                 .findAll(ktFile)
                 .map { it.text })
         .containsExactly("foo.get().get()")
+
+    assertThat(
+            parser
+                .parseTemplateWithVariables<KtExpression>("#a{type=com.facebook.bar.Baz}#.get()")
+                .findAll(ktFile)
+                .map { it.text })
+        .containsExactly("foo.get().get()")
   }
 }

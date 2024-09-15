@@ -69,7 +69,10 @@ class Variable(
     typeMatchArgument?.let {
       check(resolver != Resolver.DEFAULT) { "Missing resolver, cannot deduce types" }
       matcher.addChildMatcher {
-        it is PsiElement && resolver.resolveToFullyQualifiedType(it) == typeMatchArgument
+        it is PsiElement &&
+            resolver.resolveToFullyQualifiedTypeAndSupertypes(it)?.any { typeName ->
+              typeName == typeMatchArgument
+            } == true
       }
     }
   }
