@@ -17,6 +17,9 @@
 package com.facebook.asttools.analysis
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiExpression
+import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
@@ -30,12 +33,41 @@ import org.jetbrains.kotlin.psi.psiUtil.getTopmostParentOfType
  */
 object UsagesFinder {
 
+  /**
+   * Find all elements that are references to the given declaration
+   *
+   * @param the declaration to search for its usages
+   * @param under limit the results to elements under this element. If omitted, we search the entire
+   *   file.
+   */
   fun getUsages(
       declaration: KtNamedDeclaration,
       under: PsiElement = declaration.getTopmostParentOfType<KtFile>()!!,
   ): List<PsiElement> {
-    val name = declaration.name ?: error("Declaration has no name")
-    return under.collectDescendantsOfType<KtExpression> {
+    return getUsages<KtExpression>(declaration, declaration.name, under)
+  }
+
+  /**
+   * Find all elements that are references to the given declaration
+   *
+   * @param the declaration to search for its usages
+   * @param under limit the results to elements under this element. If omitted, we search the entire
+   *   file
+   */
+  fun getUsages(
+      declaration: PsiVariable,
+      under: PsiElement = declaration.getTopmostParentOfType<PsiJavaFile>()!!,
+  ): List<PsiElement> {
+    return getUsages<PsiExpression>(declaration, declaration.name, under)
+  }
+
+  private inline fun <reified T : PsiElement> getUsages(
+      declaration: PsiElement,
+      name: String?,
+      under: PsiElement,
+  ): List<PsiElement> {
+    name ?: error("Declaration has no name")
+    return under.collectDescendantsOfType<T> {
       it != declaration &&
           it.text == name &&
           DeclarationsFinder.getDeclarationAt(it, name) == declaration

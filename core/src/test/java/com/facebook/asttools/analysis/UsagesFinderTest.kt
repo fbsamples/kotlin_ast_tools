@@ -16,9 +16,11 @@
 
 package com.facebook.asttools.analysis
 
+import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiLocalVariable
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
@@ -53,6 +55,39 @@ class UsagesFinderTest {
             "6:15:name + \"!\"",
             "7:22:name2 > name",
             "7:39:name",
+        )
+  }
+
+  @Test
+  fun `test find usages in Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+        |package com.facebook.example;
+        |
+        |public class Example {
+        |  public static String doIt(String name) {
+        |    String name = name.trim();
+        |    System.out.println(name);
+        |    String name2 = name + "!";
+        |    if (name.equals(name2)) {
+        |      return name2;
+        |    } else {
+        |      return name;
+        |    }  
+        |  }
+        |}
+        """
+                .trimMargin())
+
+    val psiVariable = psiJavaFile.findDescendantOfType<PsiLocalVariable> { it.name == "name" }!!
+    val usages = UsagesFinder.getUsages(psiVariable)
+    assertThat(usages.map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly(
+            "6:24:(name)",
+            "7:20:name + \"!\"",
+            "8:9:name.equals",
+            "11:14:return name;",
         )
   }
 
