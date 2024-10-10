@@ -23,9 +23,12 @@ import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiPostfixExpression
 import com.intellij.psi.PsiPrefixExpression
 import com.intellij.psi.PsiVariable
+import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
+import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.KtUnaryExpression
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.psi.psiUtil.getTopmostParentOfType
 
@@ -80,6 +83,31 @@ object UsagesFinder {
             parent is PsiAssignmentExpression && parent.lExpression == it ||
                 parent is PsiPostfixExpression ||
                 parent is PsiPrefixExpression
+          }
+        }
+  }
+
+  /**
+   * Find all writes to the given variable
+   *
+   * We consider writes to be any expression that assigns a value to the variable (including its
+   * initializer) or a modifying operator such as ++
+   */
+  fun getWrites(
+      declaration: KtNamedDeclaration,
+      under: PsiElement = declaration.getTopmostParentOfType<KtFile>()!!
+  ): List<PsiElement> {
+    return listOfNotNull(
+        declaration.takeIf {
+          declaration is KtProperty &&
+              (declaration.initializer != null || declaration.delegateExpression != null)
+        }) +
+        getUsages(declaration, under).mapNotNull {
+          it.parent.takeIf { parent ->
+            parent is KtBinaryExpression &&
+                parent.operationReference.text == "=" &&
+                parent.left == it ||
+                parent is KtUnaryExpression && parent.operationReference.text in setOf("++", "--")
           }
         }
   }

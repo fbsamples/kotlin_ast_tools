@@ -121,6 +121,34 @@ class UsagesFinderTest {
         )
   }
 
+  @Test
+  fun `test find writes in Kotlin`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+        |package com.facebook.example
+        |
+        |fun doIt(boolean b) {
+        |  val n = 5
+        |  if (n < 2 && b) {
+        |    n = 6
+        |  } else {
+        |    n--
+        |  }
+        |}
+        """
+                .trimMargin())
+
+    val ktProperty = ktFile.findDescendantOfType<KtProperty> { it.name == "n" }!!
+    val usages = UsagesFinder.getWrites(ktProperty)
+    assertThat(usages.map { "${locationOf(it)}:${it.text}" })
+        .containsExactly(
+            "4:3:val n = 5",
+            "6:5:n = 6",
+            "8:5:n--",
+        )
+  }
+
   fun locationOf(psiElement: PsiElement): String {
     val file = psiElement.getTopmostParentOfType<PsiFile>()!!
     val substring = file.text.substring(0, psiElement.startOffset)
