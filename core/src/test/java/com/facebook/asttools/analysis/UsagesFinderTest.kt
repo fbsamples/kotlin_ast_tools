@@ -91,6 +91,36 @@ class UsagesFinderTest {
         )
   }
 
+  @Test
+  fun `test find writes in Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+        |package com.facebook.example;
+        |
+        |public class Example {
+        |  public static void doIt(boolean b) {
+        |    int n = 5;
+        |    if (n < 2 && b) {
+        |      n = 6;
+        |    } else {
+        |      n--;
+        |    }
+        |  }
+        |}
+        """
+                .trimMargin())
+
+    val psiVariable = psiJavaFile.findDescendantOfType<PsiLocalVariable> { it.name == "n" }!!
+    val usages = UsagesFinder.getWrites(psiVariable)
+    assertThat(usages.map { "${locationOf(it)}:${it.text}" })
+        .containsExactly(
+            "5:5:int n = 5;",
+            "7:7:n = 6",
+            "9:7:n--",
+        )
+  }
+
   fun locationOf(psiElement: PsiElement): String {
     val file = psiElement.getTopmostParentOfType<PsiFile>()!!
     val substring = file.text.substring(0, psiElement.startOffset)

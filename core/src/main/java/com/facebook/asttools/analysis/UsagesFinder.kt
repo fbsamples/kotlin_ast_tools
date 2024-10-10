@@ -16,9 +16,12 @@
 
 package com.facebook.asttools.analysis
 
+import com.intellij.psi.PsiAssignmentExpression
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiPostfixExpression
+import com.intellij.psi.PsiPrefixExpression
 import com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
@@ -59,6 +62,26 @@ object UsagesFinder {
       under: PsiElement = declaration.getTopmostParentOfType<PsiJavaFile>()!!,
   ): List<PsiElement> {
     return getUsages<PsiExpression>(declaration, declaration.name, under)
+  }
+
+  /**
+   * Find all writes to the given variable
+   *
+   * We consider writes to be any expression that assigns a value to the variable (including its
+   * initializer) or a modifying operator such as ++
+   */
+  fun getWrites(
+      declaration: PsiVariable,
+      under: PsiElement = declaration.getTopmostParentOfType<PsiJavaFile>()!!
+  ): List<PsiElement> {
+    return listOfNotNull(declaration.takeIf { it.initializer != null }) +
+        getUsages(declaration, under).mapNotNull {
+          it.parent.takeIf { parent ->
+            parent is PsiAssignmentExpression && parent.lExpression == it ||
+                parent is PsiPostfixExpression ||
+                parent is PsiPrefixExpression
+          }
+        }
   }
 
   private inline fun <reified T : PsiElement> getUsages(
