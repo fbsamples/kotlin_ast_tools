@@ -16,6 +16,10 @@
 
 package com.facebook.asttools.analysis
 
+import com.facebook.aelements.AParameter
+import com.facebook.aelements.AVariableDeclaration
+import com.facebook.aelements.findDescendantOfType
+import com.facebook.aelements.toAElement
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import com.intellij.psi.PsiElement
@@ -56,6 +60,35 @@ class UsagesFinderTest {
             "7:22:name2 > name",
             "7:39:name",
         )
+  }
+
+  @Test
+  fun `test find usages in both languages`() {
+    val aFiles =
+        listOf(
+            KotlinParserUtil.parseAsFile(
+                    """
+        |fun doIt(name: String) {
+        |  println(name)
+        |}
+        """
+                        .trimMargin())
+                .toAElement(),
+            JavaPsiParserUtil.parseAsFile(
+                    """
+        |public class Example {
+        |  public static String doIt(String name) {
+        |    println(name);
+        |  }
+        |}
+        """
+                        .trimMargin())
+                .toAElement())
+    for (aFile in aFiles) {
+      val usages =
+          UsagesFinder.getUsages(aFile.findDescendantOfType<AParameter> { it.name == "name" }!!)
+      assertThat(usages.map { it.text }).containsExactly("name")
+    }
   }
 
   @Test
@@ -147,6 +180,38 @@ class UsagesFinderTest {
             "6:5:n = 6",
             "8:5:n--",
         )
+  }
+
+  @Test
+  fun `test find writes in both languages`() {
+    val aFiles =
+        listOf(
+            KotlinParserUtil.parseAsFile(
+                    """
+        |fun doIt(name: String) {
+        |  var a = "5"
+        |  a = name  
+        |}
+        """
+                        .trimMargin())
+                .toAElement(),
+            JavaPsiParserUtil.parseAsFile(
+                    """
+        |public class Example {
+        |  public static String doIt(String name) {
+        |    String a = "5";
+        |    a = name;
+        |  }
+        |}
+        """
+                        .trimMargin())
+                .toAElement())
+    for (aFile in aFiles) {
+      val usages =
+          UsagesFinder.getWrites(
+              aFile.findDescendantOfType<AVariableDeclaration> { it.name == "a" }!!)
+      assertThat(usages.map { it.text }.getOrNull(1)).isEqualTo("a = name")
+    }
   }
 
   fun locationOf(psiElement: PsiElement): String {

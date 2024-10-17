@@ -16,6 +16,11 @@
 
 package com.facebook.asttools.analysis
 
+import com.facebook.aelements.AElement
+import com.facebook.aelements.AFile
+import com.facebook.aelements.ANamedElement
+import com.facebook.aelements.getParentOfType
+import com.facebook.aelements.toAElement
 import com.intellij.psi.PsiAssignmentExpression
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiExpression
@@ -53,19 +58,24 @@ object UsagesFinder {
     return getUsages<KtExpression>(declaration, declaration.name, under)
   }
 
-  /**
-   * Find all elements that are references to the given declaration
-   *
-   * @param the declaration to search for its usages
-   * @param under limit the results to elements under this element. If omitted, we search the entire
-   *   file
-   */
+  /** See [getUsages] */
   fun getUsages(
       declaration: PsiVariable,
       under: PsiElement = declaration.getTopmostParentOfType<PsiJavaFile>()!!,
   ): List<PsiElement> {
     return getUsages<PsiExpression>(declaration, declaration.name, under)
   }
+
+  /** See [getUsages] */
+  fun getUsages(
+      declaration: ANamedElement,
+      under: AElement = declaration.getParentOfType<AFile>()!!,
+  ): List<AElement> =
+      when (val psiElement = declaration.psiElement) {
+        is KtNamedDeclaration -> getUsages(psiElement, under.psiElement)
+        is PsiVariable -> getUsages(psiElement, under.psiElement)
+        else -> error("Unsupported declaration type ${declaration::class}")
+      }.map { it.toAElement() }
 
   /**
    * Find all writes to the given variable
@@ -87,12 +97,7 @@ object UsagesFinder {
         }
   }
 
-  /**
-   * Find all writes to the given variable
-   *
-   * We consider writes to be any expression that assigns a value to the variable (including its
-   * initializer) or a modifying operator such as ++
-   */
+  /** See [getWrites] */
   fun getWrites(
       declaration: KtNamedDeclaration,
       under: PsiElement = declaration.getTopmostParentOfType<KtFile>()!!
@@ -111,6 +116,17 @@ object UsagesFinder {
           }
         }
   }
+
+  /** See [getWrites] */
+  fun getWrites(
+      declaration: ANamedElement,
+      under: AElement = declaration.getParentOfType<AFile>()!!,
+  ): List<AElement> =
+      when (val psiElement = declaration.psiElement) {
+        is KtNamedDeclaration -> getWrites(psiElement, under.psiElement)
+        is PsiVariable -> getWrites(psiElement, under.psiElement)
+        else -> error("Unsupported declaration type ${declaration::class}")
+      }.map { it.toAElement() }
 
   private inline fun <reified T : PsiElement> getUsages(
       declaration: PsiElement,
