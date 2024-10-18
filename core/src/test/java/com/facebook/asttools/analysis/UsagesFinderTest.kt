@@ -214,6 +214,40 @@ class UsagesFinderTest {
     }
   }
 
+  @Test
+  fun `test find reads in both languages`() {
+    val aFiles =
+        listOf(
+            KotlinParserUtil.parseAsFile(
+                    """
+        |fun doIt(name: String): String {
+        |  var a = "5"
+        |  a = name
+        |  return a  
+        |}
+        """
+                        .trimMargin())
+                .toAElement(),
+            JavaPsiParserUtil.parseAsFile(
+                    """
+        |public class Example {
+        |  public static String doIt(String name) {
+        |    String a = "5";
+        |    a = name;
+        |    return a;
+        |  }
+        |}
+        """
+                        .trimMargin())
+                .toAElement())
+    for (aFile in aFiles) {
+      val usages =
+          UsagesFinder.getReads(
+              aFile.findDescendantOfType<AVariableDeclaration> { it.name == "a" }!!)
+      assertThat(usages.map { it.parent?.text }.single()).matches("return a;?")
+    }
+  }
+
   fun locationOf(psiElement: PsiElement): String {
     val file = psiElement.getTopmostParentOfType<PsiFile>()!!
     val substring = file.text.substring(0, psiElement.startOffset)

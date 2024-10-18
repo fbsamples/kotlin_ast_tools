@@ -128,6 +128,15 @@ object UsagesFinder {
         else -> error("Unsupported declaration type ${declaration::class}")
       }.map { it.toAElement() }
 
+  /** Returns all access to the element which are not a modification */
+  fun getReads(
+      declaration: ANamedElement,
+      under: AElement = declaration.getParentOfType<AFile>()!!,
+  ): List<AElement> {
+    val writes = getWrites(declaration, under)
+    return getUsages(declaration, under).filter { it.parent !in writes }
+  }
+
   private inline fun <reified T : PsiElement> getUsages(
       declaration: PsiElement,
       name: String?,
