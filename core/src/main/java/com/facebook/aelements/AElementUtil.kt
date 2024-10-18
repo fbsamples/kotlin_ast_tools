@@ -50,14 +50,17 @@ import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructor
+import org.jetbrains.kotlin.psi.KtDeclarationWithBody
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtFunctionLiteral
 import org.jetbrains.kotlin.psi.KtIfExpression
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtParameterList
 import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.KtPropertyAccessor
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
 import org.jetbrains.kotlin.psi.KtTypeArgumentList
 import org.jetbrains.kotlin.psi.KtTypeReference
@@ -75,6 +78,7 @@ fun PsiElement.toAElement(): AElement =
       is PsiMethod -> toAElement()
       is KtConstructor<*> -> toAElement()
       is KtNamedFunction -> toAElement()
+      is KtPropertyAccessor -> toAElement()
       is PsiAnnotation -> toAElement()
       is KtAnnotationEntry -> toAElement()
       is PsiExpressionList -> toAElement()
@@ -126,7 +130,8 @@ fun PsiImportStatementBase.toAElement() = AImportDirective(this)
 
 fun KtImportDirective.toAElement() = AImportDirective(this)
 
-fun PsiMethod.toAElement() = if (isConstructor) AConstructor(this) else ANamedFunction(this)
+fun PsiMethod.toAElement(): ADeclarationWithBody =
+    if (isConstructor) AConstructor(this) else ANamedFunction(this)
 
 fun KtConstructor<*>.toAElement() = AConstructor(this)
 
@@ -198,6 +203,17 @@ fun KtBinaryExpression.toAElement() =
 fun PsiIfStatement.toAElement() = AIfExpressionOrStatement(this)
 
 fun KtIfExpression.toAElement() = AIfExpressionOrStatement(this)
+
+fun KtDeclarationWithBody.toAElement(): ADeclarationWithBody =
+    when (this) {
+      is KtNamedFunction -> toAElement()
+      is KtConstructor<*> -> toAElement()
+      is KtPropertyAccessor -> toAElement()
+      is KtFunctionLiteral -> ADeclarationWithBodyImpl(this)
+      else -> error("Unexpected type ${this::class.java.simpleName}")
+    }
+
+fun KtPropertyAccessor.toAElement() = APropertyAccessor(this)
 
 fun KtExpression.toAElement(): AExpressionOrStatement =
     when (this) {

@@ -16,6 +16,7 @@
 
 package com.facebook.aelements
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody
 
@@ -33,4 +34,13 @@ interface ADeclarationWithBody : AElement {
 
   val bodyBlockExpression: ACodeBlock?
     get() = javaElement?.body?.toAElement() ?: kotlinElement?.bodyBlockExpression?.toAElement()
+}
+
+class ADeclarationWithBodyImpl internal constructor(psiElement: PsiElement) :
+    ADeclarationWithBody, AElementImpl(psiElement) {
+  constructor(psiMethod: PsiMethod) : this(psiMethod as PsiElement)
+
+  constructor(
+      ktDeclarationWithBody: KtDeclarationWithBody
+  ) : this(ktDeclarationWithBody as PsiElement)
 }
