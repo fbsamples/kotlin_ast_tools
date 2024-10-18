@@ -29,6 +29,17 @@ import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtProperty
 
+fun <T : PsiElement> T.match(template: String): MatchResult<T> {
+  val psiAstTemplateParser = PsiAstTemplateParser()
+  return when (this) {
+    is KtExpression -> psiAstTemplateParser.parseTemplateWithVariables<KtExpression>(template)
+    is PsiExpression -> psiAstTemplateParser.parseTemplateWithVariables<PsiExpression>(template)
+    else -> error("PsiElements of type ${this.javaClass.simpleName} are not supported")
+  }.matches(this) as MatchResult<T>
+}
+
+fun PsiElement.matches(template: String): Boolean = match(template) != null
+
 /**
  * Returns a list of all expressions in a Kotlin file that match the given string template.
  *
