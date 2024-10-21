@@ -21,17 +21,24 @@ import com.facebook.aelements.AFile
 import com.facebook.aelements.ANamedElement
 import com.facebook.aelements.getParentOfType
 import com.facebook.aelements.toAElement
+import com.facebook.asttools.analysis.DeclarationsFinder.getDeclarationsAt
 import com.intellij.psi.PsiAssignmentExpression
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiMethodCallExpression
+import com.intellij.psi.PsiMethodReferenceExpression
 import com.intellij.psi.PsiPostfixExpression
 import com.intellij.psi.PsiPrefixExpression
 import com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtBinaryExpression
+import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtCallableReferenceExpression
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
+import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtUnaryExpression
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
@@ -61,6 +68,14 @@ object UsagesFinder {
   /** See [getUsages] */
   fun getUsages(
       declaration: PsiVariable,
+      under: PsiElement = declaration.getTopmostParentOfType<PsiJavaFile>()!!,
+  ): List<PsiElement> {
+    return getUsages<PsiExpression>(declaration, declaration.name, under)
+  }
+
+  /** See [getUsages] */
+  fun getUsages(
+      declaration: PsiMethod,
       under: PsiElement = declaration.getTopmostParentOfType<PsiJavaFile>()!!,
   ): List<PsiElement> {
     return getUsages<PsiExpression>(declaration, declaration.name, under)
@@ -143,10 +158,33 @@ object UsagesFinder {
       under: PsiElement,
   ): List<PsiElement> {
     name ?: error("Declaration has no name")
-    return under.collectDescendantsOfType<T> {
-      it != declaration &&
-          it.text == name &&
-          DeclarationsFinder.getDeclarationAt(it, name) == declaration
+    return under.collectDescendantsOfType<T> { candidate ->
+      if (candidate == declaration) {
+        return@collectDescendantsOfType false
+      }
+      if (candidate.text != name &&
+          (candidate as? PsiMethodReferenceExpression)?.text != "this::$name") {
+        return@collectDescendantsOfType false
+      }
+
+      val declarationsForName =
+          getDeclarationsAt(candidate)[name] ?: return@collectDescendantsOfType false
+      val effectiveDeclaration =
+          declarationsForName.allValues.firstOrNull { it.javaClass == declaration.javaClass }
+      effectiveDeclaration == declaration &&
+          if (candidate is PsiMethodReferenceExpression) {
+            effectiveDeclaration is PsiMethod
+          } else {
+            when (val parent = candidate.parent) {
+              is KtCallExpression ->
+                  if (parent.calleeExpression == candidate) effectiveDeclaration is KtNamedFunction
+                  else true
+              is KtCallableReferenceExpression -> effectiveDeclaration is KtNamedFunction
+              is PsiMethodCallExpression ->
+                  parent.methodExpression == candidate && effectiveDeclaration is PsiMethod
+              else -> effectiveDeclaration !is KtNamedFunction && effectiveDeclaration !is PsiMethod
+            }
+          }
     }
   }
 }

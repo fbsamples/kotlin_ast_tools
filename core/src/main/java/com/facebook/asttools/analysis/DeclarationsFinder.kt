@@ -75,15 +75,21 @@ object DeclarationsFinder {
      * `last` would return `val name: String` for `name`.
      */
     val _last: PsiElement
+
+    val allValues: Array<PsiElement>
   }
 
   class Simple(override val value: PsiElement) : Declaration {
     override val _last = value
+    override val allValues: Array<PsiElement>
+      get() = arrayOf(value)
   }
 
   class Overloaded(val values: Array<PsiElement>) : Declaration {
     override val value = values.first()
     override val _last = values.last()
+    override val allValues: Array<PsiElement>
+      get() = values
   }
 
   /**

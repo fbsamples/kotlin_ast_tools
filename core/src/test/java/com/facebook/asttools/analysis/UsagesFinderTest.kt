@@ -22,10 +22,13 @@ import com.facebook.aelements.findDescendantOfType
 import com.facebook.aelements.toAElement
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
+import com.facebook.asttools.requireSingleOfType
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiLocalVariable
+import com.intellij.psi.PsiMethod
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 import org.jetbrains.kotlin.psi.psiUtil.getTopmostParentOfType
@@ -60,6 +63,30 @@ class UsagesFinderTest {
             "7:22:name2 > name",
             "7:39:name",
         )
+  }
+
+  @Test
+  fun `test find usages with same name function in Kotlin`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+        |package com.facebook.example
+        |
+        |fun f(name: String): String {
+        |  val f = 5
+        |  println(::f)
+        |  println(f)
+        |}
+        """
+                .trimMargin())
+
+    val ktProperty = ktFile.requireSingleOfType<KtProperty>("val f = 5")
+    val ktNamedFunction = ktFile.requireSingleOfType<KtNamedFunction>(name = "f")
+    assertThat(UsagesFinder.getUsages(ktProperty).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("6:11:f")
+    assertThat(
+            UsagesFinder.getUsages(ktNamedFunction).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("5:13:::f")
   }
 
   @Test
@@ -122,6 +149,33 @@ class UsagesFinderTest {
             "8:9:name.equals",
             "11:14:return name;",
         )
+  }
+
+  @Test
+  fun `test find usages with same name function in Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+        |package com.facebook.example;
+        |
+        |import java.util.List;
+        |public class Example {
+        |  void f(String name) {
+        |    int f = 5;
+        |    new ArrayList<String>().forEach(this::f);
+        |    println(f);
+        |  }
+        |}
+        """
+                .trimMargin())
+
+    val psiLocalVariable = psiJavaFile.requireSingleOfType<PsiLocalVariable>("int f = 5;")
+    val psiMethod = psiJavaFile.requireSingleOfType<PsiMethod>(name = "f")
+    assertThat(
+            UsagesFinder.getUsages(psiLocalVariable).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("8:13:(f)")
+    assertThat(UsagesFinder.getUsages(psiMethod).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("7:37:(this::f)")
   }
 
   @Test
