@@ -23,6 +23,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiField
+import com.intellij.psi.PsiImportStatementBase
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiMethod
@@ -107,6 +108,18 @@ object JavaPsiParserUtil {
         parseAsFile(
             """
         $code
+        class Dummy {}
+        """
+                .trimIndent()),
+        code)
+  }
+
+  fun parseAsImportStatement(code: String): PsiImportStatementBase {
+    return extract(
+        parseAsFile(
+            """
+        $code
+
         class Dummy {}
         """
                 .trimIndent()),

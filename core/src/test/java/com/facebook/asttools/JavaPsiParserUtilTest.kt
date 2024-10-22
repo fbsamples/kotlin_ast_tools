@@ -20,6 +20,7 @@ import com.intellij.psi.PsiAnnotation
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiField
+import com.intellij.psi.PsiImportStatementBase
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiStatement
 import java.lang.IllegalStateException
@@ -121,6 +122,13 @@ class JavaPsiParserUtilTest {
     val statement = JavaPsiParserUtil.parseAsAnnotation("@Magic(a = 5)")
     assertThat(statement).isInstanceOf(PsiAnnotation::class.java)
     assertThat(statement.text).isEqualTo("@Magic(a = 5)")
+  }
+
+  @Test
+  fun `parse as import statement`() {
+    val statement = JavaPsiParserUtil.parseAsImportStatement("import com.facebook.A;")
+    assertThat(statement).isInstanceOf(PsiImportStatementBase::class.java)
+    assertThat(statement.text).isEqualTo("import com.facebook.A;")
   }
 
   @Test
