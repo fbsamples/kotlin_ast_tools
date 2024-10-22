@@ -25,7 +25,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiField
 import com.intellij.psi.PsiIdentifier
+import com.intellij.psi.PsiImportStatement
+import com.intellij.psi.PsiImportStatementBase
+import com.intellij.psi.PsiImportStaticStatement
 import com.intellij.psi.PsiInstanceOfExpression
+import com.intellij.psi.PsiJavaCodeReferenceElement
 import com.intellij.psi.PsiMethodCallExpression
 import com.intellij.psi.PsiParenthesizedExpression
 import com.intellij.psi.PsiPostfixExpression
@@ -41,6 +45,8 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.psi.KtImportAlias
+import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtIsExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
 import org.jetbrains.kotlin.psi.KtLambdaExpression
@@ -68,9 +74,13 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
       KtExpression::class.java -> parseKotlinRecursive(KotlinParserUtil.parseAsExpression(template))
       KtAnnotationEntry::class.java ->
           parseKotlinRecursive(KotlinParserUtil.parseAsAnnotationEntry(template))
+      KtImportDirective::class.java ->
+          parseKotlinRecursive(KotlinParserUtil.parseAsImportStatement(template))
       PsiExpression::class.java -> parseJavaRecursive(JavaPsiParserUtil.parseAsExpression(template))
       PsiField::class.java -> parseJavaRecursive(JavaPsiParserUtil.parseAsField(template))
       PsiAnnotation::class.java -> parseJavaRecursive(JavaPsiParserUtil.parseAsAnnotation(template))
+      PsiImportStatementBase::class.java ->
+          parseJavaRecursive(JavaPsiParserUtil.parseAsImportStatement(template))
       else -> error("unsupported: $clazz")
     }
         as PsiAstMatcher<T>
@@ -255,6 +265,24 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               }
             }
           }
+      // for example: "import com.example.Foo"
+      is KtImportDirective ->
+          match<KtImportDirective>().apply {
+            node.importedReference?.let { importedReference ->
+              addChildMatcher({ it.importedReference }, parseKotlinRecursive(importedReference))
+            }
+            val importAlias = node.alias
+            if (importAlias != null) {
+              addChildMatcher({ it.alias }, parseKotlinRecursive(importAlias))
+            } else {
+              addChildMatcher { it.alias == null }
+            }
+          }
+      is KtImportAlias -> {
+        loadIfVariableOr(node.name) {
+          match<KtImportAlias>().apply { addChildMatcher { it.name == node.name } }
+        }
+      }
       // for example "Bar<*>" in `doIt<Bar<*>>()`
       is KtTypeProjection ->
           match<KtTypeProjection>().apply {
@@ -395,6 +423,40 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
             match<PsiAnnotation>().apply {
               node.nameReferenceElement?.referenceName?.let { referenceName ->
                 addChildMatcher { it.nameReferenceElement?.referenceName == referenceName }
+              }
+            }
+          }
+      is PsiImportStatement ->
+          node.importReference?.let { importReference ->
+            match<PsiImportStatement>().apply {
+              addChildMatcher({ it.importReference }, parseJavaRecursive(importReference))
+            }
+          }
+      is PsiImportStaticStatement ->
+          node.importReference?.let { importReference ->
+            match<PsiImportStaticStatement>().apply {
+              addChildMatcher({ it.importReference }, parseJavaRecursive(importReference))
+            }
+          }
+      is PsiJavaCodeReferenceElement ->
+          loadIfVariableOr(node.text) {
+            match<PsiJavaCodeReferenceElement>().apply {
+              node.qualifier?.let { qualifier ->
+                addChildMatcher({ it.qualifier }, parseJavaRecursive(qualifier))
+              }
+              when (val referenceNameElement = node.referenceNameElement) {
+                is PsiIdentifier ->
+                    addChildMatcher(
+                        { it.referenceNameElement },
+                        loadIfVariableOr(referenceNameElement.text) {
+                          match<PsiElement>().apply {
+                            addChildMatcher { it.text == referenceNameElement.text }
+                          }
+                        })
+                else ->
+                    referenceNameElement?.let {
+                      addChildMatcher({ it.referenceNameElement }, parseJavaRecursive(it))
+                    }
               }
             }
           }

@@ -21,11 +21,13 @@ import com.facebook.asttools.KotlinParserUtil
 import com.intellij.psi.PsiAnnotation
 import com.intellij.psi.PsiExpression
 import com.intellij.psi.PsiField
+import com.intellij.psi.PsiImportStatementBase
 import com.intellij.psi.PsiMethodCallExpression
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtProperty
 import org.junit.Test
 
@@ -449,6 +451,42 @@ class PsiAstTemplateTest {
         .containsExactly("(doIt())", "(1 + 1)")
     assertThat(ktFile.findAllExpressions("(#any# + #any2#)").map { it.text })
         .containsExactly("(1 + 1)")
+  }
+
+  @Test
+  fun `match on import for Kotlin`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+          |import com.facebook.example2
+          |import com.facebook.example
+          |import com.facebook.example as E
+          |import com.meta.example
+          |
+          |fun foo() {
+          |  example(1)
+          |}
+        """
+                .trimMargin())
+
+    assertThat(
+            PsiAstTemplateParser()
+                .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example")
+                .findAll(ktFile)
+                .map { it.text })
+        .containsExactly("import com.facebook.example")
+    assertThat(
+            PsiAstTemplateParser()
+                .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example as #a#")
+                .findAll(ktFile)
+                .map { it.text })
+        .containsExactly("import com.facebook.example as E")
+    assertThat(
+            PsiAstTemplateParser()
+                .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example as E")
+                .findAll(ktFile)
+                .map { it.text })
+        .containsExactly("import com.facebook.example as E")
   }
 
   @Test
@@ -944,5 +982,42 @@ class PsiAstTemplateTest {
         .containsExactly("(doIt())", "(1 + 1)")
     assertThat(psiJavaFile.findAllExpressions("(#any# + #any2#)").map { it.text })
         .containsExactly("(1 + 1)")
+  }
+
+  @Test
+  fun `match on import for Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+          |import com.facebook.example.Foo;
+          |import com.facebook.example.Foo2;
+          |import static com.facebook.example.Foo.f;
+          |import com.meta.example.Foo;
+          |
+          |class Bar {}
+        """
+                .trimMargin())
+
+    assertThat(
+            PsiAstTemplateParser()
+                .parseTemplateWithVariables<PsiImportStatementBase>(
+                    "import com.facebook.example.Foo;")
+                .findAll(psiJavaFile)
+                .map { it.text })
+        .containsExactly("import com.facebook.example.Foo;")
+    assertThat(
+            PsiAstTemplateParser()
+                .parseTemplateWithVariables<PsiImportStatementBase>(
+                    "import static com.facebook.example.Foo.f;")
+                .findAll(psiJavaFile)
+                .map { it.text })
+        .containsExactly("import static com.facebook.example.Foo.f;")
+    assertThat(
+            PsiAstTemplateParser()
+                .parseTemplateWithVariables<PsiImportStatementBase>(
+                    "import com.facebook.example.#a#;")
+                .findAll(psiJavaFile)
+                .map { it.text })
+        .containsExactly("import com.facebook.example.Foo;", "import com.facebook.example.Foo2;")
   }
 }
