@@ -83,6 +83,10 @@ object DeclarationsFinder {
     override val _last = value
     override val allValues: Array<PsiElement>
       get() = arrayOf(value)
+
+    override fun toString(): String {
+      return "Simple(${value.text})"
+    }
   }
 
   class Overloaded(val values: Array<PsiElement>) : Declaration {
@@ -90,6 +94,10 @@ object DeclarationsFinder {
     override val _last = values.last()
     override val allValues: Array<PsiElement>
       get() = values
+
+    override fun toString(): String {
+      return "Overloaded(${values.joinToString(", ") { it.text }})"
+    }
   }
 
   /**
