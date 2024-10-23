@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiMethod
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody
 
 /** An element with a body expression, a function or a constructor */

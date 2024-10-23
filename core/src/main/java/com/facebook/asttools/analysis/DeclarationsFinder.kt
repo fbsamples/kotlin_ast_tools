@@ -16,19 +16,19 @@
 
 package com.facebook.asttools.analysis
 
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiCodeBlock
-import com.intellij.psi.PsiDeclarationStatement
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiField
-import com.intellij.psi.PsiForStatement
-import com.intellij.psi.PsiForeachStatement
-import com.intellij.psi.PsiJavaFile
-import com.intellij.psi.PsiLambdaExpression
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.PsiVariable
-import com.intellij.psi.PsiWhileStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiClass
+import org.jetbrains.kotlin.com.intellij.psi.PsiCodeBlock
+import org.jetbrains.kotlin.com.intellij.psi.PsiDeclarationStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiField
+import org.jetbrains.kotlin.com.intellij.psi.PsiForStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiForeachStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiJavaFile
+import org.jetbrains.kotlin.com.intellij.psi.PsiLambdaExpression
+import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
+import org.jetbrains.kotlin.com.intellij.psi.PsiNamedElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
+import org.jetbrains.kotlin.com.intellij.psi.PsiWhileStatement
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject

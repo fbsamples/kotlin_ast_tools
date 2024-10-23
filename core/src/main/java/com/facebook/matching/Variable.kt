@@ -16,7 +16,7 @@
 
 package com.facebook.matching
 
-import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 
 /**
  * Represents a variagle in a template

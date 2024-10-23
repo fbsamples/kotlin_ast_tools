@@ -16,7 +16,7 @@
 
 package com.facebook.matching
 
-import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 
 interface Resolver {
   /** Tries to return the fully qualified name of the type of this PsiElement */

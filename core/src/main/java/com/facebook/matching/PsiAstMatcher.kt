@@ -17,7 +17,7 @@
 package com.facebook.matching
 
 import com.google.errorprone.annotations.CheckReturnValue
-import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 
 class MatchResult<Element : PsiElement?>(
