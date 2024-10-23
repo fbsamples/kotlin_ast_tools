@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiTypeElement
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiTypeElement
 import org.jetbrains.kotlin.psi.KtTypeReference
 
 /** Represents the name of a type, e.g. `String` in `String s` or `Foo in fun f(foo: Foo)` */

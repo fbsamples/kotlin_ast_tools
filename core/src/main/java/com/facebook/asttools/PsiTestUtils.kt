@@ -16,8 +16,8 @@
 
 package com.facebook.asttools
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiNamedElement
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 

@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiLocalVariable
 import org.jetbrains.kotlin.psi.KtProperty
 
 /**

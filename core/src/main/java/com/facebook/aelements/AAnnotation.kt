@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiAnnotation
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 
 /** Represents an annotation entry, i.e. `@Foo` or `@Foo(1)` */

@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.PsiNameIdentifierOwner
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
 
 /** Represents an element with a name */

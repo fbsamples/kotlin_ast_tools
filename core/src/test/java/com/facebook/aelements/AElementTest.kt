@@ -18,9 +18,9 @@ package com.facebook.aelements
 
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
+import com.intellij.psi.PsiBinaryExpression
+import com.intellij.psi.PsiElement
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.kotlin.com.intellij.psi.PsiBinaryExpression
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.junit.Test
 

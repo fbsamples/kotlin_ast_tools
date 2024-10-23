@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiClass
+import com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtFunction
 import org.jetbrains.kotlin.psi.KtProperty

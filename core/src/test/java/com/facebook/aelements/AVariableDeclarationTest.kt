@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
+import com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtCallableDeclaration
 import org.junit.Test
 

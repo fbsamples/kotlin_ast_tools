@@ -18,12 +18,12 @@ package com.facebook.asttools.analysis
 
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiForeachStatement
+import com.intellij.psi.PsiLocalVariable
+import com.intellij.psi.PsiParameter
+import com.intellij.psi.PsiReturnStatement
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.kotlin.com.intellij.psi.PsiField
-import org.jetbrains.kotlin.com.intellij.psi.PsiForeachStatement
-import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
-import org.jetbrains.kotlin.com.intellij.psi.PsiParameter
-import org.jetbrains.kotlin.com.intellij.psi.PsiReturnStatement
 import org.jetbrains.kotlin.psi.KtForExpression
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.jetbrains.kotlin.psi.KtParameter

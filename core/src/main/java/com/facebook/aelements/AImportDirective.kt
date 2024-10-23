@@ -16,9 +16,9 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiImportStatementBase
-import org.jetbrains.kotlin.com.intellij.psi.PsiImportStaticStatement
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiImportStatementBase
+import com.intellij.psi.PsiImportStaticStatement
 import org.jetbrains.kotlin.psi.KtImportDirective
 
 /** Represents an import, i.e. `import com.foo.Foo` or `import static com.foo.Foo.ba` */

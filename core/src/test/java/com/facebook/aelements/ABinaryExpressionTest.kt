@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiBinaryExpression
+import com.intellij.psi.PsiBinaryExpression
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.junit.Test
 

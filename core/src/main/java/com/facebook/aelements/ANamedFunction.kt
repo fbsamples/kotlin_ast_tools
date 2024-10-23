@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
 /** Represents a method in Java or a function in Kotlin */

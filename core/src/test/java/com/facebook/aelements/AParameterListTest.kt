@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiParameterList
+import com.intellij.psi.PsiParameterList
 import org.jetbrains.kotlin.psi.KtParameterList
 import org.junit.Test
 

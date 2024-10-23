@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiIfStatement
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiIfStatement
 import org.jetbrains.kotlin.psi.KtIfExpression
 
 /** Represents an if construct, which is an expression in Kotlin, but a statement in Java */

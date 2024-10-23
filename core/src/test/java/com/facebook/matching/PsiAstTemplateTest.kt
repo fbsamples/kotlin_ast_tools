@@ -18,12 +18,12 @@ package com.facebook.matching
 
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
+import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiExpression
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiImportStatementBase
+import com.intellij.psi.PsiMethodCallExpression
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.kotlin.com.intellij.psi.PsiAnnotation
-import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
-import org.jetbrains.kotlin.com.intellij.psi.PsiField
-import org.jetbrains.kotlin.com.intellij.psi.PsiImportStatementBase
-import org.jetbrains.kotlin.com.intellij.psi.PsiMethodCallExpression
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtExpression

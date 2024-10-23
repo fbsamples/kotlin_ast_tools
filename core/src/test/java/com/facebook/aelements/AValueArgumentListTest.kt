@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiExpressionList
+import com.intellij.psi.PsiExpressionList
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 import org.junit.Test
 

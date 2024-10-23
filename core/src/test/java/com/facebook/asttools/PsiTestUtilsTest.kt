@@ -16,11 +16,11 @@
 
 package com.facebook.asttools
 
+import com.intellij.psi.PsiLocalVariable
+import com.intellij.psi.PsiMethodCallExpression
+import com.intellij.psi.PsiThisExpression
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
-import org.jetbrains.kotlin.com.intellij.psi.PsiMethodCallExpression
-import org.jetbrains.kotlin.com.intellij.psi.PsiThisExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtThisExpression

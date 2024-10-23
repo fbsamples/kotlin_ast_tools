@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtProperty
 
 /** Represents a decalration of a field or variable, either member or local */

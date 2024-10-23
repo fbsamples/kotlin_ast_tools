@@ -19,9 +19,9 @@ package com.facebook.aelements
 import com.facebook.aelements.Language.*
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
+import com.intellij.psi.PsiElement
 import org.assertj.core.api.Assertions.assertThat
 import org.intellij.lang.annotations.Language
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 
 /**
  * Utilities for easily asserting an AElement conforms to expected practices

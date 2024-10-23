@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiParameter
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiParameter
 import org.jetbrains.kotlin.psi.KtParameter
 
 /* Represents a value parameter (not to be confused with a type parameter) in a function declaration. */

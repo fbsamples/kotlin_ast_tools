@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElement
 
 class APropertyAccessor internal constructor(psiElement: PsiElement) :
     ADeclarationWithBody, AElementImpl(psiElement) {

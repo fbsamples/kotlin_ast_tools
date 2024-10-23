@@ -16,16 +16,16 @@
 
 package com.facebook.asttools
 
+import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiExpression
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiImportStatementBase
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiStatement
 import java.lang.IllegalStateException
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.kotlin.com.intellij.psi.PsiAnnotation
-import org.jetbrains.kotlin.com.intellij.psi.PsiClass
-import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
-import org.jetbrains.kotlin.com.intellij.psi.PsiField
-import org.jetbrains.kotlin.com.intellij.psi.PsiImportStatementBase
-import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
-import org.jetbrains.kotlin.com.intellij.psi.PsiStatement
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 import org.junit.Test
 

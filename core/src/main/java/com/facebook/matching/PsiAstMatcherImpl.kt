@@ -17,8 +17,8 @@
 package com.facebook.matching
 
 import com.google.errorprone.annotations.CheckReturnValue
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiFile
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.isAncestor
 import org.jetbrains.kotlin.psi.psiUtil.startOffset

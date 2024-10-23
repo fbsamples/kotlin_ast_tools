@@ -19,11 +19,11 @@ package com.facebook.matching
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import com.google.errorprone.annotations.CheckReturnValue
-import org.jetbrains.kotlin.com.intellij.psi.PsiAnnotation
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
-import org.jetbrains.kotlin.com.intellij.psi.PsiField
-import org.jetbrains.kotlin.com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiAnnotation
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiExpression
+import com.intellij.psi.PsiField
+import com.intellij.psi.PsiJavaFile
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
