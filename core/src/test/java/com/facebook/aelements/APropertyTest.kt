@@ -18,8 +18,8 @@ package com.facebook.aelements
 
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
-import com.intellij.psi.PsiVariable
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtCallableDeclaration
 import org.junit.Test
 
