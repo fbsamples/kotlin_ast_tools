@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiIfStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiIfStatement
 import org.jetbrains.kotlin.psi.KtIfExpression
 import org.junit.Test
 

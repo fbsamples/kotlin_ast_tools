@@ -16,20 +16,20 @@
 
 package com.facebook.asttools
 
-import com.intellij.ide.highlighter.JavaFileType
-import com.intellij.psi.PsiAnnotation
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.PsiExpression
-import com.intellij.psi.PsiField
-import com.intellij.psi.PsiImportStatementBase
-import com.intellij.psi.PsiJavaFile
-import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiStatement
-import com.intellij.testFramework.LightVirtualFile
 import org.intellij.lang.annotations.Language
+import org.jetbrains.kotlin.com.intellij.ide.highlighter.JavaFileType
+import org.jetbrains.kotlin.com.intellij.psi.PsiAnnotation
+import org.jetbrains.kotlin.com.intellij.psi.PsiClass
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiErrorElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
+import org.jetbrains.kotlin.com.intellij.psi.PsiField
+import org.jetbrains.kotlin.com.intellij.psi.PsiImportStatementBase
+import org.jetbrains.kotlin.com.intellij.psi.PsiJavaFile
+import org.jetbrains.kotlin.com.intellij.psi.PsiManager
+import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
+import org.jetbrains.kotlin.com.intellij.psi.PsiStatement
+import org.jetbrains.kotlin.com.intellij.testFramework.LightVirtualFile
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 
 /**

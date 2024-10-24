@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiJavaFile
+import org.jetbrains.kotlin.com.intellij.psi.PsiFile
+import org.jetbrains.kotlin.com.intellij.psi.PsiJavaFile
 import org.jetbrains.kotlin.psi.KtFile
 
 /** Represents an entire file (which is the root of the AST) */

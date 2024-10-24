@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiJavaFile
+import org.jetbrains.kotlin.com.intellij.psi.PsiJavaFile
 import org.jetbrains.kotlin.psi.KtFile
 import org.junit.Test
 

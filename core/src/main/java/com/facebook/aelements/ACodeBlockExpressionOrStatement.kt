@@ -16,9 +16,9 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiBlockStatement
-import com.intellij.psi.PsiCodeBlock
-import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiBlockStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiCodeBlock
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtBlockExpression
 
 /** Represents a code block which is an expression in Kotlin and a statement in Java */

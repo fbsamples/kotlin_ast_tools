@@ -17,8 +17,8 @@
 package com.facebook.matching
 
 import com.facebook.asttools.KotlinParserUtil
-import com.intellij.psi.PsiElement
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtExpression
 import org.junit.Test
 

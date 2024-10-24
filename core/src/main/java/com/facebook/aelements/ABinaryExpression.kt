@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiBinaryExpression
-import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiBinaryExpression
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 
 /** Represents a binary expression, i.e. `a + 1` or `b && true` */

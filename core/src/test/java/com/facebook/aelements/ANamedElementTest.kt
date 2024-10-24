@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiNamedElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiNamedElement
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.junit.Test
 

@@ -16,10 +16,10 @@
 
 package com.facebook.aelements
 
-import com.intellij.lang.jvm.JvmModifier
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiVariable
+import org.jetbrains.kotlin.com.intellij.lang.jvm.JvmModifier
+import org.jetbrains.kotlin.com.intellij.psi.PsiClass
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType

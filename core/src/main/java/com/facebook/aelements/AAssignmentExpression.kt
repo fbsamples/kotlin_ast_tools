@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiAssignmentExpression
-import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiAssignmentExpression
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 
 /** Represents an assignment expression, i.e. `a = 1` but not a declaration such as `val a = 1` */

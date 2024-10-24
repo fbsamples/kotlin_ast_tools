@@ -17,7 +17,7 @@
 package com.facebook.asttools
 
 import com.google.errorprone.annotations.CheckReturnValue
-import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
@@ -106,9 +106,11 @@ fun <Element : PsiElement> KtFile.removeAll(elements: List<Element>): KtFile {
                       checkNotNull(ktParameterList.rightParenthesis).startOffset)
             }
           }
+
           is KtAnnotationEntry,
           is KtProperty,
           is KtExpression -> Pair(result.startOffset, result.endOffset)
+
           else -> TODO("Unsupported type, add code to make it work")
         }
       }

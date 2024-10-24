@@ -16,8 +16,8 @@
 
 package com.facebook.aelements
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiExpression
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
 import org.jetbrains.kotlin.psi.KtExpression
 
 /**

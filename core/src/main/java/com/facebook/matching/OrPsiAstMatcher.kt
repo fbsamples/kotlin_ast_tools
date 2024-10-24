@@ -16,7 +16,7 @@
 
 package com.facebook.matching
 
-import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 
 /**
  * Takes two matchers and merges them as one, this is needed to support one specific case for now so
