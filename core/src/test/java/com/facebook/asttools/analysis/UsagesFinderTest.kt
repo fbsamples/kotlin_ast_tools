@@ -22,6 +22,7 @@ import com.facebook.aelements.findDescendantOfType
 import com.facebook.aelements.toAElement
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
+import com.facebook.asttools.requireSingleOfType
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiFile
