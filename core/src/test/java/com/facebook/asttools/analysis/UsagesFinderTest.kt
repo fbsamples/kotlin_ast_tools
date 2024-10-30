@@ -28,7 +28,9 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
+import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 import org.jetbrains.kotlin.psi.psiUtil.getTopmostParentOfType
@@ -87,6 +89,40 @@ class UsagesFinderTest {
     assertThat(
             UsagesFinder.getUsages(ktNamedFunction).map { "${locationOf(it)}:${it.parent?.text}" })
         .containsExactly("5:13:::f")
+  }
+
+  @Test
+  fun `test finding usages with explicit this and super pointers in Kotlin`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+        |package com.facebook.example
+        |
+        |class Example(private val name: String) {
+        |  fun f(name: String) {
+        |    println(name)
+        |    println(this.name)
+        |    println(this@Example.name)
+        |    class C(val name: String) {
+        |      fun g() {
+        |        println(name)
+        |        println(this.name)
+        |        println(this@Example.name)
+        |        println(this@C.name)
+        |      }
+        |    }
+        |  }
+        |}
+        """
+                .trimMargin())
+    val ktParameter = ktFile.requireSingleOfType<KtParameter>("private val name: String")
+    assertThat(UsagesFinder.getUsages(ktParameter).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("6:13:this.name", "7:13:this@Example.name", "12:17:this@Example.name")
+    val ktParameter2 = ktFile.requireSingleOfType<KtParameter>("val name: String")
+    println(ktParameter2.text)
+    println(ktParameter2.parent?.text)
+    assertThat(UsagesFinder.getUsages(ktParameter2).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("10:17:name", "11:17:this.name", "13:17:this@C.name")
   }
 
   @Test
@@ -179,6 +215,43 @@ class UsagesFinderTest {
   }
 
   @Test
+  fun `test finding usages with explicit this and super pointers in Java`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+        |package com.facebook.example;
+        |
+        |class Example {
+        |
+        |  private int a = 1;
+        |
+        |  public void f() {
+        |    new Runnable() {
+        |      private int a = 2;
+        |
+        |      public void run() {
+        |        int a = 3;
+        |        System.out.println(a);
+        |        System.out.println(this.a);
+        |        System.out.println(Example.this.a);
+        |      }
+        |    }.run();
+        |  }
+        |}
+        """
+                .trimMargin())
+    val psiVariable1 = psiJavaFile.requireSingleOfType<PsiVariable>("private int a = 1;")
+    val psiVariable2 = psiJavaFile.requireSingleOfType<PsiVariable>("private int a = 2;")
+    val psiVariable3 = psiJavaFile.requireSingleOfType<PsiVariable>("int a = 3;")
+    assertThat(UsagesFinder.getUsages(psiVariable3).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("13:28:(a)")
+    assertThat(UsagesFinder.getUsages(psiVariable2).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("14:28:(this.a)")
+    assertThat(UsagesFinder.getUsages(psiVariable1).map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("15:28:(Example.this.a)")
+  }
+
+  @Test
   fun `test find writes in Java`() {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
@@ -215,7 +288,7 @@ class UsagesFinderTest {
             """
         |package com.facebook.example
         |
-        |fun doIt(boolean b) {
+        |fun doIt(b: Boolean) {
         |  val n = 5
         |  if (n < 2 && b) {
         |    n = 6
