@@ -32,6 +32,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiIfStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiImportStatementBase
 import org.jetbrains.kotlin.com.intellij.psi.PsiJavaFile
 import org.jetbrains.kotlin.com.intellij.psi.PsiJvmModifiersOwner
+import org.jetbrains.kotlin.com.intellij.psi.PsiLambdaExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethodCallExpression
@@ -56,6 +57,7 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtFunctionLiteral
 import org.jetbrains.kotlin.psi.KtIfExpression
 import org.jetbrains.kotlin.psi.KtImportDirective
+import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtParameterList
@@ -106,6 +108,8 @@ fun PsiElement.toAElement(): AElement =
       is KtBinaryExpression -> toAElement()
       is PsiIfStatement -> toAElement()
       is KtIfExpression -> toAElement()
+      is PsiLambdaExpression -> toAElement()
+      is KtLambdaExpression -> toAElement()
       is KtExpression -> toAElement()
       is PsiExpression -> toAElement()
       is PsiStatement -> toAElement()
@@ -136,6 +140,12 @@ fun PsiMethod.toAElement(): ADeclarationWithBody =
 fun KtConstructor<*>.toAElement() = AConstructor(this)
 
 fun KtNamedFunction.toAElement() = ANamedFunction(this)
+
+/**
+ * avoid making this into a ADeclarationWithBody to avoid a case where KtLambdaExpression contains a
+ * KtFunctionLiteral which has the same fields, but is inconistent with Java PsiLambdaExpression
+ */
+fun KtFunctionLiteral.toAElement() = AElementImpl(this)
 
 fun PsiAnnotation.toAElement() = AAnnotation(this)
 
@@ -204,6 +214,10 @@ fun PsiIfStatement.toAElement() = AIfExpressionOrStatement(this)
 
 fun KtIfExpression.toAElement() = AIfExpressionOrStatement(this)
 
+fun PsiLambdaExpression.toAElement() = ALambdaExpression(this)
+
+fun KtLambdaExpression.toAElement() = ALambdaExpression(this)
+
 fun KtDeclarationWithBody.toAElement(): ADeclarationWithBody =
     when (this) {
       is KtNamedFunction -> toAElement()
@@ -221,6 +235,7 @@ fun KtExpression.toAElement(): AExpressionOrStatement =
       is KtCallExpression -> toAElement()
       is KtBinaryExpression -> toAElement()
       is KtIfExpression -> toAElement()
+      is KtLambdaExpression -> toAElement()
       else -> AExpressionImpl(this)
     }
 
@@ -229,6 +244,7 @@ fun PsiExpression.toAElement(): AExpression =
       is PsiMethodCallExpression -> toAElement()
       is PsiReferenceExpression -> toAElement()
       is PsiBinaryExpression -> toAElement()
+      is PsiLambdaExpression -> toAElement()
       else -> AExpressionImpl(this)
     }
 

@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.psi.KtCallableDeclaration
 
 /** Represents a method in Java or a function in Kotlin */
 open class ACallableDeclaration internal constructor(psiElement: PsiElement) :
-    AAnnotated(psiElement) {
+    ACallableDeclarationOrLambda(psiElement) {
   constructor(psiMethod: PsiMethod) : this(psiMethod as PsiElement)
 
   constructor(
@@ -38,11 +38,11 @@ open class ACallableDeclaration internal constructor(psiElement: PsiElement) :
   override val ifLanguage: Cases<out PsiMethod, out KtCallableDeclaration>
     get() = castIfLanguage()
 
-  val parameterList: AParameterList
+  override val parameterList: AParameterList
     get() =
         javaElement?.parameterList?.toAElement() ?: kotlinElement?.valueParameterList!!.toAElement()
 
-  val valueParameters
+  override val valueParameters
     get() =
         javaElement?.parameterList?.parameters?.map { AParameter(it) }
             ?: kotlinElement!!.valueParameters.map { AParameter(it) }

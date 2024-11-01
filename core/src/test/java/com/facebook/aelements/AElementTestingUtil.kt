@@ -16,7 +16,6 @@
 
 package com.facebook.aelements
 
-import com.facebook.aelements.Language.*
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import org.assertj.core.api.Assertions.assertThat

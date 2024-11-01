@@ -18,32 +18,22 @@ package com.facebook.aelements
 
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
-import org.jetbrains.kotlin.psi.KtDeclarationWithBody
+import org.jetbrains.kotlin.psi.KtCallableDeclaration
 
-/** An element with a body expression, a function or a constructor */
-interface ADeclarationWithBody : ADeclarationOrLambdaWithBody {
+/** Represents a method in Java or a function in Kotlin */
+abstract class ACallableDeclarationOrLambda internal constructor(psiElement: PsiElement) :
+    AAnnotated(psiElement) {
 
   override val javaElement: PsiMethod?
     get() = castJavaElement()
 
-  override val kotlinElement: KtDeclarationWithBody?
+  override val kotlinElement: KtCallableDeclaration?
     get() = castKotlinElement()
 
-  override val ifLanguage: Cases<out PsiMethod, out KtDeclarationWithBody>
+  override val ifLanguage: Cases<out PsiMethod, out KtCallableDeclaration>
     get() = castIfLanguage()
 
-  override val bodyExpression: AElement?
-    get() = javaElement?.body?.toAElement() ?: kotlinElement?.bodyExpression?.toAElement()
+  abstract val parameterList: AParameterList
 
-  val bodyBlockExpression: ACodeBlock?
-    get() = javaElement?.body?.toAElement() ?: kotlinElement?.bodyBlockExpression?.toAElement()
-}
-
-class ADeclarationWithBodyImpl internal constructor(psiElement: PsiElement) :
-    ADeclarationWithBody, AElementImpl(psiElement) {
-  constructor(psiMethod: PsiMethod) : this(psiMethod as PsiElement)
-
-  constructor(
-      ktDeclarationWithBody: KtDeclarationWithBody
-  ) : this(ktDeclarationWithBody as PsiElement)
+  abstract val valueParameters: List<AParameter>
 }

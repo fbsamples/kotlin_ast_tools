@@ -17,33 +17,24 @@
 package com.facebook.aelements
 
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
-import org.jetbrains.kotlin.psi.KtDeclarationWithBody
+import org.jetbrains.kotlin.com.intellij.psi.PsiLambdaExpression
+import org.jetbrains.kotlin.psi.KtLambdaExpression
 
-/** An element with a body expression, a function or a constructor */
-interface ADeclarationWithBody : ADeclarationOrLambdaWithBody {
+class ALambdaExpression internal constructor(psiElement: PsiElement) :
+    ADeclarationOrLambdaWithBody, AExpressionImpl(psiElement) {
+  constructor(psiLambdaExpression: PsiLambdaExpression) : this(psiLambdaExpression as PsiElement)
 
-  override val javaElement: PsiMethod?
+  constructor(ktLambdaExpression: KtLambdaExpression) : this(ktLambdaExpression as PsiElement)
+
+  override val javaElement: PsiLambdaExpression?
     get() = castJavaElement()
 
-  override val kotlinElement: KtDeclarationWithBody?
+  override val kotlinElement: KtLambdaExpression?
     get() = castKotlinElement()
 
-  override val ifLanguage: Cases<out PsiMethod, out KtDeclarationWithBody>
+  override val ifLanguage: Cases<out PsiLambdaExpression, out KtLambdaExpression>
     get() = castIfLanguage()
 
   override val bodyExpression: AElement?
     get() = javaElement?.body?.toAElement() ?: kotlinElement?.bodyExpression?.toAElement()
-
-  val bodyBlockExpression: ACodeBlock?
-    get() = javaElement?.body?.toAElement() ?: kotlinElement?.bodyBlockExpression?.toAElement()
-}
-
-class ADeclarationWithBodyImpl internal constructor(psiElement: PsiElement) :
-    ADeclarationWithBody, AElementImpl(psiElement) {
-  constructor(psiMethod: PsiMethod) : this(psiMethod as PsiElement)
-
-  constructor(
-      ktDeclarationWithBody: KtDeclarationWithBody
-  ) : this(ktDeclarationWithBody as PsiElement)
 }
