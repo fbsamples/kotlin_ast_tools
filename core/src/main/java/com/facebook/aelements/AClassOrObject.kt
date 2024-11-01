@@ -51,10 +51,12 @@ open class AClassOrObject internal constructor(psiAElement: PsiElement) : AAnnot
               it.toAElement()
             }
 
-  val properties: List<AProperty>
+  val properties: List<AMemberProperty>
     get() =
         javaElement?.fields?.map { it.toAElement() }?.toList()
-            ?: kotlinElement!!.declarations.filterIsInstance<KtProperty>().map { it.toAElement() }
+            ?: kotlinElement!!.declarations.filterIsInstance<KtProperty>().map {
+              it.toAElement() as AMemberProperty
+            }
 
   val name: String?
     get() = javaElement?.name ?: kotlinElement?.name
