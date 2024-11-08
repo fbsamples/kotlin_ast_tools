@@ -19,18 +19,13 @@ package com.facebook.aelements
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
-import org.jetbrains.kotlin.psi.KtCallableDeclaration
 import org.junit.Test
 
-/** Tests [AVariableDeclaration] */
-class APropertyTest {
+/** Tests [AModifierListOwner] */
+class AModifierListOwnerTest {
 
   @Test
   fun `basic functionality`() {
-    val aElementsTestUtil =
-        AElementTestingUtil<AVariableDeclaration, PsiVariable, KtCallableDeclaration>()
-
     val (javaElement, kotlinElement) =
         JavaPsiParserUtil.parseAsFile(
                 """

@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 
 /** Represents a method in Java or a function in Kotlin */
 open class ANamedFunction internal constructor(psiElement: PsiElement) :
-    ACallableDeclaration(psiElement), ANamedElement, ADeclarationWithBody {
+    ACallableDeclaration(psiElement), ANamedElement, ADeclarationWithBody, AModifierListOwner {
   constructor(psiMethod: PsiMethod) : this(psiMethod as PsiElement)
 
   constructor(ktANamedFunction: KtNamedFunction) : this(ktANamedFunction as PsiElement)

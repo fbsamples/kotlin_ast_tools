@@ -24,7 +24,8 @@ import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.allConstructors
 
 /** Represents a class or object, i.e. `public class Foo {}` or `object : Foo {}` */
-open class AClassOrObject internal constructor(psiAElement: PsiElement) : AAnnotated(psiAElement) {
+open class AClassOrObject internal constructor(psiAElement: PsiElement) :
+    AAnnotated(psiAElement), AModifierListOwner {
   constructor(psiClass: PsiClass) : this(psiClass as PsiElement)
 
   constructor(ktClassOrObject: KtClassOrObject) : this(ktClassOrObject as PsiElement)

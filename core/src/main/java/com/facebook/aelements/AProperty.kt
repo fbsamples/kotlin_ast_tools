@@ -16,20 +16,13 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.lang.jvm.JvmModifier
-import org.jetbrains.kotlin.com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
-import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtProperty
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
-import org.jetbrains.kotlin.psi.psiUtil.isPrivate
-import org.jetbrains.kotlin.psi.psiUtil.isProtected
-import org.jetbrains.kotlin.psi.psiUtil.isPublic
 
 /** Represents a decalration of a field or variable, either member or local */
 open class AProperty internal constructor(psiElement: PsiElement) :
-    AVariableDeclaration(psiElement) {
+    AVariableDeclaration(psiElement), AModifierListOwner {
   constructor(psiVariable: PsiVariable) : this(psiVariable as PsiElement)
 
   constructor(ktProperty: KtProperty) : this(ktProperty as PsiElement)
@@ -55,28 +48,4 @@ open class AProperty internal constructor(psiElement: PsiElement) :
 
   val isLocal: Boolean
     get() = this is ALocalProperty
-
-  val isPrivate: Boolean
-    get() =
-        ifLanguage(isJava = { it.hasModifier(JvmModifier.PRIVATE) }, isKotlin = { it.isPrivate() })
-
-  val isProtected: Boolean
-    get() =
-        ifLanguage(
-            isJava = { it.hasModifier(JvmModifier.PROTECTED) }, isKotlin = { it.isProtected() })
-
-  val isPackage: Boolean
-    get() = ifLanguage(isJava = { !isPublic && !isPrivate && !isProtected }, isKotlin = { false })
-
-  val isInternal: Boolean
-    get() = ifLanguage(isJava = { false }, isKotlin = { it.hasModifier(KtTokens.INTERNAL_KEYWORD) })
-
-  val isPublic: Boolean
-    get() =
-        ifLanguage(
-            isJava = {
-              it.hasModifier(JvmModifier.PUBLIC) ||
-                  it.getParentOfType<PsiClass>(strict = true)?.isInterface == true
-            },
-            isKotlin = { it.isPublic })
 }
