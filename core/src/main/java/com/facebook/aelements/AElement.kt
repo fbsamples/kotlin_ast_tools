@@ -18,13 +18,16 @@ package com.facebook.aelements
 
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
+import org.jetbrains.kotlin.com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 import org.jetbrains.kotlin.psi.psiUtil.forEachDescendantOfType
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.parents
 import org.jetbrains.kotlin.psi.psiUtil.parentsWithSelf
+import org.jetbrains.kotlin.psi.psiUtil.startOffset
 
 /**
  * AElement is the top of a hierarchy of AST represnetation that merges Java Psi Classes with Kotlin
@@ -78,6 +81,14 @@ interface AElement {
 
   val parent: AElement?
     get() = psiElement.parent?.toAElement()
+
+  val lineNumberInFile: Int
+    get() =
+        psiElement
+            .getParentOfType<PsiFile>(strict = false)!!
+            .text
+            .substring(0, psiElement.startOffset)
+            .count { it == '\n' } + 1
 }
 
 /** Finds all elements of the given type and matching the predicate and puts them in a list */

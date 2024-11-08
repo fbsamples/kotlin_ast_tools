@@ -145,4 +145,44 @@ class AElementTest {
           .containsExactly("TestClass3", "TestClass2", "TestClass")
     }
   }
+
+  @Test
+  fun testGetLineNumber() {
+    val javaPsiFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+        |package com.example.foo;
+        |
+        |import com.example.bar.Bar;
+        |
+        |public class TestClass {
+        |  public class TestClass2 {
+        |    public class TestClass3 {
+        |      public void doIt() {}
+        |    }
+        |  }
+        |}
+        """
+                .trimMargin())
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+        |package com.example.foo
+        |
+        |import com.example.bar.Bar
+        |
+        |class TestClass {
+        |  class TestClass2 {
+        |    class TestClass3 {
+        |      fun doIt() {}
+        |    }
+        |  }
+        |}
+        """
+                .trimMargin())
+    assertThat(ktFile.toAElement().findDescendantOfType<ANamedFunction>()?.lineNumberInFile)
+        .isEqualTo(8)
+    assertThat(javaPsiFile.toAElement().findDescendantOfType<ANamedFunction>()?.lineNumberInFile)
+        .isEqualTo(8)
+  }
 }
