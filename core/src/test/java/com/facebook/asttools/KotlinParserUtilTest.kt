@@ -59,6 +59,17 @@ class KotlinParserUtilTest {
   }
 
   @Test
+  fun `parse as KtExpression with newlines and spaces`() {
+    val text =
+        """if (foo != null && foo[index] != null)
+              foo[index].isBar
+          else false"""
+    val ktExpression = KotlinParserUtil.parseAsExpression(text)
+
+    assertThat(ktExpression.text).isEqualTo(text)
+  }
+
+  @Test
   fun `parse as KtBlockExpression`() {
     val ktExpression = KotlinParserUtil.parseAsBlockExpression("""{ doIt(1 + 1); doIt(2) }""")
 

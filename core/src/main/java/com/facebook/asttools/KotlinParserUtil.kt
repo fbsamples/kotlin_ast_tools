@@ -59,11 +59,11 @@ object KotlinParserUtil {
     return extract(
         parseAsFile(
             """
-      class `DUMMY NAME` {
-        $code
-      }
-    """
-                .trimIndent()),
+              |class `DUMMY NAME` {
+              |  $code
+              |}
+              |"""
+                .trimMargin()),
         code)
   }
 
@@ -72,9 +72,9 @@ object KotlinParserUtil {
     return extract(
         parseAsFile(
             """
-      class `DUMMY NAME` : $trimmedCode {}
-    """
-                .trimIndent()),
+            |class `DUMMY NAME` : $trimmedCode {}
+            |"""
+                .trimMargin()),
         trimmedCode)
   }
 
@@ -90,9 +90,9 @@ object KotlinParserUtil {
     return extract(
         parseAsFile(
             """
-      val `DUMMY NAME` = $code
-    """
-                .trimIndent()),
+              |val `DUMMY NAME` = $code
+              |"""
+                .trimMargin()),
         code)
   }
 
@@ -100,9 +100,9 @@ object KotlinParserUtil {
     return extract(
         parseAsFile(
             """
-      fun `DUMMY NAME`() $code
-    """
-                .trimIndent()),
+              |fun `DUMMY NAME`() $code
+              |"""
+                .trimMargin()),
         code)
   }
 
@@ -110,9 +110,9 @@ object KotlinParserUtil {
     return extract(
         parseAsFile(
             """
-       $code val `DUMMY NAME` = null
-    """
-                .trimIndent()),
+              |$code val `DUMMY NAME` = null
+              |"""
+                .trimMargin()),
         code)
   }
 
@@ -120,17 +120,18 @@ object KotlinParserUtil {
     return extract(
         parseAsFile(
             """
-       fun `DUMMY NAME`($code) = TODO()
-    """
-                .trimIndent()),
+              |fun `DUMMY NAME`($code) = TODO()
+              |"""
+                .trimMargin()),
         code)
   }
 
   private inline fun <reified T : PsiElement> extract(ktFile: KtFile, code: String): T {
-    return ktFile
-        .takeIf { it.findDescendantOfType<PsiErrorElement>() == null }
-        ?.findDescendantOfType { it.text == code }
-        ?: throwParseError(T::class.simpleName?.removePrefix("Kt")?.toLowerCase().toString(), code)
+    return (ktFile.takeIf { it.findDescendantOfType<PsiErrorElement>() == null }
+            ?: throwParseError(
+                T::class.simpleName?.removePrefix("Kt")?.toLowerCase().toString(), code))
+        .findDescendantOfType { it.text == code }
+        ?: error("Unexpected error, cannot find $code in ${ktFile.text}")
   }
 
   private fun throwParseError(type: String, code: String): Nothing {
