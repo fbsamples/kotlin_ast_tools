@@ -16,7 +16,7 @@
 
 package com.facebook.aelements
 
-import org.jetbrains.kotlin.com.intellij.psi.PsiNamedElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiNameIdentifierOwner
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.junit.Test
 
@@ -26,7 +26,7 @@ class ANamedElementTest {
   @Test
   fun `basic functionality`() {
     val aElementsTestUtil =
-        AElementTestingUtil<ANamedElement, PsiNamedElement, KtNamedDeclaration>()
+        AElementTestingUtil<ANamedElement, PsiNameIdentifierOwner, KtNamedDeclaration>()
 
     val (javaElement, kotlinElement) =
         aElementsTestUtil.loadTestAElements<ANamedElement>(
@@ -51,6 +51,11 @@ class ANamedElementTest {
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSameString(aElement, { it.name }, { it.name }, { it.name })
+      aElementsTestUtil.assertSameString(
+          aElement,
+          { it.nameIdentifier?.text },
+          { it.nameIdentifier?.text },
+          { it.nameIdentifier?.text })
     }
   }
 }

@@ -33,4 +33,7 @@ interface ANamedElement : AElement {
 
   val name: String?
     get() = javaElement?.name ?: kotlinElement?.name
+
+  val nameIdentifier: AElement?
+    get() = javaElement?.nameIdentifier?.toAElement() ?: kotlinElement?.nameIdentifier?.toAElement()
 }
