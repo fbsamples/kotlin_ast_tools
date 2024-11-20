@@ -42,6 +42,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceParameterList
 import org.jetbrains.kotlin.com.intellij.psi.PsiStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiTypeElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiTypeParameter
 import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtAnnotated
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -65,6 +66,8 @@ import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtPropertyAccessor
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
 import org.jetbrains.kotlin.psi.KtTypeArgumentList
+import org.jetbrains.kotlin.psi.KtTypeConstraint
+import org.jetbrains.kotlin.psi.KtTypeParameter
 import org.jetbrains.kotlin.psi.KtTypeReference
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 
@@ -229,6 +232,8 @@ fun KtDeclarationWithBody.toAElement(): ADeclarationWithBody =
 
 fun KtPropertyAccessor.toAElement() = APropertyAccessor(this)
 
+fun KtTypeConstraint.toAElement() = ATypeConstraint(this)
+
 fun KtExpression.toAElement(): AExpressionOrStatement =
     when (this) {
       is KtQualifiedExpression -> toAElement()
@@ -263,6 +268,10 @@ fun PsiJvmModifiersOwner.toAElement() =
 fun PsiTypeElement.toAElement() = ATypeReference(this)
 
 fun KtTypeReference.toAElement() = ATypeReference(this)
+
+fun PsiTypeParameter.toAElement() = ATypeParameter(this)
+
+fun KtTypeParameter.toAElement() = ATypeParameter(this)
 
 fun KtAnnotated.toAElement() =
     when (this) {
