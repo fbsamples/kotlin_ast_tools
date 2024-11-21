@@ -47,7 +47,10 @@ open class AClassOrObject internal constructor(psiAElement: PsiElement) :
 
   val methods: List<ANamedFunction>
     get() =
-        javaElement?.methods?.map { it.toAElement() as ANamedFunction }?.toList()
+        javaElement
+            ?.methods
+            ?.filterNot { psiMethod -> psiMethod.isConstructor }
+            ?.mapNotNull { it.toAElement() as ANamedFunction }
             ?: kotlinElement!!.declarations.filterIsInstance<KtNamedFunction>().map {
               it.toAElement()
             }

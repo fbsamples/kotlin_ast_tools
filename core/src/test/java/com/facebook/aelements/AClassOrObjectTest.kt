@@ -35,6 +35,7 @@ class AClassOrObjectTest {
                 """
                 |public class TestClass {
                 |  int c = 5;
+                |  public TestClass() {}
                 |  public void doIt(int a, int b) {
                 |    return a + b;
                 |  }
@@ -59,7 +60,7 @@ class AClassOrObjectTest {
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
           { it.methods },
-          { it.methods.toList() },
+          { it.methods.filterNot { psiMethod -> psiMethod.isConstructor }.toList() },
           { it.declarations.filterIsInstance<KtFunction>() })
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
