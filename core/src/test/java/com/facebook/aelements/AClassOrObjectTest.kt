@@ -33,22 +33,26 @@ class AClassOrObjectTest {
         aElementsTestUtil.loadTestAElements<AClassOrObject>(
             javaCode =
                 """
-                |public class TestClass {
+                |public class TestClass extends String implements Runnable {
                 |  int c = 5;
-                |  public TestClass() {}
+                |  public TestClass() {
+                |   super("test");
+                |  }
                 |  public void doIt(int a, int b) {
                 |    return a + b;
                 |  }
+                |  public void run() {}
                 |}
                 """
                     .trimMargin(),
             kotlinCode =
                 """
-                |class TestClass {
+                |class TestClass : Runnable, String("test") {
                 |  val c = 5
                 |  fun doIt(a: Int, b: Int) {
                 |    return a + b
                 |  }
+                |  fun run() {}
                 |}
                 """
                     .trimMargin())
@@ -67,6 +71,11 @@ class AClassOrObjectTest {
           { it.properties },
           { it.fields.toList() },
           { it.declarations.filterIsInstance<KtProperty>() })
+      aElementsTestUtil.assertSamePsiElementList(
+          aElement,
+          { it.superTypes },
+          { (it.implementsListTypes + it.extendsListTypes).map { it.psiContext } },
+          { it.superTypeListEntries.map { it.typeReference } })
     }
   }
 }

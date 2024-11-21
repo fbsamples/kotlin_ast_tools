@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiAssignmentExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiBinaryExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiBlockStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiClass
+import org.jetbrains.kotlin.com.intellij.psi.PsiClassType
 import org.jetbrains.kotlin.com.intellij.psi.PsiCodeBlock
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
@@ -266,6 +267,8 @@ fun PsiJvmModifiersOwner.toAElement() =
     }
 
 fun PsiTypeElement.toAElement() = ATypeReference(this)
+
+fun PsiClassType.toAElement() = ATypeReference(this.psiContext!!)
 
 fun KtTypeReference.toAElement() = ATypeReference(this)
 

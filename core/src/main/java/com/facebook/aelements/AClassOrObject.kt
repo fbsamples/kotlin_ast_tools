@@ -64,4 +64,11 @@ open class AClassOrObject internal constructor(psiAElement: PsiElement) :
 
   val name: String?
     get() = javaElement?.name ?: kotlinElement?.name
+
+  val superTypes: List<ATypeReference>
+    get() =
+        kotlinElement?.superTypeListEntries?.mapNotNull { it.typeReference?.toAElement() }
+            ?: (javaElement!!.implementsListTypes + javaElement!!.extendsListTypes).mapNotNull {
+              it?.toAElement()
+            }
 }
