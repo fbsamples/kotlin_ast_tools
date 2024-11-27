@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiAssignmentExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiBinaryExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiBlockStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiClass
+import org.jetbrains.kotlin.com.intellij.psi.PsiClassObjectAccessExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiClassType
 import org.jetbrains.kotlin.com.intellij.psi.PsiCodeBlock
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -51,6 +52,7 @@ import org.jetbrains.kotlin.psi.KtArrayAccessExpression
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody
@@ -114,6 +116,8 @@ fun PsiElement.toAElement(): AElement =
       is KtIfExpression -> toAElement()
       is PsiLambdaExpression -> toAElement()
       is KtLambdaExpression -> toAElement()
+      is KtClassLiteralExpression -> toAElement()
+      is PsiClassObjectAccessExpression -> toAElement()
       is KtExpression -> toAElement()
       is PsiExpression -> toAElement()
       is PsiStatement -> toAElement()
@@ -265,6 +269,10 @@ fun PsiJvmModifiersOwner.toAElement() =
       is PsiLocalVariable -> (this as PsiLocalVariable).toAElement()
       else -> AAnnotated(this)
     }
+
+fun KtClassLiteralExpression.toAElement() = AClassLiteralExpression(this)
+
+fun PsiClassObjectAccessExpression.toAElement() = AClassLiteralExpression(this)
 
 fun PsiTypeElement.toAElement() = ATypeReference(this)
 
