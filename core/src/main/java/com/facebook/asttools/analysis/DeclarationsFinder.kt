@@ -214,7 +214,7 @@ object DeclarationsFinder {
           } else {
             add(psiElement)
           }
-          psiElement.innerClasses.forEach { innerClass -> handle(innerClass) }
+          psiElement.innerClasses.forEach { innerClass -> add(innerClass) }
         }
         is PsiVariable -> {
           add(psiElement)

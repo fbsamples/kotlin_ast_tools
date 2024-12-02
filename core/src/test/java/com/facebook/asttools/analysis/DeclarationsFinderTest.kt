@@ -19,6 +19,7 @@ package com.facebook.asttools.analysis
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiField
 import org.jetbrains.kotlin.com.intellij.psi.PsiForeachStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
@@ -968,18 +969,19 @@ class DeclarationsFinderTest {
         |public class Foo {
         |  public Foo(Context context) {}
         |
-        |  Context context = applicationContext
-        |  Bar bar = new Bar(context)
+        |  Context context = applicationContext;
+        |  Bar bar = new Bar(context);
         |}
         """
                 .trimMargin())
 
     val contextDeclaration =
         DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType { it.text == """Bar bar = new Bar(context)""" }!!)[
-                "context"]
+                psiJavaFile.findDescendantOfType {
+                  it.text == """Bar bar = new Bar(context);"""
+                }!!)["context"]
     assertThat(contextDeclaration?.value).isInstanceOf(PsiField::class.java)
-    assertThat(contextDeclaration?.value?.text).isEqualTo("Context context = applicationContext")
+    assertThat(contextDeclaration?.value?.text).isEqualTo("Context context = applicationContext;")
   }
 
   @Test
@@ -995,7 +997,7 @@ class DeclarationsFinderTest {
         |  }
         |
         |  public class Inner {
-        |    String name = "A"
+        |    String name = "A";
         |  }
         |}
         """
@@ -1019,7 +1021,7 @@ class DeclarationsFinderTest {
         |public class Foo extends SuperFoo {
         |  
         |  public Foo(@A String name) {
-        |    super(name)
+        |    super(name);
         |  }
         |  
         |  public void doIt(String name) {
@@ -1060,7 +1062,7 @@ class DeclarationsFinderTest {
         |      void name() {
         |        return name;
         |      }
-        |    }
+        |    };
         |  }
         |}
         """
@@ -1075,5 +1077,34 @@ class DeclarationsFinderTest {
             "name")
     assertThat(localVariableDeclaration).isInstanceOf(PsiLocalVariable::class.java)
     assertThat(localVariableDeclaration?.text).isEqualTo("String name = \"a\";")
+  }
+
+  @Test
+  fun `does not get confused by fields in another class in a Java file`() {
+    val psiJavaFile =
+        JavaPsiParserUtil.parseAsFile(
+            """
+        |package com.facebook.example;
+        |
+        |public class Foo {
+        |  public Interface doIt() {
+        |    println("hello, name is not available here");
+        |  }
+        |
+        |  public static class Inner {
+        |    String name = "b";
+        |  }
+        |}
+        """
+                .trimMargin())
+
+    val localVariableDeclaration =
+        DeclarationsFinder.getVariableDeclarationAt(
+            checkNotNull(
+                psiJavaFile.findDescendantOfType<PsiExpression> {
+                  it.text == """"hello, name is not available here""""
+                }),
+            "name")
+    assertThat(localVariableDeclaration).isNull()
   }
 }
