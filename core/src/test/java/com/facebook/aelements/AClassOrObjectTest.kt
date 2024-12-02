@@ -16,6 +16,7 @@
 
 package com.facebook.aelements
 
+import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtFunction
@@ -34,6 +35,7 @@ class AClassOrObjectTest {
             javaCode =
                 """
                 |public class TestClass extends String implements Runnable {
+                |  private enum Status { START, FINISH }
                 |  int c = 5;
                 |  public TestClass() {
                 |   super("test");
@@ -48,6 +50,7 @@ class AClassOrObjectTest {
             kotlinCode =
                 """
                 |class TestClass : Runnable, String("test") {
+                |  enum class Status { START, FINISH }
                 |  val c = 5
                 |  fun doIt(a: Int, b: Int) {
                 |    return a + b
@@ -76,6 +79,12 @@ class AClassOrObjectTest {
           { it.superTypes },
           { (it.implementsListTypes + it.extendsListTypes).map { it.psiContext } },
           { it.superTypeListEntries.map { it.typeReference } })
+      assertThat(
+              aElement
+                  .collectDescendantsOfType<AClassOrObject> { it.name == "Status" }
+                  .first()
+                  .superTypes)
+          .isEmpty()
     }
   }
 }

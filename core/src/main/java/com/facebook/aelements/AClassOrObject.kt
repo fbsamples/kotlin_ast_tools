@@ -67,8 +67,15 @@ open class AClassOrObject internal constructor(psiAElement: PsiElement) :
 
   val superTypes: List<ATypeReference>
     get() =
-        kotlinElement?.superTypeListEntries?.mapNotNull { it.typeReference?.toAElement() }
-            ?: (javaElement!!.implementsListTypes + javaElement!!.extendsListTypes).mapNotNull {
-              it?.toAElement()
-            }
+        ifLanguage(
+            isKotlin = { kotlinElement ->
+              kotlinElement.superTypeListEntries.mapNotNull { it.typeReference?.toAElement() }
+            },
+            isJava = { javaElement ->
+              if (javaElement.isEnum) emptyList()
+              else
+                  (javaElement.implementsListTypes + javaElement.extendsListTypes).mapNotNull {
+                    it?.toAElement()
+                  }
+            })
 }
