@@ -38,6 +38,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiLambdaExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethodCallExpression
+import org.jetbrains.kotlin.com.intellij.psi.PsiPackageStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiParameter
 import org.jetbrains.kotlin.com.intellij.psi.PsiParameterList
 import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceExpression
@@ -63,6 +64,7 @@ import org.jetbrains.kotlin.psi.KtIfExpression
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtPackageDirective
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtParameterList
 import org.jetbrains.kotlin.psi.KtProperty
@@ -81,6 +83,8 @@ fun PsiElement.toAElement(): AElement =
       is PsiJavaFile -> toAElement()
       is PsiClass -> toAElement()
       is KtClassOrObject -> toAElement()
+      is PsiPackageStatement -> toAElement()
+      is KtPackageDirective -> toAElement()
       is PsiImportStatementBase -> toAElement()
       is KtImportDirective -> toAElement()
       is PsiMethod -> toAElement()
@@ -137,6 +141,10 @@ fun PsiJavaFile.toAElement() = AFile(this)
 fun PsiClass.toAElement() = AClassOrObject(this)
 
 fun KtClassOrObject.toAElement() = AClassOrObject(this)
+
+fun PsiPackageStatement.toAElement() = APackageDirective(this)
+
+fun KtPackageDirective.toAElement() = APackageDirective(this)
 
 fun PsiImportStatementBase.toAElement() = AImportDirective(this)
 
