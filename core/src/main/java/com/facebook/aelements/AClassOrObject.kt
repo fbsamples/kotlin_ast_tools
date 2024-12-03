@@ -72,10 +72,12 @@ open class AClassOrObject internal constructor(psiAElement: PsiElement) :
               kotlinElement.superTypeListEntries.mapNotNull { it.typeReference?.toAElement() }
             },
             isJava = { javaElement ->
-              if (javaElement.isEnum) emptyList()
-              else
-                  (javaElement.implementsListTypes + javaElement.extendsListTypes).mapNotNull {
-                    it?.toAElement()
-                  }
+              if (javaElement.isEnum || javaElement.isAnnotationType) {
+                emptyList()
+              } else {
+                (javaElement.implementsListTypes + javaElement.extendsListTypes).mapNotNull {
+                  it?.toAElement()
+                }
+              }
             })
 }
