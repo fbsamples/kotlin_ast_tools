@@ -16,6 +16,7 @@
 
 package com.facebook.aelements
 
+import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.junit.Test
@@ -57,6 +58,39 @@ class ANamedFunctionTest {
           { it.valueParameters },
           { it.parameterList.parameters.toList() },
           { it.valueParameters })
+    }
+  }
+
+  @Test
+  fun `test isOverride`() {
+    val aElementsTestUtil = AElementTestingUtil<ANamedFunction, PsiMethod, KtNamedFunction>()
+
+    val (javaElement, kotlinElement) =
+        aElementsTestUtil.loadTestAElements<AClassOrObject>(
+            javaCode =
+                """
+                |public class TestClass {
+                |  @Override
+                |  public void doIt() {}
+                |
+                |  public void doIt2() {}
+                |}
+                """
+                    .trimMargin(),
+            kotlinCode =
+                """
+                |class TestClass {
+                |  override fun doIt() {}
+                |  fun doIt2() {}
+                |}
+                """
+                    .trimMargin())
+
+    for (aElement: AClassOrObject in listOf(javaElement, kotlinElement)) {
+      val overrideFunction = aElement.methods.single { it.name == "doIt" }
+      val nonOverrideFunction = aElement.methods.single { it.name == "doIt2" }
+      assertThat(overrideFunction.isOverride).isTrue()
+      assertThat(nonOverrideFunction.isOverride).isFalse()
     }
   }
 }

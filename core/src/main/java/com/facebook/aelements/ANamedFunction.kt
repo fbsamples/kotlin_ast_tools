@@ -18,6 +18,7 @@ package com.facebook.aelements
 
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
 /** Represents a method in Java or a function in Kotlin */
@@ -43,4 +44,9 @@ open class ANamedFunction internal constructor(psiElement: PsiElement) :
   val typeReference
     get() =
         javaElement?.returnTypeElement?.toAElement() ?: kotlinElement?.typeReference?.toAElement()
+
+  val isOverride
+    get() =
+        javaElement?.annotations?.any { it.nameReferenceElement?.referenceName == "Override" } ==
+            true || kotlinElement?.modifierList?.hasModifier(KtTokens.OVERRIDE_KEYWORD) == true
 }
