@@ -57,5 +57,7 @@ class AElementUtilTest {
         .isInstanceOf(ACallExpression::class.java)
     assertThat((KotlinParserUtil.parseAsExpression("if (true) 1 else 2")).toAElement())
         .isInstanceOf(AIfExpressionOrStatement::class.java)
+    assertThat((JavaPsiParserUtil.parseAsExpression("new Foo()")).toAElement())
+        .isInstanceOf(ACallExpression::class.java)
   }
 }

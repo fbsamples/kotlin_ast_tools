@@ -28,7 +28,7 @@ import org.jetbrains.kotlin.psi.KtExpression
  * See [AQualifiedCallExpression] for explanations of the mess involved in bridgeing this for Java
  * and Kotlin
  */
-interface ACallExpression : AExpression {
+interface ACallExpression : AMethodOrNewCallExpression {
 
   override val javaElement: PsiMethodCallExpression?
     get() = castJavaElement()
@@ -36,45 +36,8 @@ interface ACallExpression : AExpression {
   override val kotlinElement: KtExpression?
     get() = castKotlinElement()
 
-  val callExpressionKotlinElement: KtCallExpression?
-
   override val ifLanguage: Cases<out PsiMethodCallExpression, out KtExpression>
     get() = castIfLanguage()
-
-  /**
-   * An element representing all the value arguments and the parenthesis they're
-   *
-   * in i.e. `(a, b)` in `foo(a, b)`
-   *
-   * This can be null if only a lambda argument exists, for example in `foo { ... }`
-   */
-  val valueArgumentList: AValueArgumentList?
-    get() =
-        javaElement?.argumentList?.toAElement()
-            ?: callExpressionKotlinElement?.valueArgumentList?.toAElement()
-
-  /** All arguments passed to the call, i.e. `a` and the lambda in `foo(a) { ... }` */
-  val valueArguments: List<AExpressionOrStatement>
-    get() =
-        (javaElement?.argumentList?.expressions?.toList()
-                ?: callExpressionKotlinElement?.valueArguments?.map {
-                  it.getArgumentExpression()!!
-                })!!
-            .map { it.toAElement() as AExpressionOrStatement }
-
-  /** The node of the list of all type arguments i.e. `<A>` in foo<A>() */
-  val typeArgumentList: ATypeArgumentList?
-    get() =
-        javaElement?.typeArgumentList?.toAElement()
-            ?: callExpressionKotlinElement?.typeArgumentList?.toAElement()
-
-  /** All type arguments passed to the call, i.e. `A` in foo<A>() */
-  val typeArguments: List<ATypeReference>
-    get() =
-        (javaElement?.typeArgumentList?.typeParameterElements?.toList()?.map { it.toAElement() }
-            ?: callExpressionKotlinElement?.typeArguments?.map {
-              it.typeReference!!.toAElement()
-            })!!
 
   /** The short name of the method being called, i.e. `foo` in `a.b.c.foo(d)` */
   val unqualifiedCalleeName: String?
@@ -86,11 +49,8 @@ interface ACallExpression : AExpression {
 class ACallExpressionImpl
 internal constructor(
     psiElement: PsiElement,
-) : AExpressionImpl(psiElement), ACallExpression {
+) : AMethodOrNewCallExpressionImpl(psiElement), ACallExpression {
   constructor(psiExpression: PsiReferenceExpression) : this(psiExpression as PsiElement)
 
   constructor(ktExpression: KtCallExpression) : this(ktExpression as PsiElement)
-
-  override val callExpressionKotlinElement: KtCallExpression?
-    get() = kotlinElement as? KtCallExpression
 }

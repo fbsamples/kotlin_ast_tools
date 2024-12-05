@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiArrayAccessExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiAssignmentExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiBinaryExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiBlockStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiCallExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.com.intellij.psi.PsiClassObjectAccessExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiClassType
@@ -38,6 +39,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiLambdaExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethodCallExpression
+import org.jetbrains.kotlin.com.intellij.psi.PsiNewExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiPackageStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiParameter
 import org.jetbrains.kotlin.com.intellij.psi.PsiParameterList
@@ -202,7 +204,7 @@ fun KtQualifiedExpression.toAElement() =
     if (selectorExpression is KtCallExpression) AQualifiedCallExpression(this)
     else AQualifiedExpressionImpl(this)
 
-fun PsiMethodCallExpression.toAElement() =
+fun PsiMethodCallExpression.toAElement(): AMethodOrNewCallExpression =
     if (methodExpression.qualifierExpression != null) AQualifiedCallExpression(this)
     else ACallExpressionImpl(this)
 
@@ -260,11 +262,21 @@ fun KtExpression.toAElement(): AExpressionOrStatement =
 fun PsiExpression.toAElement(): AExpression =
     when (this) {
       is PsiMethodCallExpression -> toAElement()
+      is PsiNewExpression -> toAElement()
       is PsiReferenceExpression -> toAElement()
       is PsiBinaryExpression -> toAElement()
       is PsiLambdaExpression -> toAElement()
       else -> AExpressionImpl(this)
     }
+
+fun PsiCallExpression.toAElement(): AMethodOrNewCallExpression =
+    when (this) {
+      is PsiMethodCallExpression -> toAElement()
+      is PsiNewExpression -> toAElement()
+      else -> error("unexpected")
+    }
+
+fun PsiNewExpression.toAElement(): AMethodOrNewCallExpression = AMethodOrNewCallExpressionImpl(this)
 
 fun PsiStatement.toAElement(): AExpressionOrStatement = AExpressionOrStatementImpl(this)
 
