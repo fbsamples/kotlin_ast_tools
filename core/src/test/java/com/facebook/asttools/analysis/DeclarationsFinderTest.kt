@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiForeachStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiLocalVariable
 import org.jetbrains.kotlin.com.intellij.psi.PsiParameter
 import org.jetbrains.kotlin.com.intellij.psi.PsiReturnStatement
+import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtForExpression
 import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.jetbrains.kotlin.psi.KtParameter
@@ -526,6 +527,30 @@ class DeclarationsFinderTest {
             "name")
     assertThat(localVariableDeclaration).isInstanceOf(KtProperty::class.java)
     assertThat(localVariableDeclaration?.text).isEqualTo("val name = \"a\"")
+  }
+
+  @Test
+  fun `find the closest declaration in a constructor parameter for a reference in Kotlin file`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+        |package com.facebook.example
+        |
+        |class Foo(private val name: String) {
+        |  fun doIt() {
+        |    println(name)
+        |  }
+        |}
+        """
+                .trimMargin())
+
+    val localVariableDeclaration =
+        DeclarationsFinder.getVariableDeclarationAt(
+            checkNotNull(
+                ktFile.findDescendantOfType<KtCallExpression> { it.text == """println(name)""" }),
+            "name")
+    assertThat(localVariableDeclaration).isInstanceOf(KtParameter::class.java)
+    assertThat(localVariableDeclaration?.text).isEqualTo("private val name: String")
   }
 
   @Test

@@ -122,11 +122,17 @@ object DeclarationsFinder {
   /** Same as [getDeclarationAt], but ignores function declarations */
   fun getVariableDeclarationAt(psiElement: PsiElement, name: String): PsiElement? {
     return when (val currentDeclaration = getDeclarationsAt(psiElement)[name]) {
-      is Simple -> currentDeclaration.value.takeIf { it is KtProperty || it is PsiVariable }
+      is Simple -> currentDeclaration.value.takeIf { isVariableOrConstructorParameter(it) }
       is Overloaded ->
-          currentDeclaration.values.firstOrNull { it is KtProperty || it is PsiVariable }
+          currentDeclaration.values.firstOrNull { isVariableOrConstructorParameter(it) }
       else -> null
     }
+  }
+
+  private fun isVariableOrConstructorParameter(element: PsiElement): Boolean {
+    return element is PsiVariable ||
+        element is KtProperty ||
+        (element is KtParameter && element.valOrVarKeyword != null)
   }
 
   /**
