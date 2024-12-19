@@ -17,9 +17,13 @@
 package com.facebook.aelements
 
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.psi.KtPropertyAccessor
 
 class APropertyAccessor internal constructor(psiElement: PsiElement) :
     ADeclarationWithBody, AElementImpl(psiElement) {
 
-  constructor(ktAPropertyAccessor: APropertyAccessor) : this(ktAPropertyAccessor as PsiElement)
+  constructor(ktAPropertyAccessor: KtPropertyAccessor) : this(ktAPropertyAccessor as PsiElement)
+
+  override val kotlinElement: KtPropertyAccessor?
+    get() = castKotlinElement()
 }
