@@ -129,7 +129,7 @@ object KotlinParserUtil {
   private inline fun <reified T : PsiElement> extract(ktFile: KtFile, code: String): T {
     return (ktFile.takeIf { it.findDescendantOfType<PsiErrorElement>() == null }
             ?: throwParseError(
-                T::class.simpleName?.removePrefix("Kt")?.toLowerCase().toString(), code))
+                T::class.simpleName?.removePrefix("Kt")?.lowercase().toString(), code))
         .findDescendantOfType { it.text == code }
         ?: error("Unexpected error, cannot find $code in ${ktFile.text}")
   }
