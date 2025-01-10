@@ -5,8 +5,8 @@ These are various examples, tools and utilities extracted from Meta's Java to Ko
 We are releasing this to provide examples of AST manipulation in Kotlin using Kotlin APIs in hope that this will encourage more people to use them.
 
 Currently, there are three packages here:
-1. `com.facebook.asttools. containing some utilities we use to simplify work with the Kotlin compiler API
-2. `com.facebook.matching. containing a helper class to allow simple and readable refactors to a Kotlin file
+1. `com.facebook.asttools` containing some utilities we use to simplify work with the Kotlin compiler API
+2. `com.facebook.matching` containing a helper class to allow simple and readable refactors to a Kotlin file
 3. `com.facebook.kotlin.postconversion` containing a few examples of common cleanups of newly converted Kotlin files, and a simple command line tool to run them.
 
 ## Running the tool
