@@ -16,6 +16,7 @@
 
 package com.facebook.aelements
 
+import com.facebook.asttools.KotlinParserUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceExpression
@@ -71,5 +72,20 @@ class AQualifiedExpressionTest {
     }
     assertThat(javaElement.javaQualifiedExpression?.text).isEqualTo("foo.bar.num")
     assertThat(kotlinElement.javaQualifiedExpression?.text).isNull()
+  }
+
+  @Test
+  fun `in Kotlin if expression works as reciever`() {
+    val kotlinAElement =
+        KotlinParserUtil.parseAsFile(
+                """
+          |fun doIt(n: Int) {
+          |  if (n < 5) 1 else { 2 + 2 }.toString()
+        """
+                    .trimIndent())
+            .toAElement()
+            .findDescendantOfType<AQualifiedExpression>()!!
+
+    assertThat(kotlinAElement.receiverExpression.text).isEqualTo("if (n < 5) 1 else { 2 + 2 }")
   }
 }

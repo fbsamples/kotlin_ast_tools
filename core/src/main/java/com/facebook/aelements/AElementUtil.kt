@@ -230,7 +230,7 @@ fun KtBinaryExpression.toAElement() =
 
 fun PsiIfStatement.toAElement() = AIfExpressionOrStatement(this)
 
-fun KtIfExpression.toAElement() = AIfExpressionOrStatement(this)
+fun KtIfExpression.toAElement() = AIfExpression(this)
 
 fun PsiLambdaExpression.toAElement() = ALambdaExpression(this)
 
