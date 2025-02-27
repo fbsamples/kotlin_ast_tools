@@ -69,27 +69,37 @@ class ANamedFunctionTest {
         aElementsTestUtil.loadTestAElements<AClassOrObject>(
             javaCode =
                 """
-                |public class TestClass {
-                |  @Override
-                |  public void doIt() {}
+                |import com.facebook.inject.statics.OverrideStatic;
                 |
-                |  public void doIt2() {}
+                |public class TestClass {
+                |  @Override public void foo() {}
+                |
+                |  @OverrideStatic public void bar() {}
+                |
+                |  public void normal() {}
                 |}
                 """
                     .trimMargin(),
             kotlinCode =
                 """
+                |import com.facebook.inject.statics.OverrideStatic
+                |
                 |class TestClass {
-                |  override fun doIt() {}
-                |  fun doIt2() {}
+                |  override fun foo() {}
+                |
+                |  @OverrideStatic fun bar() {}
+                |  
+                |  fun normal() {}
                 |}
                 """
                     .trimMargin())
 
     for (aElement: AClassOrObject in listOf(javaElement, kotlinElement)) {
-      val overrideFunction = aElement.methods.single { it.name == "doIt" }
-      val nonOverrideFunction = aElement.methods.single { it.name == "doIt2" }
+      val overrideFunction = aElement.methods.single { it.name == "foo" }
+      val staticallyOverrideFunction = aElement.methods.single { it.name == "bar" }
+      val nonOverrideFunction = aElement.methods.single { it.name == "normal" }
       assertThat(overrideFunction.isOverride).isTrue()
+      assertThat(staticallyOverrideFunction.isOverride).isTrue()
       assertThat(nonOverrideFunction.isOverride).isFalse()
     }
   }

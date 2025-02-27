@@ -47,6 +47,6 @@ open class ANamedFunction internal constructor(psiElement: PsiElement) :
 
   val isOverride
     get() =
-        javaElement?.annotations?.any { it.nameReferenceElement?.referenceName == "Override" } ==
-            true || kotlinElement?.modifierList?.hasModifier(KtTokens.OVERRIDE_KEYWORD) == true
+        kotlinElement?.modifierList?.hasModifier(KtTokens.OVERRIDE_KEYWORD) == true ||
+            annotations.any { it.shortName in listOf("Override", "OverrideStatic") }
 }
