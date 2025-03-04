@@ -183,9 +183,10 @@ fun KtParameter.toAElement() = AParameter(this)
 
 fun PsiField.toAElement() = AMemberProperty(this)
 
-fun PsiVariable.toAElement() =
+fun PsiVariable.toAElement(): AVariableDeclaration =
     when (this) {
       is PsiLocalVariable -> toAElement()
+      is PsiParameter -> toAElement()
       else -> AMemberProperty(this)
     }
 
