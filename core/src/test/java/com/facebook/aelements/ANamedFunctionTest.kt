@@ -99,8 +99,11 @@ class ANamedFunctionTest {
       val staticallyOverrideFunction = aElement.methods.single { it.name == "bar" }
       val nonOverrideFunction = aElement.methods.single { it.name == "normal" }
       assertThat(overrideFunction.isOverride).isTrue()
-      assertThat(staticallyOverrideFunction.isOverride).isTrue()
+      assertThat(overrideFunction.isOverrideStatic).isFalse()
+      assertThat(staticallyOverrideFunction.isOverride).isFalse()
+      assertThat(staticallyOverrideFunction.isOverrideStatic).isTrue()
       assertThat(nonOverrideFunction.isOverride).isFalse()
+      assertThat(nonOverrideFunction.isOverrideStatic).isFalse()
     }
   }
 }
