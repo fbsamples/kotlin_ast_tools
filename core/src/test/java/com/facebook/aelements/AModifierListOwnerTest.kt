@@ -34,7 +34,10 @@ class AModifierListOwnerTest {
                 |  protected int aProtected = 1;
                 |  int aPackage = 1;
                 |  public int aPublic = 1;
-                |
+                |  static int aStatic = 1;
+                |  
+                |  static class aStaticClass {}
+                |  
                 |  interface I {
                 |    int aPublic = 1;
                 |  }
@@ -86,6 +89,18 @@ class AModifierListOwnerTest {
                   .map { it.isProtected }
                   .distinct())
           .containsExactly(true)
+      assertThat(
+              aFile
+                  .collectDescendantsOfType<AProperty> { it.name!!.contains("Static") }
+                  .map { it.isStatic }
+                  .distinct())
+          .doesNotContain(false)
+      assertThat(
+              aFile
+                  .collectDescendantsOfType<AClassOrObject> { it.name!!.contains("StaticClass") }
+                  .map { it.isStatic }
+                  .distinct())
+          .doesNotContain(false)
     }
   }
 }

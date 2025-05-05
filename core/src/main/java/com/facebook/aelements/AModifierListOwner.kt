@@ -61,4 +61,7 @@ interface AModifierListOwner : AElement {
                   it.getParentOfType<PsiClass>(strict = true)?.isInterface == true
             },
             isKotlin = { it.isPublic })
+
+  val isStatic: Boolean
+    get() = ifLanguage(isJava = { it.hasModifier(JvmModifier.STATIC) }, isKotlin = { false })
 }

@@ -20,6 +20,8 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtNamedFunction
+import org.jetbrains.kotlin.psi.KtObjectDeclaration
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 /** Represents a method in Java or a function in Kotlin */
 open class ANamedFunction internal constructor(psiElement: PsiElement) :
@@ -52,4 +54,11 @@ open class ANamedFunction internal constructor(psiElement: PsiElement) :
 
   val isOverrideStatic
     get() = annotations.any { it.shortName == "OverrideStatic" }
+
+  override val isStatic
+    get() =
+        super.isStatic ||
+            annotations.any { it.shortName == "JvmStatic" } ||
+            kotlinElement?.getParentOfType<KtObjectDeclaration>(strict = true)?.isCompanion() ==
+                true
 }

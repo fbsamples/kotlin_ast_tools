@@ -106,4 +106,38 @@ class ANamedFunctionTest {
       assertThat(nonOverrideFunction.isOverrideStatic).isFalse()
     }
   }
+
+  @Test
+  fun `test isStatic`() {
+    val aElementsTestUtil = AElementTestingUtil<ANamedFunction, PsiMethod, KtNamedFunction>()
+
+    val (javaElement, kotlinElement) =
+        aElementsTestUtil.loadTestAElements<AClassOrObject>(
+            javaCode =
+                """
+                |public class TestClass {
+                |  public static void staticFun(int a, int b) {}
+                |}
+                """
+                    .trimMargin(),
+            kotlinCode =
+                """
+                |class TestClass {
+                |  @JvmStatic
+                |  fun staticFun(a: Int, b: Int) {}
+                |
+                |  companion object {
+                |    fun companionFun(a: Int, b: Int) {}
+                |  }
+                |}
+                """
+                    .trimMargin())
+
+    for (aElement: AClassOrObject in listOf(javaElement, kotlinElement)) {
+      val staticFun = aElement.methods.single { it.name == "staticFun" }
+      val companionFun = aElement.methods.filter { it.name == "companionFun" }
+      assertThat(staticFun.isStatic).isTrue()
+      assertThat(companionFun.map { it.isStatic }).doesNotContain(false)
+    }
+  }
 }
