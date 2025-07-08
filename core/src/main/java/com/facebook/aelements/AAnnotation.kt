@@ -36,5 +36,5 @@ open class AAnnotation internal constructor(psiElement: PsiElement) : AElementIm
     get() = castIfLanguage()
 
   val shortName =
-      javaElement?.nameReferenceElement?.referenceName ?: kotlinElement!!.shortName?.identifier
+      javaElement?.nameReferenceElement?.referenceName ?: kotlinElement?.shortName?.identifier ?: ""
 }
