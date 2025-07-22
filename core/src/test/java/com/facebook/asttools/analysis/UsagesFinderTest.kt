@@ -68,6 +68,26 @@ class UsagesFinderTest {
   }
 
   @Test
+  fun `test find usages of props of function type`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+        |package com.facebook.example
+        |
+        |fun doIt(name: String): String {
+        |  val f: (String) -> String = { s -> "hello" }
+        |  return f("test")
+        |}
+        """
+                .trimMargin())
+
+    val ktProperty = ktFile.findDescendantOfType<KtProperty> { it.name == "f" }!!
+    val usages = UsagesFinder.getUsages(ktProperty)
+    assertThat(usages.map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("5:10:f(\"test\")")
+  }
+
+  @Test
   fun `test find usages with same name function in Kotlin`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(

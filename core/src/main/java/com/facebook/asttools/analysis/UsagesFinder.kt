@@ -263,7 +263,13 @@ object UsagesFinder {
         when {
           candidate is PsiMethodReferenceExpression -> effectiveDeclaration is PsiMethod
           parent is KtCallExpression ->
-              if (parent.calleeExpression == candidate) effectiveDeclaration is KtNamedFunction
+              if (parent.calleeExpression == candidate)
+                  effectiveDeclaration is KtNamedFunction ||
+                      (effectiveDeclaration as? KtProperty)
+                          ?.typeReference
+                          ?.text
+                          .orEmpty()
+                          .contains("->")
               else true
           parent is KtCallableReferenceExpression -> effectiveDeclaration is KtNamedFunction
           parent is PsiMethodCallExpression ->
