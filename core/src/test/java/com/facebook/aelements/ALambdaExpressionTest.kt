@@ -52,6 +52,8 @@ class ALambdaExpressionTest {
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       assertThat(aElement.psiElement.toAElement()).isInstanceOf(ALambdaExpression::class.java)
+      assertThat(aElement.valueParameters.size).isEqualTo(1)
+      assertThat(aElement.valueParameters.first().name).isEqualTo("a")
       aElementsTestUtil.assertSameString(
           aElement = aElement,
           onAElement = { it.bodyExpression?.text },

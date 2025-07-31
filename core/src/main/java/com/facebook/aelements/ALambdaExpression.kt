@@ -37,4 +37,10 @@ class ALambdaExpression internal constructor(psiElement: PsiElement) :
 
   override val bodyExpression: AElement?
     get() = javaElement?.body?.toAElement() ?: kotlinElement?.bodyExpression?.toAElement()
+
+  val valueParameters: List<AParameter>
+    get() =
+        javaElement?.parameterList?.parameters?.map { it.toAElement() }
+            ?: kotlinElement?.valueParameters?.map { it.toAElement() }
+            ?: emptyList()
 }
