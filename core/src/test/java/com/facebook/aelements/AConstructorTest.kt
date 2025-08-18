@@ -47,14 +47,16 @@ class AConstructorTest {
                 |  private val sum = a + b
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
           { it.valueParameters },
           { it.parameterList.parameters.toList() },
-          { it.valueParameters })
+          { it.valueParameters },
+      )
     }
   }
 }

@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
 
 class MatchResult<Element : PsiElement?>(
     val psiElement: Element,
-    internal val matchedVariables: Map<String, PsiElement>
+    internal val matchedVariables: Map<String, PsiElement>,
 ) {
 
   fun getVariableResult(variableName: String): String? = matchedVariables[variableName]?.text

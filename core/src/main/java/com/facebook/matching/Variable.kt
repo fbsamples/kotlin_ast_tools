@@ -33,7 +33,7 @@ class Variable(
     val isOptional: Boolean,
     val isKotlin: Boolean,
     val resolver: Resolver,
-    arguments: String?
+    arguments: String?,
 ) {
 
   private var textMatchArgument: Regex? = null

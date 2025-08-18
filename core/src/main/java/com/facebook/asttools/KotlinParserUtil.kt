@@ -59,12 +59,13 @@ object KotlinParserUtil {
     return extract(
         parseAsFile(
             """
-              |class `DUMMY NAME` {
-              |  $code
-              |}
-              |"""
+            |class `DUMMY NAME` {
+            |  $code
+            |}
+            |"""
                 .trimMargin()),
-        code)
+        code,
+    )
   }
 
   fun parseAsSupertype(code: String): KtSuperTypeListEntry {
@@ -75,7 +76,8 @@ object KotlinParserUtil {
             |class `DUMMY NAME` : $trimmedCode {}
             |"""
                 .trimMargin()),
-        trimmedCode)
+        trimmedCode,
+    )
   }
 
   fun parseAsFunction(code: String): KtNamedFunction {
@@ -90,46 +92,52 @@ object KotlinParserUtil {
     return extract(
         parseAsFile(
             """
-              |val `DUMMY NAME` = $code
-              |"""
+            |val `DUMMY NAME` = $code
+            |"""
                 .trimMargin()),
-        code)
+        code,
+    )
   }
 
   fun parseAsBlockExpression(code: String): KtBlockExpression {
     return extract(
         parseAsFile(
             """
-              |fun `DUMMY NAME`() $code
-              |"""
+            |fun `DUMMY NAME`() $code
+            |"""
                 .trimMargin()),
-        code)
+        code,
+    )
   }
 
   fun parseAsAnnotationEntry(code: String): KtAnnotationEntry {
     return extract(
         parseAsFile(
             """
-              |$code val `DUMMY NAME` = null
-              |"""
+            |$code val `DUMMY NAME` = null
+            |"""
                 .trimMargin()),
-        code)
+        code,
+    )
   }
 
   fun parseAsParameter(code: String): KtParameter {
     return extract(
         parseAsFile(
             """
-              |fun `DUMMY NAME`($code) = TODO()
-              |"""
+            |fun `DUMMY NAME`($code) = TODO()
+            |"""
                 .trimMargin()),
-        code)
+        code,
+    )
   }
 
   private inline fun <reified T : PsiElement> extract(ktFile: KtFile, code: String): T {
     return (ktFile.takeIf { it.findDescendantOfType<PsiErrorElement>() == null }
             ?: throwParseError(
-                T::class.simpleName?.removePrefix("Kt")?.lowercase().toString(), code))
+                T::class.simpleName?.removePrefix("Kt")?.lowercase().toString(),
+                code,
+            ))
         .findDescendantOfType { it.text == code }
         ?: error("Unexpected error, cannot find $code in ${ktFile.text}")
   }
@@ -142,7 +150,8 @@ object KotlinParserUtil {
     val configuration = CompilerConfiguration()
     configuration.put(
         CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY,
-        PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false))
+        PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false),
+    )
     return configuration
   }
 }

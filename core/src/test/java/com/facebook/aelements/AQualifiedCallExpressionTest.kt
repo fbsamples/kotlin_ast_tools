@@ -29,7 +29,10 @@ class AQualifiedCallExpressionTest {
   fun `basic functionality`() {
     val aElementsTestUtil =
         AElementTestingUtil<
-            AQualifiedCallExpression, PsiMethodCallExpression, KtQualifiedExpression>()
+            AQualifiedCallExpression,
+            PsiMethodCallExpression,
+            KtQualifiedExpression,
+        >()
 
     val (javaElement, kotlinElement) =
         aElementsTestUtil.loadTestAElements<AQualifiedCallExpression>(
@@ -50,7 +53,8 @@ class AQualifiedCallExpressionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       assertThat(aElement.psiElement.toAElement())
@@ -59,12 +63,14 @@ class AQualifiedCallExpressionTest {
           aElement = aElement,
           onAElement = { it.operator },
           onJava = { "." },
-          onKotlin = { it.operationTokenNode.text })
+          onKotlin = { it.operationTokenNode.text },
+      )
       aElementsTestUtil.assertSamePsiElement(
           aElement = aElement,
           onAElement = { it.receiverExpression },
           onJava = { it.methodExpression.qualifierExpression },
-          onKotlin = { it.receiverExpression })
+          onKotlin = { it.receiverExpression },
+      )
       aElementsTestUtil.assertSamePsiElementList(
           aElement = aElement,
           onAElement = { it.valueArguments },
@@ -73,12 +79,14 @@ class AQualifiedCallExpressionTest {
             (it.selectorExpression as KtCallExpression).valueArguments.map {
               it.getArgumentExpression()
             }
-          })
+          },
+      )
       aElementsTestUtil.assertSameString(
           aElement = aElement,
           onAElement = { it.unqualifiedCalleeName },
           onJava = { "invoke" },
-          onKotlin = { "invoke" })
+          onKotlin = { "invoke" },
+      )
     }
     assertThat(javaElement.javaQualifiedExpression?.text).isEqualTo("foo.bar.invoke")
     assertThat(kotlinElement.javaQualifiedExpression?.text).isNull()

@@ -75,6 +75,7 @@ class ADeclarationOrLambdaWithBodyTest {
             "get() { return 7 }",
             "{ a: Int -> a.toString() }",
             "fun (a: Int) = a + a",
-            "{ a }")
+            "{ a }",
+        )
   }
 }

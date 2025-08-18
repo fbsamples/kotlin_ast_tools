@@ -50,7 +50,7 @@ fun <Element : PsiElement> KtFile.replace(element: Element, replacement: String)
 @CheckReturnValue
 inline fun <reified Element : PsiElement> KtFile.replaceAll(
     noinline matcher: (Element) -> Boolean,
-    replaceWith: (Element) -> String
+    replaceWith: (Element) -> String,
 ): KtFile {
   val elements = collectDescendantsOfType(matcher)
   if (elements.isEmpty()) {
@@ -103,7 +103,8 @@ fun <Element : PsiElement> KtFile.removeAll(elements: List<Element>): KtFile {
               else ->
                   Pair(
                       checkNotNull(ktParameterList.leftParenthesis).endOffset,
-                      checkNotNull(ktParameterList.rightParenthesis).startOffset)
+                      checkNotNull(ktParameterList.rightParenthesis).startOffset,
+                  )
             }
           }
 

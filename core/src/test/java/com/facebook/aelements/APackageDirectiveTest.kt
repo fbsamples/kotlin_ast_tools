@@ -43,11 +43,16 @@ class APackageDirectiveTest {
                 |
                 |class TestClass
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSameString(
-          aElement, { it.packageName }, { "com.facebook.foo" }, { "com.facebook.foo" })
+          aElement,
+          { it.packageName },
+          { "com.facebook.foo" },
+          { "com.facebook.foo" },
+      )
     }
   }
 }

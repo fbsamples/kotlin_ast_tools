@@ -55,14 +55,23 @@ class AIfExpressionOrStatementTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaAIfExpressionOrStatement, kotlinAIfExpressionOrStatement)) {
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.condition }, { it.condition }, { it.condition })
+          aElement,
+          { it.condition },
+          { it.condition },
+          { it.condition },
+      )
       aElementsTestUtil.assertSamePsiElement(aElement, { it.then }, { it.thenBranch }, { it.then })
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.`else` }, { it.elseBranch }, { it.`else` })
+          aElement,
+          { it.`else` },
+          { it.elseBranch },
+          { it.`else` },
+      )
     }
   }
 }

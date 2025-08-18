@@ -45,14 +45,18 @@ object ProjectHelper {
   private fun createCoreEnvironment(): KotlinCoreEnvironment {
     val disposable = Disposer.newDisposable()
     return KotlinCoreEnvironment.createForProduction(
-        disposable, getConfiguration(), EnvironmentConfigFiles.JVM_CONFIG_FILES)
+        disposable,
+        getConfiguration(),
+        EnvironmentConfigFiles.JVM_CONFIG_FILES,
+    )
   }
 
   private fun getConfiguration(): CompilerConfiguration {
     val configuration = CompilerConfiguration()
     configuration.put(
         CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY,
-        PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false))
+        PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false),
+    )
     return configuration
   }
 }

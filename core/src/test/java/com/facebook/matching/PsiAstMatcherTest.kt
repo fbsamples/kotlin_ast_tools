@@ -480,7 +480,8 @@ class PsiAstMatcherTest {
         ktFile.replaceAllWithVariables(
             matcher =
                 match<KtExpression>().apply { addChildMatcher { it.text?.toIntOrNull() != null } },
-            replaceWith = { (it.psiElement.node.text.toInt() + 1).toString() })
+            replaceWith = { (it.psiElement.node.text.toInt() + 1).toString() },
+        )
 
     assertThat(newKtFile.text)
         .isEqualTo(
@@ -588,7 +589,8 @@ class PsiAstMatcherTest {
     val newKtFile =
         ktFile.replaceAllWithVariables(
             matcher = match<KtCallExpression> { it.referenceExpression()?.text == "invoke" },
-            replaceWith = { it.psiElement.node.text.replaceFirst("invoke", "apply") })
+            replaceWith = { it.psiElement.node.text.replaceFirst("invoke", "apply") },
+        )
 
     assertThat(newKtFile.text)
         .isEqualTo(
@@ -615,8 +617,11 @@ class PsiAstMatcherTest {
         matcher = match<KtCallExpression> { it.referenceExpression()?.text == "invoke" },
         replaceWith = {
           it.psiElement.node.text.replaceFirst(
-              "invoke", "${it.psiElement.text} + ${it.psiElement.text}")
-        })
+              "invoke",
+              "${it.psiElement.text} + ${it.psiElement.text}",
+          )
+        },
+    )
   }
 
   @Test

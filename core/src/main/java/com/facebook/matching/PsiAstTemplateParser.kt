@@ -27,7 +27,7 @@ class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
    */
   inline fun <reified T : PsiElement> parseTemplateWithVariables(
       template: String,
-      vararg variables: Pair<String, PsiAstMatcherImpl<*>>
+      vararg variables: Pair<String, PsiAstMatcherImpl<*>>,
   ): PsiAstMatcher<T> {
     val unusedVariables = variables.toMap(mutableMapOf())
 
@@ -41,7 +41,8 @@ class PsiAstTemplateParser(val resolver: Resolver = Resolver.DEFAULT) {
                       isOptional = checkNotNull(v.groups["isOptional"]).value == "?",
                       isKotlin = KtElement::class.java.isAssignableFrom(T::class.java),
                       resolver = resolver,
-                      arguments = v.groups["arguments"]?.value)
+                      arguments = v.groups["arguments"]?.value,
+                  )
             }
             .toList()
     val templateVariables = rangesToTemplateVariables.map { it.second }

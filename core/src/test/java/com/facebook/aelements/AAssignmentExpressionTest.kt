@@ -53,12 +53,17 @@ class AAssignmentExpressionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSamePsiElement(aElement, { it.left }, { it.lExpression }, { it.left })
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.right }, { it.rExpression }, { it.right })
+          aElement,
+          { it.right },
+          { it.rExpression },
+          { it.right },
+      )
     }
   }
 }

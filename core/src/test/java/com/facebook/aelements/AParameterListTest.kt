@@ -46,15 +46,28 @@ class AParameterListTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.rightParenthesis }, { it.lastChild }, { it.rightParenthesis })
+          aElement,
+          { it.rightParenthesis },
+          { it.lastChild },
+          { it.rightParenthesis },
+      )
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.leftParenthesis }, { it.firstChild }, { it.leftParenthesis })
+          aElement,
+          { it.leftParenthesis },
+          { it.firstChild },
+          { it.leftParenthesis },
+      )
       aElementsTestUtil.assertSamePsiElementList(
-          aElement, { it.parameters }, { it.parameters.toList() }, { it.parameters })
+          aElement,
+          { it.parameters },
+          { it.parameters.toList() },
+          { it.parameters },
+      )
     }
   }
 }

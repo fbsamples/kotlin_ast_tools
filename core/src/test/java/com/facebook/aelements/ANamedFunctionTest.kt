@@ -47,17 +47,23 @@ class ANamedFunctionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.typeReference }, { it.returnTypeElement }, { it.typeReference })
+          aElement,
+          { it.typeReference },
+          { it.returnTypeElement },
+          { it.typeReference },
+      )
       aElementsTestUtil.assertSameString(aElement, { it.name }, { "doIt" }, { "doIt" })
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
           { it.valueParameters },
           { it.parameterList.parameters.toList() },
-          { it.valueParameters })
+          { it.valueParameters },
+      )
     }
   }
 
@@ -92,7 +98,8 @@ class ANamedFunctionTest {
                 |  fun normal() {}
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement: AClassOrObject in listOf(javaElement, kotlinElement)) {
       val overrideFunction = aElement.methods.single { it.name == "foo" }
@@ -131,7 +138,8 @@ class ANamedFunctionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement: AClassOrObject in listOf(javaElement, kotlinElement)) {
       val staticFun = aElement.methods.single { it.name == "staticFun" }

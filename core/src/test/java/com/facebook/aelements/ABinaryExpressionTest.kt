@@ -47,13 +47,18 @@ class ABinaryExpressionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaABinaryExpression, kotlinABinaryExpression)) {
       aElementsTestUtil.assertSamePsiElement(aElement, { it.left }, { it.lOperand }, { it.left })
       aElementsTestUtil.assertSamePsiElement(aElement, { it.right }, { it.rOperand }, { it.right })
       aElementsTestUtil.assertSameString(
-          aElement, { it.operator }, { it.operationSign.text }, { it.operationReference.text })
+          aElement,
+          { it.operator },
+          { it.operationSign.text },
+          { it.operationReference.text },
+      )
     }
   }
 }

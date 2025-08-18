@@ -44,7 +44,8 @@ class JavaPsiParserUtilTest {
       |}
     """
                 .trimMargin(),
-            "Foo.java")
+            "Foo.java",
+        )
     val classOrObject = javaPsiFile.findDescendantOfType<PsiClass>()
     assertThat(classOrObject).isNotNull
     assertThat(classOrObject?.name).isEqualTo("Foo")

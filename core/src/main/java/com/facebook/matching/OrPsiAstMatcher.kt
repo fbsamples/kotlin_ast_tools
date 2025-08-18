@@ -23,7 +23,10 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiElement
  * we keep it as internal
  */
 internal class OrPsiAstMatcher<
-    CommonAncestorElement : PsiElement, E1 : CommonAncestorElement, E2 : CommonAncestorElement>(
+    CommonAncestorElement : PsiElement,
+    E1 : CommonAncestorElement,
+    E2 : CommonAncestorElement,
+>(
     private val matcher1: PsiAstMatcher<E1>,
     private val matcher2: PsiAstMatcher<E2>,
 ) : PsiAstMatcher<CommonAncestorElement> {

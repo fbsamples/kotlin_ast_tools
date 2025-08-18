@@ -41,7 +41,8 @@ class KtFileExtensionsTest {
     val newKtFile =
         ktFile.replaceAll<KtExpression>(
             matcher = { it.text?.toIntOrNull() != null },
-            replaceWith = { (it.text.toInt() + 1).toString() })
+            replaceWith = { (it.text.toInt() + 1).toString() },
+        )
 
     assertThat(newKtFile.text)
         .isEqualTo(

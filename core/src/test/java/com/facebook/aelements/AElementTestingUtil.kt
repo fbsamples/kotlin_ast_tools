@@ -31,7 +31,7 @@ class AElementTestingUtil<T : AElement, J : PsiElement, K : PsiElement> {
 
   inline fun <reified T : AElement> loadTestAElements(
       @Language("java") javaCode: String,
-      @Language("kotlin") kotlinCode: String
+      @Language("kotlin") kotlinCode: String,
   ): Pair<T, T> {
     val javaAElement =
         JavaPsiParserUtil.parseAsFile(javaCode).toAElement().findDescendantOfType<T>()!!
@@ -44,14 +44,15 @@ class AElementTestingUtil<T : AElement, J : PsiElement, K : PsiElement> {
       aElement: T,
       onAElement: (T) -> AElement?,
       onJava: (J) -> PsiElement?,
-      onKotlin: (K) -> PsiElement?
+      onKotlin: (K) -> PsiElement?,
   ) {
     val aElementResult = onAElement(aElement)?.psiElement
     val psiResult =
         aElement
             .ifLanguage(
                 isJava = { onJava(aElement.psiElement as J) },
-                isKotlin = { onKotlin(aElement.psiElement as K) })
+                isKotlin = { onKotlin(aElement.psiElement as K) },
+            )
             ?.toAElement()
             ?.psiElement
     assertThat(aElementResult)
@@ -69,13 +70,14 @@ class AElementTestingUtil<T : AElement, J : PsiElement, K : PsiElement> {
       aElement: T,
       onAElement: (T) -> List<AElement>?,
       onJava: (J) -> List<PsiElement?>?,
-      onKotlin: (K) -> List<PsiElement?>?
+      onKotlin: (K) -> List<PsiElement?>?,
   ) {
     val aElementResult = onAElement(aElement)?.map { it.psiElement }
     val psiResult =
         aElement.ifLanguage(
             isJava = { onJava(aElement.psiElement as J) },
-            isKotlin = { onKotlin(aElement.psiElement as K) })
+            isKotlin = { onKotlin(aElement.psiElement as K) },
+        )
     assertThat(aElementResult)
         .withFailMessage(
             """
@@ -91,13 +93,14 @@ class AElementTestingUtil<T : AElement, J : PsiElement, K : PsiElement> {
       aElement: T,
       onAElement: (T) -> String?,
       onJava: (J) -> String?,
-      onKotlin: (K) -> String?
+      onKotlin: (K) -> String?,
   ) {
     val aElementResult = onAElement(aElement)
     val psiResult =
         aElement.ifLanguage(
             isJava = { onJava(aElement.psiElement as J) },
-            isKotlin = { onKotlin(aElement.psiElement as K) })
+            isKotlin = { onKotlin(aElement.psiElement as K) },
+        )
     assertThat(aElementResult)
         .withFailMessage(
             """

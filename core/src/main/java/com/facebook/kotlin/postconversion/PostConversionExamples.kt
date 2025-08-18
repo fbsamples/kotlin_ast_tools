@@ -74,7 +74,8 @@ object PostConversionExamples {
               val parent = match.psiElement.parent
               val needsParenthesis = parent is KtBinaryExpression || parent is KtQualifiedExpression
               if (needsParenthesis) "(#a# == #b#)" else "#a# == #b#"
-            })
+            },
+        )
         .replaceAllExpressions("TextUtils.isEmpty(#a#)", "#a#.isNullOrEmpty()")
   }
 
@@ -158,7 +159,8 @@ object PostConversionExamples {
                     .replaceFirst("var", "val")
                     .replace(
                         initializer.text,
-                        "if (${condition.text}) ${right.text} else ${initializer.text}")
+                        "if (${condition.text}) ${right.text} else ${initializer.text}",
+                    )
             val firstInitializerInstance = updatedProperty.indexOf(initializer.text)
             if (firstInitializerInstance >= 0 &&
                 updatedProperty.indexOf(initializer.text, firstInitializerInstance + 1) >= 0) {

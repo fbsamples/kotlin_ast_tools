@@ -58,27 +58,35 @@ class AClassOrObjectTest {
                 |  fun run() {}
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaAClassOrObject, kotlinAClassOrObject)) {
       aElementsTestUtil.assertSameString(aElement, { it.name }, { it.name }, { it.name })
       aElementsTestUtil.assertSamePsiElementList(
-          aElement, { it.annotations }, { it.annotations.toList() }, { it.annotations })
+          aElement,
+          { it.annotations },
+          { it.annotations.toList() },
+          { it.annotations },
+      )
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
           { it.methods },
           { it.methods.filterNot { psiMethod -> psiMethod.isConstructor }.toList() },
-          { it.declarations.filterIsInstance<KtFunction>() })
+          { it.declarations.filterIsInstance<KtFunction>() },
+      )
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
           { it.properties },
           { it.fields.toList() },
-          { it.declarations.filterIsInstance<KtProperty>() })
+          { it.declarations.filterIsInstance<KtProperty>() },
+      )
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
           { it.superTypes },
           { (it.implementsListTypes + it.extendsListTypes).map { it.psiContext } },
-          { it.superTypeListEntries.map { it.typeReference } })
+          { it.superTypeListEntries.map { it.typeReference } },
+      )
       assertThat(
               aElement
                   .collectDescendantsOfType<AClassOrObject> { it.name == "Status" }

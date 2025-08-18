@@ -48,7 +48,8 @@ class ALambdaExpressionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       assertThat(aElement.psiElement.toAElement()).isInstanceOf(ALambdaExpression::class.java)
@@ -58,7 +59,8 @@ class ALambdaExpressionTest {
           aElement = aElement,
           onAElement = { it.bodyExpression?.text },
           onJava = { "a.toString()" },
-          onKotlin = { "a.toString()" })
+          onKotlin = { "a.toString()" },
+      )
     }
   }
 }

@@ -487,13 +487,16 @@ class DeclarationsFinderTest {
     val functionParameterDeclaration =
         DeclarationsFinder.getDeclarationAt(
             checkNotNull(ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }),
-            "name")
+            "name",
+        )
     assertThat(functionParameterDeclaration).isInstanceOf(KtParameter::class.java)
     assertThat(functionParameterDeclaration?.text).isEqualTo("name: String")
 
     val constructorParameterDeclaration =
         DeclarationsFinder.getDeclarationAt(
-            checkNotNull(ktFile.findDescendantOfType { it.text == """SuperFoo(name!!)""" }), "name")
+            checkNotNull(ktFile.findDescendantOfType { it.text == """SuperFoo(name!!)""" }),
+            "name",
+        )
     assertThat(constructorParameterDeclaration).isInstanceOf(KtParameter::class.java)
     assertThat(constructorParameterDeclaration?.text).isEqualTo("val name: String?")
   }
@@ -524,7 +527,8 @@ class DeclarationsFinderTest {
                 ktFile
                     .findDescendantOfType<KtReturnExpression> { it.text == """return name""" }
                     ?.returnedExpression),
-            "name")
+            "name",
+        )
     assertThat(localVariableDeclaration).isInstanceOf(KtProperty::class.java)
     assertThat(localVariableDeclaration?.text).isEqualTo("val name = \"a\"")
   }
@@ -548,7 +552,8 @@ class DeclarationsFinderTest {
         DeclarationsFinder.getVariableDeclarationAt(
             checkNotNull(
                 ktFile.findDescendantOfType<KtCallExpression> { it.text == """println(name)""" }),
-            "name")
+            "name",
+        )
     assertThat(localVariableDeclaration).isInstanceOf(KtParameter::class.java)
     assertThat(localVariableDeclaration?.text).isEqualTo("private val name: String")
   }
@@ -582,7 +587,8 @@ class DeclarationsFinderTest {
     val propertyDeclaration =
         DeclarationsFinder.getDeclarationAt(
             checkNotNull(ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }),
-            "name")
+            "name",
+        )
     assertThat(propertyDeclaration?.text).isEqualTo("private val name = \"this one\"")
     assertThat(propertyDeclaration).isInstanceOf(KtProperty::class.java)
 
@@ -590,19 +596,23 @@ class DeclarationsFinderTest {
         DeclarationsFinder.getDeclarationAt(
             checkNotNull(
                 ktFile.findDescendantOfType { it.text == """println("ctor param" + name)""" }),
-            "name")
+            "name",
+        )
     assertThat(constructorParamDeclaration?.text).isEqualTo("name: String?")
     assertThat(constructorParamDeclaration).isInstanceOf(KtParameter::class.java)
 
     assertThat(
             DeclarationsFinder.getDeclarationAt(
                 checkNotNull(ktFile.findDescendantOfType { it.text == """"property" + name""" }),
-                "name"))
+                "name",
+            ))
         .isSameAs(propertyDeclaration)
 
     assertThat(
             DeclarationsFinder.getDeclarationAt(
-                checkNotNull(ktFile.findDescendantOfType { it.text == """name + 1""" }), "name"))
+                checkNotNull(ktFile.findDescendantOfType { it.text == """name + 1""" }),
+                "name",
+            ))
         .isSameAs(constructorParamDeclaration)
   }
 
@@ -640,7 +650,8 @@ class DeclarationsFinderTest {
     val propertyDeclaration =
         DeclarationsFinder.getDeclarationAt(
             checkNotNull(ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }),
-            "name")
+            "name",
+        )
     assertThat(propertyDeclaration?.text).isEqualTo("private val name = \"this one\"")
     assertThat(propertyDeclaration).isInstanceOf(KtProperty::class.java)
 
@@ -648,7 +659,8 @@ class DeclarationsFinderTest {
         DeclarationsFinder.getDeclarationAt(
             checkNotNull(
                 ktFile.findDescendantOfType { it.text == """println("hello " + number)""" }),
-            "number")
+            "number",
+        )
     assertThat(companionObjectDeclaration?.text).isEqualTo("private val number = 1")
     assertThat(companionObjectDeclaration).isInstanceOf(KtProperty::class.java)
   }
@@ -1062,13 +1074,16 @@ class DeclarationsFinderTest {
                 psiJavaFile.findDescendantOfType {
                   it.text == """System.out.println("hello " + name)"""
                 }),
-            "name")
+            "name",
+        )
     assertThat(functionParameterDeclaration).isInstanceOf(PsiParameter::class.java)
     assertThat(functionParameterDeclaration?.text).isEqualTo("String name")
 
     val constructorParameterDeclaration =
         DeclarationsFinder.getDeclarationAt(
-            checkNotNull(psiJavaFile.findDescendantOfType { it.text == """super(name)""" }), "name")
+            checkNotNull(psiJavaFile.findDescendantOfType { it.text == """super(name)""" }),
+            "name",
+        )
     assertThat(constructorParameterDeclaration).isInstanceOf(PsiParameter::class.java)
     assertThat(constructorParameterDeclaration?.text).isEqualTo("@A String name")
   }
@@ -1099,7 +1114,8 @@ class DeclarationsFinderTest {
                 psiJavaFile
                     .findDescendantOfType<PsiReturnStatement> { it.text == """return name;""" }
                     ?.returnValue),
-            "name")
+            "name",
+        )
     assertThat(localVariableDeclaration).isInstanceOf(PsiLocalVariable::class.java)
     assertThat(localVariableDeclaration?.text).isEqualTo("String name = \"a\";")
   }
@@ -1129,7 +1145,8 @@ class DeclarationsFinderTest {
                 psiJavaFile.findDescendantOfType<PsiExpression> {
                   it.text == """"hello, name is not available here""""
                 }),
-            "name")
+            "name",
+        )
     assertThat(localVariableDeclaration).isNull()
   }
 }

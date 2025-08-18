@@ -28,7 +28,10 @@ class AArrayAccessExpressionTest {
   fun `basic functionality`() {
     val aElementsTestUtil =
         AElementTestingUtil<
-            AArrayAccessExpression, PsiArrayAccessExpression, KtArrayAccessExpression>()
+            AArrayAccessExpression,
+            PsiArrayAccessExpression,
+            KtArrayAccessExpression,
+        >()
 
     val (javaElement, kotlinElement) =
         aElementsTestUtil.loadTestAElements<AArrayAccessExpression>(
@@ -49,29 +52,34 @@ class AArrayAccessExpressionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
     for (aElement in listOf(javaElement, kotlinElement)) {
       assertThat(aElement.psiElement.toAElement()).isInstanceOf(AArrayAccessExpression::class.java)
       aElementsTestUtil.assertSamePsiElement(
           aElement = aElement,
           onAElement = { it.arrayExpression },
           onJava = { it.arrayExpression },
-          onKotlin = { it.arrayExpression })
+          onKotlin = { it.arrayExpression },
+      )
       aElementsTestUtil.assertSamePsiElementList(
           aElement = aElement,
           onAElement = { it.indexExpressions },
           onJava = { listOf(it.indexExpression) },
-          onKotlin = { it.indexExpressions })
+          onKotlin = { it.indexExpressions },
+      )
       aElementsTestUtil.assertSameString(
           aElement = aElement,
           onAElement = { it.leftBracket.text },
           onJava = { "[" },
-          onKotlin = { "[" })
+          onKotlin = { "[" },
+      )
       aElementsTestUtil.assertSameString(
           aElement = aElement,
           onAElement = { it.rightBracket.text },
           onJava = { "]" },
-          onKotlin = { "]" })
+          onKotlin = { "]" },
+      )
     }
   }
 }

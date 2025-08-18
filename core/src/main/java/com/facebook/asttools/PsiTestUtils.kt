@@ -27,7 +27,7 @@ import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
  */
 inline fun <reified T : PsiElement> PsiElement.requireSingleOfType(
     text: String? = null,
-    name: String? = null
+    name: String? = null,
 ): T {
   val results =
       collectDescendantsOfType<T> {
@@ -43,7 +43,8 @@ inline fun <reified T : PsiElement> PsiElement.requireSingleOfType(
                     text?.let { "text=\"$text\"" },
                     "type=${T::class.java.simpleName}"
                         .takeIf { T::class.java != PsiElement::class.java },
-                    name?.let { "name=\"$name\"" })
+                    name?.let { "name=\"$name\"" },
+                )
                 .joinToString(separator = ", and ")
         val resultsString =
             if (results.isEmpty()) "no elements"

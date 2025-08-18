@@ -166,7 +166,8 @@ class UsagesFinderTest {
         |}
         """
                         .trimMargin())
-                .toAElement())
+                .toAElement(),
+        )
     for (aFile in aFiles) {
       val usages =
           UsagesFinder.getUsages(aFile.findDescendantOfType<AParameter> { it.name == "name" }!!)
@@ -352,7 +353,8 @@ class UsagesFinderTest {
         |}
         """
                         .trimMargin())
-                .toAElement())
+                .toAElement(),
+        )
     for (aFile in aFiles) {
       val usages =
           UsagesFinder.getWrites(
@@ -386,7 +388,8 @@ class UsagesFinderTest {
         |}
         """
                         .trimMargin())
-                .toAElement())
+                .toAElement(),
+        )
     for (aFile in aFiles) {
       val usages =
           UsagesFinder.getReads(

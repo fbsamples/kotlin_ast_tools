@@ -49,14 +49,16 @@ class ACallExpressionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
     for (aElement in listOf(javaElement, kotlinElement)) {
       assertThat(aElement.psiElement.toAElement()).isInstanceOf(ACallExpression::class.java)
       aElementsTestUtil.assertSamePsiElementList(
           aElement = aElement,
           onAElement = { it.valueArguments },
           onJava = { it.argumentList.expressions.toList() },
-          onKotlin = { (it as KtCallExpression).valueArguments.map { it.getArgumentExpression() } })
+          onKotlin = { (it as KtCallExpression).valueArguments.map { it.getArgumentExpression() } },
+      )
     }
     assertThat(javaElement.callExpressionKotlinElement?.text).isNull()
     assertThat(kotlinElement.callExpressionKotlinElement?.text).isEqualTo("invoke(a, b)")

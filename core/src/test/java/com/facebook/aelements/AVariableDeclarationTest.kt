@@ -43,11 +43,16 @@ class AVariableDeclarationTest {
                 |  val a = 5
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.typeReference }, { it.typeElement }, { it.typeReference })
+          aElement,
+          { it.typeReference },
+          { it.typeElement },
+          { it.typeReference },
+      )
     }
   }
 }

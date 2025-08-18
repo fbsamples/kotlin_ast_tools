@@ -109,7 +109,7 @@ object UsagesFinder {
    */
   fun getWrites(
       declaration: PsiVariable,
-      under: PsiElement = declaration.getTopmostParentOfType<PsiJavaFile>()!!
+      under: PsiElement = declaration.getTopmostParentOfType<PsiJavaFile>()!!,
   ): List<PsiElement> {
     return listOfNotNull(declaration.takeIf { it.initializer != null }) +
         getUsages(declaration, under).mapNotNull {
@@ -124,7 +124,7 @@ object UsagesFinder {
   /** See [getWrites] */
   fun getWrites(
       declaration: KtNamedDeclaration,
-      under: PsiElement = declaration.getTopmostParentOfType<KtFile>()!!
+      under: PsiElement = declaration.getTopmostParentOfType<KtFile>()!!,
   ): List<PsiElement> {
     return listOfNotNull(
         declaration.takeIf {

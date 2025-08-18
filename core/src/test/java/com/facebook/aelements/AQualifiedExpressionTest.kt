@@ -50,7 +50,8 @@ class AQualifiedExpressionTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       assertThat(aElement.psiElement.toAElement()).isInstanceOf(AQualifiedExpression::class.java)
@@ -58,17 +59,20 @@ class AQualifiedExpressionTest {
           aElement = aElement,
           onAElement = { it.operator },
           onJava = { "." },
-          onKotlin = { it.operationTokenNode.text })
+          onKotlin = { it.operationTokenNode.text },
+      )
       aElementsTestUtil.assertSamePsiElement(
           aElement = aElement,
           onAElement = { it.receiverExpression },
           onJava = { (it as PsiReferenceExpression).qualifierExpression },
-          onKotlin = { it.receiverExpression })
+          onKotlin = { it.receiverExpression },
+      )
       aElementsTestUtil.assertSamePsiElement(
           aElement = aElement,
           onAElement = { it.selectorExpression },
           onJava = { (it as PsiReferenceExpression).element },
-          onKotlin = { it.selectorExpression })
+          onKotlin = { it.selectorExpression },
+      )
     }
     assertThat(javaElement.javaQualifiedExpression?.text).isEqualTo("foo.bar.num")
     assertThat(kotlinElement.javaQualifiedExpression?.text).isNull()

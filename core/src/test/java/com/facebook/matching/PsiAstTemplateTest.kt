@@ -188,7 +188,9 @@ class PsiAstTemplateTest {
 
     val results: List<KtExpression> =
         ktFile.findAllExpressions(
-            "doIt(#a#)", "#a#" to match<KtExpression> { expression -> expression.text == "1 + 1" })
+            "doIt(#a#)",
+            "#a#" to match<KtExpression> { expression -> expression.text == "1 + 1" },
+        )
 
     assertThat(results.map { it.text }).containsExactly("doIt(1 + 1)")
   }
@@ -744,7 +746,9 @@ class PsiAstTemplateTest {
 
     val results =
         psiJavaFile.findAllExpressions(
-            "doIt(#a#)", "#a#" to match<PsiExpression> { expression -> expression.text == "1 + 1" })
+            "doIt(#a#)",
+            "#a#" to match<PsiExpression> { expression -> expression.text == "1 + 1" },
+        )
 
     assertThat(results.map { it.text }).containsExactly("doIt(1 + 1)")
   }

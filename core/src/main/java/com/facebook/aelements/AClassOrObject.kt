@@ -79,5 +79,6 @@ open class AClassOrObject internal constructor(psiAElement: PsiElement) :
                   it?.toAElement()
                 }
               }
-            })
+            },
+        )
 }

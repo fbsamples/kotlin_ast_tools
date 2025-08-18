@@ -54,40 +54,43 @@ object JavaPsiParserUtil {
     return extract(
         parseAsFile(
             """
-        class Dummy {
-          $code
-        }
-        """
+            class Dummy {
+              $code
+            }
+            """
                 .trimIndent()),
-        code)
+        code,
+    )
   }
 
   fun parseAsStatement(code: String): PsiStatement {
     return extract(
         parseAsFile(
             """
-        class Dummy {
-          public void doDummyStuff() {
-            $code
-          }
-        }
-        """
+            class Dummy {
+              public void doDummyStuff() {
+                $code
+              }
+            }
+            """
                 .trimIndent()),
-        code)
+        code,
+    )
   }
 
   fun parseAsExpression(code: String): PsiExpression {
     return extract(
         parseAsFile(
             """
-        class Dummy {
-          public void doDummyStuff() {
-            Something s = $code;
-          }
-        }
-        """
+            class Dummy {
+              public void doDummyStuff() {
+                Something s = $code;
+              }
+            }
+            """
                 .trimIndent()),
-        code)
+        code,
+    )
   }
 
   fun parseAsField(code: String): PsiField {
@@ -95,35 +98,38 @@ object JavaPsiParserUtil {
     return extract(
         parseAsFile(
             """
-        class Dummy {
-          $fixedCode
-        }
-        """
+            class Dummy {
+              $fixedCode
+            }
+            """
                 .trimIndent()),
-        fixedCode)
+        fixedCode,
+    )
   }
 
   fun parseAsAnnotation(code: String): PsiAnnotation {
     return extract(
         parseAsFile(
             """
-        $code
-        class Dummy {}
-        """
+            $code
+            class Dummy {}
+            """
                 .trimIndent()),
-        code)
+        code,
+    )
   }
 
   fun parseAsImportStatement(code: String): PsiImportStatementBase {
     return extract(
         parseAsFile(
             """
-        $code
+            $code
 
-        class Dummy {}
-        """
+            class Dummy {}
+            """
                 .trimIndent()),
-        code)
+        code,
+    )
   }
 
   private inline fun <reified T : PsiElement> extract(psiJavaFile: PsiJavaFile, code: String): T {

@@ -47,18 +47,28 @@ class AValueArgumentListTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.rightParenthesis }, { it.lastChild }, { it.rightParenthesis })
+          aElement,
+          { it.rightParenthesis },
+          { it.lastChild },
+          { it.rightParenthesis },
+      )
       aElementsTestUtil.assertSamePsiElement(
-          aElement, { it.leftParenthesis }, { it.firstChild }, { it.leftParenthesis })
+          aElement,
+          { it.leftParenthesis },
+          { it.firstChild },
+          { it.leftParenthesis },
+      )
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
           { it.valueArguments },
           { it.expressions.toList() },
-          { it.arguments.map { it.getArgumentExpression() } })
+          { it.arguments.map { it.getArgumentExpression() } },
+      )
     }
   }
 }

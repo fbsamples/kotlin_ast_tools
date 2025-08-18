@@ -111,15 +111,20 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
                 node.typeReference?.let { typeReference ->
                   addChildMatcher(
                       transform = { it.typeReference },
-                      matcher = parseKotlinRecursive(typeReference))
+                      matcher = parseKotlinRecursive(typeReference),
+                  )
                 }
                 node.delegateExpression?.let {
                   addChildMatcher(
-                      transform = { it.delegateExpression }, matcher = parseKotlinRecursive(it))
+                      transform = { it.delegateExpression },
+                      matcher = parseKotlinRecursive(it),
+                  )
                 }
                 node.initializer?.let {
                   addChildMatcher(
-                      transform = { it.initializer }, matcher = parseKotlinRecursive(it))
+                      transform = { it.initializer },
+                      matcher = parseKotlinRecursive(it),
+                  )
                 }
               }
       // for example: `doIt(1, b)`
@@ -127,20 +132,26 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
           match<KtCallExpression>().apply {
             node.referenceExpression()?.let { referenceExpression ->
               addChildMatcher(
-                  { it.referenceExpression() }, parseKotlinRecursive(referenceExpression))
+                  { it.referenceExpression() },
+                  parseKotlinRecursive(referenceExpression),
+              )
             }
             if (!isSelectorExpression(node)) {
               addCustomMatcher { !(isSelectorExpression(it)) }
             }
             addMatchersInOrderList(
                 { it.valueArguments },
-                node.valueArguments.map { valueArgument -> parseKotlinRecursive(valueArgument) })
+                node.valueArguments.map { valueArgument -> parseKotlinRecursive(valueArgument) },
+            )
             addMatchersInOrderList(
                 { it.typeArguments },
-                node.typeArguments.map { typeProjection -> parseKotlinRecursive(typeProjection) })
+                node.typeArguments.map { typeProjection -> parseKotlinRecursive(typeProjection) },
+            )
             node.lambdaArguments.singleOrNull()?.let { lambdaArgument ->
               addChildMatcher(
-                  { it.lambdaArguments.singleOrNull() }, parseKotlinRecursive(lambdaArgument))
+                  { it.lambdaArguments.singleOrNull() },
+                  parseKotlinRecursive(lambdaArgument),
+              )
             }
           }
       is KtQualifiedExpression -> {
@@ -161,7 +172,8 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               node.selectorExpression?.let { selectorExpression ->
                 addChildMatcher({ it }, parseKotlinRecursive(selectorExpression))
               }
-            })
+            },
+        )
       }
       is KtClassLiteralExpression ->
           match<KtClassLiteralExpression>().apply {
@@ -188,7 +200,9 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
       is KtUnaryExpression -> {
         match<KtUnaryExpression>().apply {
           addChildMatcher(
-              { it.baseExpression }, parseKotlinRecursive(checkNotNull(node.baseExpression)))
+              { it.baseExpression },
+              parseKotlinRecursive(checkNotNull(node.baseExpression)),
+          )
           addChildMatcher { it is KtPostfixExpression == node is KtPostfixExpression }
           addChildMatcher { it.operationReference.text == node.operationReference.text }
         }
@@ -203,17 +217,22 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
       is KtIsExpression -> {
         match<KtIsExpression>().apply {
           addChildMatcher(
-              { it.leftHandSide }, parseKotlinRecursive(checkNotNull(node.leftHandSide)))
+              { it.leftHandSide },
+              parseKotlinRecursive(checkNotNull(node.leftHandSide)),
+          )
           addChildMatcher { it.isNegated == node.isNegated }
           addChildMatcher(
-              { it.typeReference }, parseKotlinRecursive(checkNotNull(node.typeReference)))
+              { it.typeReference },
+              parseKotlinRecursive(checkNotNull(node.typeReference)),
+          )
         }
       }
       is KtBlockExpression -> {
         match<KtBlockExpression>().apply {
           addMatchersInOrderList(
               { it.statements },
-              node.statements.map { statement -> parseKotlinRecursive(statement) })
+              node.statements.map { statement -> parseKotlinRecursive(statement) },
+          )
         }
       }
       // for example: `{ it.doIt() }` in `doIt(1, b) { it.doIt() }`
@@ -221,9 +240,12 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
         match<KtLambdaExpression>().apply {
           addMatchersInOrderList(
               { it.valueParameters },
-              node.valueParameters.map { parameter -> parseKotlinRecursive(parameter) })
+              node.valueParameters.map { parameter -> parseKotlinRecursive(parameter) },
+          )
           addChildMatcher(
-              { it.bodyExpression }, parseKotlinRecursive(checkNotNull(node.bodyExpression)))
+              { it.bodyExpression },
+              parseKotlinRecursive(checkNotNull(node.bodyExpression)),
+          )
         }
       }
       // any expression for which we don't have more specific handling, such as `1`, or `foo`
@@ -240,7 +262,8 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               addChildMatcher(
                   { it.getLambdaExpression() },
                   parseKotlinRecursive(lambdaExpression),
-                  inheritShouldMatchNull = true)
+                  inheritShouldMatchNull = true,
+              )
             }
           }
       // for example: `1` in `doIt(1, b)`
@@ -250,7 +273,8 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
               addChildMatcher(
                   { it.getArgumentExpression() },
                   parseKotlinRecursive(expression),
-                  inheritShouldMatchNull = true)
+                  inheritShouldMatchNull = true,
+              )
             }
             node.getArgumentName()?.asName?.identifier?.let { identifier ->
               addChildMatcher { it.getArgumentName()?.asName?.identifier == identifier }
@@ -289,7 +313,8 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
             addChildMatcher(
                 { it.typeReference },
                 parseKotlinRecursive(checkNotNull(node.typeReference)),
-                inheritShouldMatchNull = true)
+                inheritShouldMatchNull = true,
+            )
           }
       // for example "Bar" in `val bar: Bar`
       is KtTypeReference ->
@@ -322,12 +347,14 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
             addChildMatcher({ it.methodExpression }, parseJavaRecursive(node.methodExpression))
             addMatchersInOrderList(
                 { it.argumentList.expressions.toList() },
-                node.argumentList.expressions.map { expression -> parseJavaRecursive(expression) })
+                node.argumentList.expressions.map { expression -> parseJavaRecursive(expression) },
+            )
             addMatchersInOrderList(
                 { it.typeArgumentList.typeParameterElements.toList() },
                 node.typeArgumentList.typeParameterElements.map { typeElement ->
                   parseJavaRecursive(typeElement)
-                })
+                },
+            )
           }
       // for example `foo.bar`
       is PsiReferenceExpression -> {
@@ -338,7 +365,9 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
             when (val referenceNameElement = node.referenceNameElement) {
               is PsiExpression ->
                   addChildMatcher(
-                      { it.referenceNameElement }, parseJavaRecursive(referenceNameElement))
+                      { it.referenceNameElement },
+                      parseJavaRecursive(referenceNameElement),
+                  )
               is PsiIdentifier ->
                   addChildMatcher(
                       { it.referenceNameElement as PsiElement },
@@ -349,7 +378,8 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
                           }
                           .apply {
                             addCustomMatcher { it is PsiExpression || it is PsiIdentifier }
-                          })
+                          },
+                  )
               else -> error("unexpected")
             }
           }
@@ -452,7 +482,8 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
                           match<PsiElement>().apply {
                             addChildMatcher { it.text == referenceNameElement.text }
                           }
-                        })
+                        },
+                    )
                 else ->
                     referenceNameElement?.let {
                       addChildMatcher({ it.referenceNameElement }, parseJavaRecursive(it))
@@ -485,7 +516,7 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
    */
   private inline fun <reified T : PsiElement> loadIfVariableOr(
       textContent: String?,
-      ifNotVariableBlock: () -> PsiAstMatcherImpl<T>
+      ifNotVariableBlock: () -> PsiAstMatcherImpl<T>,
   ): PsiAstMatcherImpl<T> {
     if (textContent == null || !isVarName(textContent)) {
       return ifNotVariableBlock()

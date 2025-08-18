@@ -47,14 +47,16 @@ class ATypeArgumentListTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSamePsiElementList(
           aElement,
           { it.typeArguments },
           { it.typeParameterElements.toList() },
-          { it.arguments.map { it.typeReference } })
+          { it.arguments.map { it.typeReference } },
+      )
     }
   }
 }

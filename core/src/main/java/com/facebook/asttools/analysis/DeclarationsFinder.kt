@@ -351,7 +351,7 @@ object DeclarationsFinder {
    */
   fun findSmartCastConstraints(
       simpleNameExpression: KtSimpleNameExpression,
-      declaration: KtElement
+      declaration: KtElement,
   ): List<PsiElement> {
     check(declaration is KtNamedDeclaration || declaration is KtLambdaExpression)
     val result = mutableListOf<PsiElement>()

@@ -46,7 +46,8 @@ class AImportDirectiveTest {
                 |
                 |class TestClass
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     assertThat(javaAImportDirective.psiElement.toAElement())
         .isInstanceOf(AImportDirective::class.java)
@@ -55,7 +56,8 @@ class AImportDirectiveTest {
           aElement,
           { it.fullyQualifiedName },
           { it.importReference?.qualifiedName },
-          { it.importedFqName?.asString() })
+          { it.importedFqName?.asString() },
+      )
     }
   }
 

@@ -47,7 +47,8 @@ class ANamedElementTest {
                 |  }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin(),
+        )
 
     for (aElement in listOf(javaElement, kotlinElement)) {
       aElementsTestUtil.assertSameString(aElement, { it.name }, { it.name }, { it.name })
@@ -55,7 +56,8 @@ class ANamedElementTest {
           aElement,
           { it.nameIdentifier?.text },
           { it.nameIdentifier?.text },
-          { it.nameIdentifier?.text })
+          { it.nameIdentifier?.text },
+      )
     }
   }
 }

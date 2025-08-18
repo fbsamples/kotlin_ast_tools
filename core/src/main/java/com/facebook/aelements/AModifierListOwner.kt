@@ -45,7 +45,9 @@ interface AModifierListOwner : AElement {
   val isProtected: Boolean
     get() =
         ifLanguage(
-            isJava = { it.hasModifier(JvmModifier.PROTECTED) }, isKotlin = { it.isProtected() })
+            isJava = { it.hasModifier(JvmModifier.PROTECTED) },
+            isKotlin = { it.isProtected() },
+        )
 
   val isPackage: Boolean
     get() = ifLanguage(isJava = { !isPublic && !isPrivate && !isProtected }, isKotlin = { false })
@@ -60,7 +62,8 @@ interface AModifierListOwner : AElement {
               it.hasModifier(JvmModifier.PUBLIC) ||
                   it.getParentOfType<PsiClass>(strict = true)?.isInterface == true
             },
-            isKotlin = { it.isPublic })
+            isKotlin = { it.isPublic },
+        )
 
   val isStatic: Boolean
     get() = ifLanguage(isJava = { it.hasModifier(JvmModifier.STATIC) }, isKotlin = { false })

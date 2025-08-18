@@ -173,7 +173,7 @@ open class AElementImpl(override val psiElement: PsiElement) : AElement {
 
 enum class Language {
   JAVA,
-  KOTLIN
+  KOTLIN,
 }
 
 /**

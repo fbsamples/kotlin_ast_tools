@@ -60,7 +60,7 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
    */
   class MatcherFunctionAndTime<Element>(
       val matcherFunction: (Element) -> MatchResult<*>?,
-      var estimatedTime: Long = 0
+      var estimatedTime: Long = 0,
   )
 
   private val matcherFunctions: MutableList<MatcherFunctionAndTime<Element>> = mutableListOf()
@@ -142,7 +142,7 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
    */
   internal fun <T : PsiElement> addMatchersInOrderList(
       transform: (Element) -> List<T>,
-      list: List<PsiAstMatcher<T>>
+      list: List<PsiAstMatcher<T>>,
   ) {
     matcherFunctions += MatcherFunctionAndTime({ matchAllInOrder(list, transform(it)) })
   }
@@ -205,7 +205,7 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
  */
 internal fun <T : PsiElement> matchAllInOrder(
     matchers: List<PsiAstMatcher<T>>,
-    nodes: List<T>
+    nodes: List<T>,
 ): MatchResult<*>? {
   val variableMatches = mutableMapOf<String, PsiElement>()
   var matcherIndex = 0
@@ -240,7 +240,7 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     psiFile: PsiFileType,
     matcher: PsiAstMatcher<Element>,
     replaceWith: (MatchResult<Element>) -> String,
-    reloadFile: (String) -> PsiFileType
+    reloadFile: (String) -> PsiFileType,
 ): PsiFileType {
   var currentPsiFile: PsiFileType = psiFile
   var remainingMatches = Int.MAX_VALUE
