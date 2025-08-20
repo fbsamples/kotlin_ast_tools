@@ -39,11 +39,13 @@ class ADeclarationWithBodyTest {
                 |  Function1<Int, String> f = (a) -> a.toString();
                 |}
                 """
-                .trimMargin())
+                .trimMargin()
+        )
     assertThat(
             psiJavaFile.toAElement().collectDescendantsOfType<ADeclarationWithBody>().map {
               it.text
-            })
+            }
+        )
         .containsExactly(
             "public TestClass() {}",
             "public void doIt() {}",
@@ -66,7 +68,8 @@ class ADeclarationWithBodyTest {
                 |  val f3 = Runnable { a }
                 |}
                 """
-                .trimMargin())
+                .trimMargin()
+        )
 
     assertThat(ktFile.toAElement().collectDescendantsOfType<ADeclarationWithBody>().map { it.text })
         .containsExactly(

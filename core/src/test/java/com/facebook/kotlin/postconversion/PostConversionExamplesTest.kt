@@ -58,7 +58,8 @@ class PostConversionExamplesTest {
           |  }
           |}
           |"""
-            .trimMargin())
+            .trimMargin()
+    )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
 
@@ -77,7 +78,8 @@ class PostConversionExamplesTest {
           |  }
           |}
           |"""
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -97,7 +99,8 @@ class PostConversionExamplesTest {
           |  }
           |}
           |"""
-            .trimMargin())
+            .trimMargin()
+    )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
 
@@ -116,7 +119,8 @@ class PostConversionExamplesTest {
           |  }
           |}
           |"""
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -140,7 +144,8 @@ class PostConversionExamplesTest {
           |  }
           |}
           |"""
-            .trimMargin())
+            .trimMargin()
+    )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
 
@@ -163,7 +168,8 @@ class PostConversionExamplesTest {
           |  }
           |}
           |"""
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -184,7 +190,8 @@ class PostConversionExamplesTest {
           |  }
           |}
           |"""
-            .trimMargin())
+            .trimMargin()
+    )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
 
@@ -202,6 +209,7 @@ class PostConversionExamplesTest {
           |  }
           |}
           |"""
-                .trimMargin())
+                .trimMargin()
+        )
   }
 }

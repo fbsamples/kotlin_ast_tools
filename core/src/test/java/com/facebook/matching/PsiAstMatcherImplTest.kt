@@ -35,7 +35,8 @@ class PsiAstMatcherImplTest {
         |  doIt(5)
         |  doNotDoIt(6)
         |}"""
-                .trimMargin())
+                .trimMargin()
+        )
     var counter1 = 0
     var counter2 = 0
     val results =

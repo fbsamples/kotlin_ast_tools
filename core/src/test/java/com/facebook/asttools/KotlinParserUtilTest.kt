@@ -36,7 +36,8 @@ class KotlinParserUtilTest {
       |  val a = 1
       |}
     """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val classOrObject = ktFile.findChildByClass(KtClassOrObject::class.java)
     assertThat(classOrObject).isNotNull()

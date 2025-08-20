@@ -32,7 +32,8 @@ class ATypeParameterListOwnerTest {
                 |  public <FunctionParam> FunctionParam foo() { return null; }
                 |}
                 """
-                    .trimMargin())
+                    .trimMargin()
+            )
             .toAElement() to
             KotlinParserUtil.parseAsFile(
                     """
@@ -40,7 +41,8 @@ class ATypeParameterListOwnerTest {
                 |  fun <FunctionParam> foo(): FunctionParam { return null }
                 |}
                 """
-                        .trimMargin())
+                        .trimMargin()
+                )
                 .toAElement()
 
     for (aFile in listOf(javaElement, kotlinElement)) {

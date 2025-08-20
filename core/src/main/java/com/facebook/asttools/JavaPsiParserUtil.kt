@@ -58,7 +58,8 @@ object JavaPsiParserUtil {
               $code
             }
             """
-                .trimIndent()),
+                .trimIndent()
+        ),
         code,
     )
   }
@@ -73,7 +74,8 @@ object JavaPsiParserUtil {
               }
             }
             """
-                .trimIndent()),
+                .trimIndent()
+        ),
         code,
     )
   }
@@ -88,7 +90,8 @@ object JavaPsiParserUtil {
               }
             }
             """
-                .trimIndent()),
+                .trimIndent()
+        ),
         code,
     )
   }
@@ -102,7 +105,8 @@ object JavaPsiParserUtil {
               $fixedCode
             }
             """
-                .trimIndent()),
+                .trimIndent()
+        ),
         fixedCode,
     )
   }
@@ -114,7 +118,8 @@ object JavaPsiParserUtil {
             $code
             class Dummy {}
             """
-                .trimIndent()),
+                .trimIndent()
+        ),
         code,
     )
   }
@@ -127,7 +132,8 @@ object JavaPsiParserUtil {
 
             class Dummy {}
             """
-                .trimIndent()),
+                .trimIndent()
+        ),
         code,
     )
   }

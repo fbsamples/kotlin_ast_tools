@@ -35,7 +35,8 @@ class PsiActionsTest {
           |  val a = 1
           |}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val nodes = ktFile.collectDescendantsOfType<KtExpression> { it.text?.toIntOrNull() != null }
     val replacements = nodes.map { (it.text.toInt() + 1).toString() }
@@ -50,6 +51,7 @@ class PsiActionsTest {
           |  val a = 2
           |}
         """
-                .trimMargin())
+                .trimMargin()
+        )
   }
 }

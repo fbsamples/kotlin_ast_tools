@@ -135,16 +135,20 @@ object PostConversionExamples {
             }
 
             val thenStatement = then.statements.first()
-            if (thenStatement !is KtBinaryExpression ||
-                thenStatement.operationReference.text != "=" ||
-                thenStatement.left?.text != property.name) {
+            if (
+                thenStatement !is KtBinaryExpression ||
+                    thenStatement.operationReference.text != "=" ||
+                    thenStatement.left?.text != property.name
+            ) {
               return
             }
 
             // If the variable is already being referenced in the if we can't transform
-            if (nextStatement
-                .collectDescendantsOfType<KtExpression> { it.text == property.name }
-                .size > 1) {
+            if (
+                nextStatement
+                    .collectDescendantsOfType<KtExpression> { it.text == property.name }
+                    .size > 1
+            ) {
               return
             }
 
@@ -162,8 +166,10 @@ object PostConversionExamples {
                         "if (${condition.text}) ${right.text} else ${initializer.text}",
                     )
             val firstInitializerInstance = updatedProperty.indexOf(initializer.text)
-            if (firstInitializerInstance >= 0 &&
-                updatedProperty.indexOf(initializer.text, firstInitializerInstance + 1) >= 0) {
+            if (
+                firstInitializerInstance >= 0 &&
+                    updatedProperty.indexOf(initializer.text, firstInitializerInstance + 1) >= 0
+            ) {
               return
             }
             nodes.add(property)
@@ -171,7 +177,8 @@ object PostConversionExamples {
             nodes.add(nextStatement)
             replacements.add("")
           }
-        })
+        }
+    )
     if (nodes.isEmpty()) {
       return ktFile
     } else {
@@ -189,7 +196,8 @@ object PostConversionExamples {
               count++
             }
           }
-        })
+        }
+    )
     return count
   }
 }

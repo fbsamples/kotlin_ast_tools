@@ -72,7 +72,8 @@ class AImportDirectiveTest {
                 |
                 |public class TestClass {}
                 """
-                    .trimMargin())
+                    .trimMargin()
+            )
             .toAElement()
             .findDescendantOfType<AImportDirective> { it.text == "import static com.foo.Bar.boom;" }
     assertThat(staticAElement).isNotNull
@@ -88,7 +89,8 @@ class AImportDirectiveTest {
                 |
                 |class TestClass
                 """
-                    .trimMargin())
+                    .trimMargin()
+            )
             .toAElement()
             .findDescendantOfType<AImportDirective> {
               it.text == "import com.foo.Bar.boom as boomboom"
@@ -106,11 +108,13 @@ class AImportDirectiveTest {
                 |
                 |class TestClass
                 """
-                        .trimMargin())
+                        .trimMargin()
+                )
                 .toAElement()
                 .findDescendantOfType<AImportDirective> {
                   it.fullyQualifiedName == "com.foo.Bar.`one two`"
-                })
+                }
+        )
         .isNotNull()
   }
 }

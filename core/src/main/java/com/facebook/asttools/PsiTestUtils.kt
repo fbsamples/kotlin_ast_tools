@@ -54,7 +54,8 @@ inline fun <reified T : PsiElement> PsiElement.requireSingleOfType(
                       "${index + 1}) " + value.text
                     }
         error(
-            "Expected exactly one element to match $matchString under element, but found $resultsString")
+            "Expected exactly one element to match $matchString under element, but found $resultsString"
+        )
       }
 }
 

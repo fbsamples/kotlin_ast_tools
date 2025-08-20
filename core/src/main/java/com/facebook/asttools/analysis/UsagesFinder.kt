@@ -130,7 +130,8 @@ object UsagesFinder {
         declaration.takeIf {
           declaration is KtProperty &&
               (declaration.initializer != null || declaration.delegateExpression != null)
-        }) +
+        }
+    ) +
         getUsages(declaration, under).mapNotNull {
           it.parent.takeIf { parent ->
             parent is KtBinaryExpression &&
@@ -227,9 +228,11 @@ object UsagesFinder {
               val receiverExpression = candidate.receiverExpression
               if (receiverExpression is KtThisExpression) {
                 val label = receiverExpression.getTargetLabel()
-                if (label != null &&
-                    declarationForName.getParentOfType<KtClassOrObject>(true)?.name !=
-                        label.text.removePrefix("@")) {
+                if (
+                    label != null &&
+                        declarationForName.getParentOfType<KtClassOrObject>(true)?.name !=
+                            label.text.removePrefix("@")
+                ) {
                   false
                 } else {
                   (declarationForName is KtProperty && !declarationForName.isLocal) ||
@@ -245,8 +248,10 @@ object UsagesFinder {
               val qualifier = candidate.qualifier
               if (qualifier is PsiThisExpression) {
                 val label = qualifier.qualifier
-                if (label != null &&
-                    declarationForName.getParentOfType<PsiClass>(true)?.name != label.text) {
+                if (
+                    label != null &&
+                        declarationForName.getParentOfType<PsiClass>(true)?.name != label.text
+                ) {
                   false
                 } else {
                   declarationForName is PsiField

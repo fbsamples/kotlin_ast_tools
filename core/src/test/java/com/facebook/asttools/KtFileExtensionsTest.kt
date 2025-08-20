@@ -36,7 +36,8 @@ class KtFileExtensionsTest {
           |  val a = 1
           |}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val newKtFile =
         ktFile.replaceAll<KtExpression>(
@@ -53,7 +54,8 @@ class KtFileExtensionsTest {
           |  val a = 2
           |}
         """
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -67,7 +69,8 @@ class KtFileExtensionsTest {
           |  val a = 1
           |}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val nodes = ktFile.collectDescendantsOfType<KtExpression> { it.text?.toIntOrNull() != null }
     val replacements = nodes.map { (it.text.toInt() + 1).toString() }
@@ -82,7 +85,8 @@ class KtFileExtensionsTest {
           |  val a = 2
           |}
         """
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -92,7 +96,8 @@ class KtFileExtensionsTest {
             """
           |fun f(foo: Foo) {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val newKtFile = ktFile.removeAll<KtParameter> { true }
 
@@ -101,7 +106,8 @@ class KtFileExtensionsTest {
             """
           |fun f() {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -111,7 +117,8 @@ class KtFileExtensionsTest {
             """
           |fun f(foo: Foo, bar: Bar) {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val newKtFile = ktFile.removeAll<KtParameter> { it.name == "bar" }
 
@@ -120,7 +127,8 @@ class KtFileExtensionsTest {
             """
           |fun f(foo: Foo) {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -132,7 +140,8 @@ class KtFileExtensionsTest {
           |  foo: Foo,
           |) {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val newKtFile = ktFile.removeAll<KtParameter> { true }
 
@@ -141,7 +150,8 @@ class KtFileExtensionsTest {
             """
           |fun f() {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -154,7 +164,8 @@ class KtFileExtensionsTest {
           |  bar: Bar,
           |) {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val newKtFile = ktFile.removeAll<KtParameter> { it.name == "bar" }
 
@@ -165,7 +176,8 @@ class KtFileExtensionsTest {
           |  foo: Foo,
           |) {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
   }
 
   @Test
@@ -175,7 +187,8 @@ class KtFileExtensionsTest {
             """
           |fun f(foo: Foo, bar: Bar) {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val newKtFile = ktFile.removeAll<KtParameter> { it.name == "foo" }
 
@@ -184,6 +197,7 @@ class KtFileExtensionsTest {
             """
           |fun f(bar: Bar) {}
         """
-                .trimMargin())
+                .trimMargin()
+        )
   }
 }

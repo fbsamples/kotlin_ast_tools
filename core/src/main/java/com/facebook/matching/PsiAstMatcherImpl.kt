@@ -179,7 +179,8 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       if (enableKtAstMatcherDebugPrints) {
         println(
             "KtAstMatcher-debug: Match $matcherFunction " +
-                "on ${if (obj is PsiElement) "'${obj.text}'" else obj} -> $childResult")
+                "on ${if (obj is PsiElement) "'${obj.text}'" else obj} -> $childResult"
+        )
       }
       childResult ?: return null
       result.putAll(childResult.matchedVariables)
@@ -227,8 +228,12 @@ internal fun <T : PsiElement> matchAllInOrder(
       variableMatches.putAll(match.matchedVariables)
     }
   }
-  return if (nodesIndex == nodes.size &&
-      (matcherIndex until matchers.size).all { index -> (matchers[index].matches(null) != null) }) {
+  return if (
+      nodesIndex == nodes.size &&
+          (matcherIndex until matchers.size).all { index ->
+            (matchers[index].matches(null) != null)
+          }
+  ) {
     MatchResult(null, variableMatches)
   } else {
     null
@@ -251,7 +256,8 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     }
     if (elements.size > remainingMatches) {
       throw IllegalArgumentException(
-          "Cannot apply patches, some patches intersect, and applying them creates new candidates")
+          "Cannot apply patches, some patches intersect, and applying them creates new candidates"
+      )
     }
     val nonIntersectingElements =
         elements.filter { matchResult ->
@@ -264,7 +270,8 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     // Guarantee no infinite loop is possible
     if (newRemainingElements >= remainingMatches) {
       throw IllegalArgumentException(
-          "Cannot apply patches, some patches intersect, and applying them creates new candidates")
+          "Cannot apply patches, some patches intersect, and applying them creates new candidates"
+      )
     }
     remainingMatches = newRemainingElements
     currentPsiFile =

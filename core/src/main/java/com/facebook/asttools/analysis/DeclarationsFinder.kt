@@ -236,13 +236,15 @@ object DeclarationsFinder {
       when (parent) {
         // Kotlin
         is KtClassOrObject -> {
-          if (previousNodes.any {
-            it in parent.getAnonymousInitializers() ||
-                it is KtSuperTypeList ||
-                (it is KtProperty &&
-                    it in parent.declarations &&
-                    it.accessors.none { it in previousNodes })
-          }) {
+          if (
+              previousNodes.any {
+                it in parent.getAnonymousInitializers() ||
+                    it is KtSuperTypeList ||
+                    (it is KtProperty &&
+                        it in parent.declarations &&
+                        it.accessors.none { it in previousNodes })
+              }
+          ) {
             for (constructorParam in parent.primaryConstructorParameters) {
               if (constructorParam.valOrVarKeyword == null) {
                 // handle constructor parameters that are only visible to init code
@@ -301,8 +303,10 @@ object DeclarationsFinder {
         }
         is PsiForStatement -> {
           val initialization = parent.initialization
-          if (initialization is PsiDeclarationStatement &&
-              parent.body.isAncestor(psiElement, strict = false)) {
+          if (
+              initialization is PsiDeclarationStatement &&
+                  parent.body.isAncestor(psiElement, strict = false)
+          ) {
             initialization.declaredElements.forEach { declaredElement -> handle(declaredElement) }
           }
         }
@@ -366,10 +370,12 @@ object DeclarationsFinder {
         // parent is an if expression, condition is either true or false
         is KtIfExpression -> {
           val condition = parent.condition
-          if (condition is KtIsExpression &&
-              condition.leftHandSide.text == simpleNameExpression.text &&
-              (previous == parent.then && !condition.isNegated ||
-                  previous == parent.`else` && condition.isNegated)) {
+          if (
+              condition is KtIsExpression &&
+                  condition.leftHandSide.text == simpleNameExpression.text &&
+                  (previous == parent.then && !condition.isNegated ||
+                      previous == parent.`else` && condition.isNegated)
+          ) {
             result += condition
           }
         }
@@ -379,10 +385,12 @@ object DeclarationsFinder {
           while (prevSibling != null) {
             if (prevSibling is KtIfExpression) {
               val condition = prevSibling.condition
-              if (condition is KtIsExpression &&
-                  condition.leftHandSide.text == simpleNameExpression.text &&
-                  (condition.isNegated && alwaysReturns(prevSibling.then) ||
-                      !condition.isNegated && alwaysReturns(prevSibling.`else`))) {
+              if (
+                  condition is KtIsExpression &&
+                      condition.leftHandSide.text == simpleNameExpression.text &&
+                      (condition.isNegated && alwaysReturns(prevSibling.then) ||
+                          !condition.isNegated && alwaysReturns(prevSibling.`else`))
+              ) {
                 result += condition
               }
             }

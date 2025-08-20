@@ -61,7 +61,8 @@ class JavaPsiParserUtilTest {
       |  int a = 1;
       |}
     """
-                .trimMargin())
+                .trimMargin()
+        )
     assertThat(clazz).isInstanceOf(PsiClass::class.java)
     assertThat(clazz.isInterface).isFalse
     assertThat(clazz.name).isEqualTo("Foo")
@@ -76,7 +77,8 @@ class JavaPsiParserUtilTest {
       |  public void doThing();
       |}
     """
-                .trimMargin())
+                .trimMargin()
+        )
     assertThat(clazz).isInstanceOf(PsiClass::class.java)
     assertThat(clazz.isInterface).isTrue
     assertThat(clazz.name).isEqualTo("IFoo")
@@ -91,7 +93,8 @@ class JavaPsiParserUtilTest {
       |  String a = "hello";
       |}
     """
-                .trimMargin())
+                .trimMargin()
+        )
     assertThat(method).isInstanceOf(PsiMethod::class.java)
     assertThat(method.name).isEqualTo("doThing")
     assertThat(method.parameters).isEmpty()

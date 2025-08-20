@@ -91,7 +91,8 @@ class AClassOrObjectTest {
               aElement
                   .collectDescendantsOfType<AClassOrObject> { it.name == "Status" }
                   .first()
-                  .superTypes)
+                  .superTypes
+          )
           .isEmpty()
     }
   }

@@ -36,7 +36,8 @@ class PsiAstTemplateParserTest {
           |  var bar3 = foo.getEvenMore().get()
           |}
         """
-                .trimMargin())
+                .trimMargin()
+        )
 
     val parser =
         PsiAstTemplateParser(
@@ -56,20 +57,23 @@ class PsiAstTemplateParserTest {
                     "foo.getMore()" -> listOf("com.facebook.bar.NotBar", "com.facebook.bar.NotBaz")
                     else -> null
                   }
-            })
+            }
+        )
 
     assertThat(
             parser
                 .parseTemplateWithVariables<KtExpression>("#a{type=com.facebook.bar.Bar}#.get()")
                 .findAll(ktFile)
-                .map { it.text })
+                .map { it.text }
+        )
         .containsExactly("foo.get().get()")
 
     assertThat(
             parser
                 .parseTemplateWithVariables<KtExpression>("#a{type=com.facebook.bar.Baz}#.get()")
                 .findAll(ktFile)
-                .map { it.text })
+                .map { it.text }
+        )
         .containsExactly("foo.get().get()")
   }
 }

@@ -44,7 +44,8 @@ class AElementUtilTest {
     assertThat((JavaPsiParserUtil.parseAsExpression("a.b()")).toAElement())
         .isInstanceOf(AQualifiedCallExpression::class.java)
     assertThat(
-            (JavaPsiParserUtil.parseAsExpression("a.b()") as PsiMethodCallExpression).toAElement())
+            (JavaPsiParserUtil.parseAsExpression("a.b()") as PsiMethodCallExpression).toAElement()
+        )
         .isInstanceOf(AQualifiedCallExpression::class.java)
     assertThat((JavaPsiParserUtil.parseAsExpression("b()")).toAElement())
         .isInstanceOf(ACallExpression::class.java)
