@@ -163,6 +163,10 @@ class AElementTest {
         |      public void doIt() {}
         |    }
         |  }
+        |  
+        |  protected <T extends Integer> T createInteger() {
+        |    return null;
+        |  }
         |}
         """
                 .trimMargin()
@@ -188,5 +192,7 @@ class AElementTest {
         .isEqualTo(8)
     assertThat(javaPsiFile.toAElement().findDescendantOfType<ANamedFunction>()?.lineNumberInFile)
         .isEqualTo(8)
+    assertThat(javaPsiFile.toAElement().collectDescendantsOfType<AClassOrObject>().size)
+        .isEqualTo(3)
   }
 }

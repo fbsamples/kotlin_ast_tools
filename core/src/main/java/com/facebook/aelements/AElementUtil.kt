@@ -83,6 +83,7 @@ fun PsiElement.toAElement(): AElement =
     when (this) {
       is KtFile -> toAElement()
       is PsiJavaFile -> toAElement()
+      is PsiTypeParameter -> toAElement()
       is PsiClass -> toAElement()
       is KtClassOrObject -> toAElement()
       is PsiPackageStatement -> toAElement()
