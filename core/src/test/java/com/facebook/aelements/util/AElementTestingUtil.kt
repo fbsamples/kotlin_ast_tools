@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package com.facebook.aelements
+package com.facebook.aelements.util
 
+import com.facebook.aelements.AElement
+import com.facebook.aelements.findDescendantOfType
+import com.facebook.aelements.toAElement
 import com.facebook.asttools.JavaPsiParserUtil
 import com.facebook.asttools.KotlinParserUtil
 import org.assertj.core.api.Assertions.assertThat

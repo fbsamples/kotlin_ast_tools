@@ -16,6 +16,7 @@
 
 package com.facebook.aelements
 
+import com.facebook.aelements.util.AElementTestingUtil
 import com.facebook.asttools.KotlinParserUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
