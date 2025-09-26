@@ -39,13 +39,13 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |class Foo {
-          |  @Magic val bar: Bar by SuperDelegate
-          |  val bar2: Bar
-          |  var bar3: Bar by SuperDelegate
-          |  val barString = "Bar".uppercase()
-          |}
-        """
+            |class Foo {
+            |  @Magic val bar: Bar by SuperDelegate
+            |  val bar2: Bar
+            |  var bar3: Bar by SuperDelegate
+            |  val barString = "Bar".uppercase()
+            |}
+            """
                 .trimMargin()
         )
 
@@ -64,10 +64,10 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |class Foo {
-          |  @Magic("yay") val barString = "Bar".uppercase()
-          |}
-        """
+            |class Foo {
+            |  @Magic("yay") val barString = "Bar".uppercase()
+            |}
+            """
                 .trimMargin()
         )
 
@@ -89,13 +89,13 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |class Foo {
-          |  val bar: Bar by SuperDelegate
-          |  val bar2: Bar
-          |  var bar3: Bar by SuperDelegate
-          |  val barString = "Bar".uppercase()
-          |}
-        """
+            |class Foo {
+            |  val bar: Bar by SuperDelegate
+            |  val bar2: Bar
+            |  var bar3: Bar by SuperDelegate
+            |  val barString = "Bar".uppercase()
+            |}
+            """
                 .trimMargin()
         )
 
@@ -115,11 +115,11 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |class Foo {
-          |  val bar: Bar = init()
-          |  val foo: Foo = initAgain()
-          |}
-        """
+            |class Foo {
+            |  val bar: Bar = init()
+            |  val foo: Foo = initAgain()
+            |}
+            """
                 .trimMargin()
         )
 
@@ -134,10 +134,10 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |class Foo {
-          |  val bar: Int = doIt(1 + 1)
-          |}
-        """
+            |class Foo {
+            |  val bar: Int = doIt(1 + 1)
+            |}
+            """
                 .trimMargin()
         )
     val results = ktFile.findAllExpressions("doIt(1 + 1)")
@@ -150,11 +150,11 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  @Magic val a = 5
-          |  @NotMagic val b = 5
-          |}
-        """
+            |fun foo() {
+            |  @Magic val a = 5
+            |  @NotMagic val b = 5
+            |}
+            """
                 .trimMargin()
         )
     val results = ktFile.findAllAnnotations("@Magic")
@@ -168,12 +168,12 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(b: String): Int {
-          |  val a = doIt(1, name = b) // yes
-          |  val a = doIt(2, name = b) // no
-          |  return a
-          |}
-        """
+            |fun foo(b: String): Int {
+            |  val a = doIt(1, name = b) // yes
+            |  val a = doIt(2, name = b) // no
+            |  return a
+            |}
+            """
                 .trimMargin()
         )
     val results = ktFile.findAllExpressions("doIt(1, name = b)")
@@ -186,11 +186,11 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  doIt(1 + 1) // yes
-          |  doIt(1) // no
-          |}
-        """
+            |fun foo() {
+            |  doIt(1 + 1) // yes
+            |  doIt(1) // no
+            |}
+            """
                 .trimMargin()
         )
 
@@ -208,13 +208,13 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  doIt(1)
-          |  doThat(1)
-          |  Bar.doIt(1)
-          |  Bar.doThat(1)
-          |}
-        """
+            |fun foo() {
+            |  doIt(1)
+            |  doThat(1)
+            |  Bar.doIt(1)
+            |  Bar.doThat(1)
+            |}
+            """
                 .trimMargin()
         )
 
@@ -229,13 +229,13 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  doIt()
-          |  doIt(1)
-          |  doIt(1, 2)
-          |  doIt(1, 2, 3)
-          |}
-        """
+            |fun foo() {
+            |  doIt()
+            |  doIt(1)
+            |  doIt(1, 2)
+            |  doIt(1, 2, 3)
+            |}
+            """
                 .trimMargin()
         )
 
@@ -252,13 +252,13 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  doIt<String>()
-          |  doIt<Int>()
-          |  doIt<String, Int>()
-          |  doIt()
-          |}
-        """
+            |fun foo() {
+            |  doIt<String>()
+            |  doIt<Int>()
+            |  doIt<String, Int>()
+            |  doIt()
+            |}
+            """
                 .trimMargin()
         )
 
@@ -277,13 +277,13 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  a.doIt(1)
-          |  b.doIt(2).doIt(3)
-          |  doIt(4)
-          |  c.apply { doIt(5) }
-          |}
-        """
+            |fun foo() {
+            |  a.doIt(1)
+            |  b.doIt(2).doIt(3)
+            |  doIt(4)
+            |  c.apply { doIt(5) }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -301,10 +301,10 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  doIt(1, 2)
-          |}
-        """
+            |fun foo() {
+            |  doIt(1, 2)
+            |}
+            """
                 .trimMargin()
         )
 
@@ -313,10 +313,10 @@ class PsiAstTemplateTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun foo() {
-          |  doIt(2, 1)
-          |}
-        """
+            |fun foo() {
+            |  doIt(2, 1)
+            |}
+            """
                 .trimMargin()
         )
   }
@@ -326,12 +326,12 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  a?.b() // yes
-          |  a?.c() // no
-          |  a.b() // no
-          |}
-        """
+            |fun foo() {
+            |  a?.b() // yes
+            |  a?.c() // no
+            |  a.b() // no
+            |}
+            """
                 .trimMargin()
         )
 
@@ -345,13 +345,13 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  println(Bar::class)
-          |  println(Bar
-          |      ::
-          |      class)
-          |}
-        """
+            |fun foo() {
+            |  println(Bar::class)
+            |  println(Bar
+            |      ::
+            |      class)
+            |}
+            """
                 .trimMargin()
         )
 
@@ -366,12 +366,12 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(bar: Bar) {
-          |  doIt(1)
-          |  bar.doIt(2)
-          |  doIt(3).again()
-          |}
-        """
+            |fun foo(bar: Bar) {
+            |  doIt(1)
+            |  bar.doIt(2)
+            |  doIt(3).again()
+            |}
+            """
                 .trimMargin()
         )
     val results: List<KtExpression> = ktFile.findAllExpressions("doIt(#any#)")
@@ -384,12 +384,12 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(bar: Bar) {
-          |  doIt(1)!!
-          |  doIt(2)
-          |  doIt(doIt(3)!!)
-          |}
-        """
+            |fun foo(bar: Bar) {
+            |  doIt(1)!!
+            |  doIt(2)
+            |  doIt(doIt(3)!!)
+            |}
+            """
                 .trimMargin()
         )
     val results: List<KtExpression> = ktFile.findAllExpressions("doIt(#any#)!!")
@@ -402,11 +402,11 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(i: Int) {
-          |  i++
-          |  ++i
-          |}
-        """
+            |fun foo(i: Int) {
+            |  i++
+            |  ++i
+            |}
+            """
                 .trimMargin()
         )
     val resultsPrefix: List<KtExpression> = ktFile.findAllExpressions("++#any#")
@@ -421,13 +421,13 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(i: Int, foo: Foo) {
-          |  println(i + 5)
-          |  println(i - 2)
-          |  println(foo as FooImpl)
-          |  println(foo as? FooImpl)
-          |}
-        """
+            |fun foo(i: Int, foo: Foo) {
+            |  println(i + 5)
+            |  println(i - 2)
+            |  println(foo as FooImpl)
+            |  println(foo as? FooImpl)
+            |}
+            """
                 .trimMargin()
         )
     assertThat(ktFile.findAllExpressions("#any# + 5").map { it.text }).containsExactly("i + 5")
@@ -443,12 +443,12 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(foo: Foo) {
-          |  println(foo is Bar)
-          |  println(foo !is Bar)
-          |  println(foo is Int)
-          |}
-        """
+            |fun foo(foo: Foo) {
+            |  println(foo is Bar)
+            |  println(foo !is Bar)
+            |  println(foo is Int)
+            |}
+            """
                 .trimMargin()
         )
     assertThat(ktFile.findAllExpressions("#any# is Bar").map { it.text })
@@ -464,11 +464,11 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo() {
-          |  val s = "a" + (doIt())
-          |  val a = 1 + (1 + 1)
-          |}
-        """
+            |fun foo() {
+            |  val s = "a" + (doIt())
+            |  val a = 1 + (1 + 1)
+            |}
+            """
                 .trimMargin()
         )
     assertThat(ktFile.findAllExpressions("(#any#)").map { it.text })
@@ -482,15 +482,15 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |import com.facebook.example2
-          |import com.facebook.example
-          |import com.facebook.example as E
-          |import com.meta.example
-          |
-          |fun foo() {
-          |  example(1)
-          |}
-        """
+            |import com.facebook.example2
+            |import com.facebook.example
+            |import com.facebook.example as E
+            |import com.meta.example
+            |
+            |fun foo() {
+            |  example(1)
+            |}
+            """
                 .trimMargin()
         )
 
@@ -522,41 +522,44 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  println(1)
-          |}
-          |
-          |fun f() {
-          |  println(1)
-          |  println(2)
-          |}
-          |
-          |fun f() {
-          |  println(1)
-          |  println(2)
-          |  println(3)
-          |}
-        """
+            |fun f() {
+            |  println(1)
+            |}
+            |
+            |fun f() {
+            |  println(1)
+            |  println(2)
+            |}
+            |
+            |fun f() {
+            |  println(1)
+            |  println(2)
+            |  println(3)
+            |}
+            """
                 .trimMargin()
         )
     val results =
         PsiAstTemplateParser()
             .parseTemplateWithVariables<KtBlockExpression>(
                 """
-          |{
-          |  #a#
-          |  #b#
-          |}"""
+                |{
+                |  #a#
+                |  #b#
+                |}
+                """
                     .trimMargin()
             )
             .findAllWithVariables(ktFile)
 
     assertThat(results.map { it.psiElement.text })
         .containsExactly(
-            """{
-          |  println(1)
-          |  println(2)
-          |}"""
+            """
+            |{
+            |  println(1)
+            |  println(2)
+            |}
+            """
                 .trimMargin()
         )
     assertThat(results.single()["a"]).isEqualTo("println(1)")
@@ -568,11 +571,11 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f(foo: Foo) {
-          |  foo.let { it.doIt() }
-          |  foo.doIt()
-          |}
-        """
+            |fun f(foo: Foo) {
+            |  foo.let { it.doIt() }
+            |  foo.doIt()
+            |}
+            """
                 .trimMargin()
         )
     val resultsPrefix: List<KtExpression> = ktFile.findAllExpressions("#a#.let { #b# }")
@@ -585,12 +588,12 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(i) {
-          |  doIt() // yes
-          |  doThat() // yes
-          |  invokeIt() // no
-          |}
-        """
+            |fun foo(i) {
+            |  doIt() // yes
+            |  doThat() // yes
+            |  invokeIt() // no
+            |}
+            """
                 .trimMargin()
         )
     val reults: List<KtExpression> = ktFile.findAllExpressions("#a{text=do.*}#()")
@@ -603,12 +606,12 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(i) {
-          |  doIt() // yes
-          |  doThat() // yes
-          |  invokeIt() // no
-          |}
-        """
+            |fun foo(i) {
+            |  doIt() // yes
+            |  doThat() // yes
+            |  invokeIt() // no
+            |}
+            """
                 .trimMargin()
         )
     val newKtFile = ktFile.replaceAllExpressions("#a{text=do.*}#()", "#a#New()")
@@ -616,12 +619,12 @@ class PsiAstTemplateTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-                      |fun foo(i) {
-                      |  doItNew() // yes
-                      |  doThatNew() // yes
-                      |  invokeIt() // no
-                      |}
-                      """
+            |fun foo(i) {
+            |  doItNew() // yes
+            |  doThatNew() // yes
+            |  invokeIt() // no
+            |}
+            """
                 .trimMargin()
         )
   }
@@ -631,12 +634,12 @@ class PsiAstTemplateTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(i) {
-          |  foo.doIt(1) // no
-          |  foo.doIt(1, 2) // no
-          |  foo.doIt(Wrapper(1), 2) // yes
-          |}
-        """
+            |fun foo(i) {
+            |  foo.doIt(1) // no
+            |  foo.doIt(1, 2) // no
+            |  foo.doIt(Wrapper(1), 2) // yes
+            |}
+            """
                 .trimMargin()
         )
     val reults: List<KtExpression> = ktFile.findAllExpressions("foo.doIt(Wrapper(#a#), #b#)")
@@ -649,12 +652,12 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Foo {
-          |  public final @Magic Bar bar;
-          |  public final Bar bar2;
-          |  public final String barString = "Bar".toUpperCase();
-          |}
-        """
+            |public class Foo {
+            |  public final @Magic Bar bar;
+            |  public final Bar bar2;
+            |  public final String barString = "Bar".toUpperCase();
+            |}
+            """
                 .trimMargin()
         )
 
@@ -673,10 +676,10 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Foo {
-          |  @Magic("yay") String barString = "Bar".toUppercase();
-          |}
-        """
+            |public class Foo {
+            |  @Magic("yay") String barString = "Bar".toUppercase();
+            |}
+            """
                 .trimMargin()
         )
 
@@ -698,11 +701,11 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Foo {
-          |  final Bar bar2;
-          |  final String barString = "Bar".toUppercase();
-          |}
-        """
+            |public class Foo {
+            |  final Bar bar2;
+            |  final String barString = "Bar".toUppercase();
+            |}
+            """
                 .trimMargin()
         )
 
@@ -719,10 +722,10 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Foo {
-          |  final int bar = doIt(1 + 1);
-          |}
-        """
+            |public class Foo {
+            |  final int bar = doIt(1 + 1);
+            |}
+            """
                 .trimMargin()
         )
     val results = psiJavaFile.findAllExpressions("doIt(1 + 1)")
@@ -735,13 +738,13 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo() {
-          |    @Magic int a = 5;
-          |    @NotMagic int b = 5;
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo() {
+            |    @Magic int a = 5;
+            |    @NotMagic int b = 5;
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val results = psiJavaFile.findAllAnnotations("@Magic")
@@ -755,14 +758,14 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  fun foo(b: String): Int {
-          |    int a = doIt(1, b); // yes
-          |    int b = doIt(2, b); // no
-          |    return a;
-          |  }
-          |}
-        """
+            |public class Test {
+            |  fun foo(b: String): Int {
+            |    int a = doIt(1, b); // yes
+            |    int b = doIt(2, b); // no
+            |    return a;
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val results = psiJavaFile.findAllExpressions("doIt(1, b)")
@@ -775,13 +778,13 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo() {
-          |    doIt(1 + 1); // yes
-          |    doIt(1); // no
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo() {
+            |    doIt(1 + 1); // yes
+            |    doIt(1); // no
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -799,15 +802,15 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo() {
-          |    doIt(1);
-          |    doThat(1);
-          |    Bar.doIt(1);
-          |    Bar.doThat(1);
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo() {
+            |    doIt(1);
+            |    doThat(1);
+            |    Bar.doIt(1);
+            |    Bar.doThat(1);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -822,15 +825,15 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo() {
-          |    doIt();
-          |    doIt(1);
-          |    doIt(1, 2);
-          |    doIt(1, 2, 3);
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo() {
+            |    doIt();
+            |    doIt(1);
+            |    doIt(1, 2);
+            |    doIt(1, 2, 3);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -847,15 +850,15 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |class Test {
-          |  void foo() {
-          |    Foo.<String>doIt();
-          |    Foo.<Int>doIt();
-          |    Foo.<String, Int>doIt();
-          |    Foo.doIt();
-          |  }
-          |}
-        """
+            |class Test {
+            |  void foo() {
+            |    Foo.<String>doIt();
+            |    Foo.<Int>doIt();
+            |    Foo.<String, Int>doIt();
+            |    Foo.doIt();
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -874,12 +877,12 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo() {
-          |    doIt(1, 2);
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo() {
+            |    doIt(1, 2);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -888,12 +891,12 @@ class PsiAstTemplateTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |public class Test {
-          |  void foo() {
-          |    doIt(2, 1);
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo() {
+            |    doIt(2, 1);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
   }
@@ -903,13 +906,13 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  public void foo() {
-          |    a.b(); // yes
-          |    a.c(); // no
-          |  }
-          |}
-        """
+            |public class Test {
+            |  public void foo() {
+            |    a.b(); // yes
+            |    a.c(); // no
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -923,15 +926,15 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo() {
-          |  System.out.println((Bar.class);
-          |  System.out.println(Bar
-          |    .
-          |    class);
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo() {
+            |  System.out.println((Bar.class);
+            |  System.out.println(Bar
+            |    .
+            |    class);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -945,14 +948,14 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo(Bar bar) {
-          |    doIt(1);
-          |    bar.doIt(2);
-          |    doIt(3).again();
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo(Bar bar) {
+            |    doIt(1);
+            |    bar.doIt(2);
+            |    doIt(3).again();
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val results = psiJavaFile.findAllExpressions("doIt(#any#)")
@@ -965,13 +968,13 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo(int i) {
-          |    i++;
-          |    ++i;
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo(int i) {
+            |    i++;
+            |    ++i;
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val resultsPrefix = psiJavaFile.findAllExpressions("++#any#")
@@ -986,13 +989,13 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo(Foo foo) {
-          |    println((Bar) foo);
-          |    println((Integer) foo);
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo(Foo foo) {
+            |    println((Bar) foo);
+            |    println((Integer) foo);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     assertThat(psiJavaFile.findAllExpressions("(Bar) #any#").map { it.text })
@@ -1006,13 +1009,13 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo(Foo foo) {
-          |    println(foo instanceof Bar);
-          |    println(foo instanceof Integer);
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo(Foo foo) {
+            |    println(foo instanceof Bar);
+            |    println(foo instanceof Integer);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     assertThat(psiJavaFile.findAllExpressions("#any# instanceof Bar").map { it.text })
@@ -1026,13 +1029,13 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |public class Test {
-          |  void foo() {
-          |    String s = "a" + (doIt());
-          |    int a = 1 + (1 + 1);
-          |  }
-          |}
-        """
+            |public class Test {
+            |  void foo() {
+            |    String s = "a" + (doIt());
+            |    int a = 1 + (1 + 1);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     assertThat(psiJavaFile.findAllExpressions("(#any#)").map { it.text })
@@ -1046,13 +1049,13 @@ class PsiAstTemplateTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |import com.facebook.example.Foo;
-          |import com.facebook.example.Foo2;
-          |import static com.facebook.example.Foo.f;
-          |import com.meta.example.Foo;
-          |
-          |class Bar {}
-        """
+            |import com.facebook.example.Foo;
+            |import com.facebook.example.Foo2;
+            |import static com.facebook.example.Foo.f;
+            |import com.meta.example.Foo;
+            |
+            |class Bar {}
+            """
                 .trimMargin()
         )
 

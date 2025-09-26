@@ -30,12 +30,12 @@ class PsiAstTemplateParserTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |class Foo {
-          |  val bar = foo.get().get()
-          |  var bar2 = foo.getMore().get()
-          |  var bar3 = foo.getEvenMore().get()
-          |}
-        """
+            |class Foo {
+            |  val bar = foo.get().get()
+            |  var bar2 = foo.getMore().get()
+            |  var bar3 = foo.getEvenMore().get()
+            |}
+            """
                 .trimMargin()
         )
 

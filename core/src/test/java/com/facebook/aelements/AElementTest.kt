@@ -32,37 +32,37 @@ class AElementTest {
     val javaPsiFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.example.foo;
-        |
-        |import com.example.bar.Bar;
-        |
-        |public class TestClass {
-        |  public void doIt() {
-        |    Bar bar = new Bar();
-        |    if (1 + 1 == 2) {
-        |      System.out.println("Hello World");
-        |    }
-        |  }
-        |}
-        """
+            |package com.example.foo;
+            |
+            |import com.example.bar.Bar;
+            |
+            |public class TestClass {
+            |  public void doIt() {
+            |    Bar bar = new Bar();
+            |    if (1 + 1 == 2) {
+            |      System.out.println("Hello World");
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.example.foo
-        |
-        |import com.example.bar.Bar
-        |
-        |class TestClass {
-        |  fun doIt() {
-        |    val bar = Bar()
-        |    if (1 + 1 == 2) {
-        |     println("Hello World")
-        |    }
-        |  }
-        |}
-        """
+            |package com.example.foo
+            |
+            |import com.example.bar.Bar
+            |
+            |class TestClass {
+            |  fun doIt() {
+            |    val bar = Bar()
+            |    if (1 + 1 == 2) {
+            |     println("Hello World")
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -99,35 +99,35 @@ class AElementTest {
     val javaPsiFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.example.foo;
-        |
-        |import com.example.bar.Bar;
-        |
-        |public class TestClass {
-        |  public class TestClass2 {
-        |    public class TestClass3 {
-        |      public void doIt() {}
-        |    }
-        |  }
-        |}
-        """
+            |package com.example.foo;
+            |
+            |import com.example.bar.Bar;
+            |
+            |public class TestClass {
+            |  public class TestClass2 {
+            |    public class TestClass3 {
+            |      public void doIt() {}
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.example.foo
-        |
-        |import com.example.bar.Bar
-        |
-        |class TestClass {
-        |  class TestClass2 {
-        |    class TestClass3 {
-        |      fun doIt() {}
-        |    }
-        |  }
-        |}
-        """
+            |package com.example.foo
+            |
+            |import com.example.bar.Bar
+            |
+            |class TestClass {
+            |  class TestClass2 {
+            |    class TestClass3 {
+            |      fun doIt() {}
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -153,39 +153,39 @@ class AElementTest {
     val javaPsiFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.example.foo;
-        |
-        |import com.example.bar.Bar;
-        |
-        |public class TestClass {
-        |  public class TestClass2 {
-        |    public class TestClass3 {
-        |      public void doIt() {}
-        |    }
-        |  }
-        |  
-        |  protected <T extends Integer> T createInteger() {
-        |    return null;
-        |  }
-        |}
-        """
+            |package com.example.foo;
+            |
+            |import com.example.bar.Bar;
+            |
+            |public class TestClass {
+            |  public class TestClass2 {
+            |    public class TestClass3 {
+            |      public void doIt() {}
+            |    }
+            |  }
+            |  
+            |  protected <T extends Integer> T createInteger() {
+            |    return null;
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.example.foo
-        |
-        |import com.example.bar.Bar
-        |
-        |class TestClass {
-        |  class TestClass2 {
-        |    class TestClass3 {
-        |      fun doIt() {}
-        |    }
-        |  }
-        |}
-        """
+            |package com.example.foo
+            |
+            |import com.example.bar.Bar
+            |
+            |class TestClass {
+            |  class TestClass2 {
+            |    class TestClass3 {
+            |      fun doIt() {}
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     assertThat(ktFile.toAElement().findDescendantOfType<ANamedFunction>()?.lineNumberInFile)

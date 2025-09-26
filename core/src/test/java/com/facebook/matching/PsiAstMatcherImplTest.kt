@@ -29,12 +29,13 @@ class PsiAstMatcherImplTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.test
-        |
-        |fun doIt() {
-        |  doIt(5)
-        |  doNotDoIt(6)
-        |}"""
+            |package com.test
+            |
+            |fun doIt() {
+            |  doIt(5)
+            |  doNotDoIt(6)
+            |}
+            """
                 .trimMargin()
         )
     var counter1 = 0

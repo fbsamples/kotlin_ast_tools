@@ -47,11 +47,11 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |class Foo {
-          |  fun doThat() = "yes"
-          |  fun doIt() = 1
-          |}
-        """
+            |class Foo {
+            |  fun doThat() = "yes"
+            |  fun doIt() = 1
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -78,12 +78,12 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |class Foo {
-          |  val bar: Bar by SuperDelegate
-          |  val bar2: Bar
-          |  var bar2: Bar by SuperDelegate
-          |}
-        """
+            |class Foo {
+            |  val bar: Bar by SuperDelegate
+            |  val bar2: Bar
+            |  var bar2: Bar by SuperDelegate
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -104,18 +104,18 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |suspend fun foo(): Int {
-          |  return 10
-          |}
-          |
-          |private suspend fun bar(): Int {
-          |  return 10
-          |}
-          |
-          |fun bar(): Int {
-          |  return 10
-          |}
-        """
+            |suspend fun foo(): Int {
+            |  return 10
+            |}
+            |
+            |private suspend fun bar(): Int {
+            |  return 10
+            |}
+            |
+            |fun bar(): Int {
+            |  return 10
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -137,10 +137,10 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |@FixMe fun foo(): Int {
-          |  return 10
-          |}
-        """
+            |@FixMe fun foo(): Int {
+            |  return 10
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -158,10 +158,10 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun foo(): Int = 10
-          |fun foo2(): String = "10"
-          |fun foo3() = Unit
-        """
+            |fun foo(): Int = 10
+            |fun foo2(): String = "10"
+            |fun foo3() = Unit
+            """
                 .trimMargin()
         )
     val results =
@@ -179,13 +179,13 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |suspend fun foo(): Int {
-          |  withContext(Dispatchers.IO, ViewerContext, Env) {
-          |     print("hi")
-          |  }
-          |  return 10
-          |}
-        """
+            |suspend fun foo(): Int {
+            |  withContext(Dispatchers.IO, ViewerContext, Env) {
+            |     print("hi")
+            |  }
+            |  return 10
+            |}
+            """
                 .trimMargin()
         )
     val matchResults =
@@ -220,18 +220,18 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |suspend fun foo(): Unit {
-          |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
-          |}
-          |
-          |suspend fun bar(): Unit {
-          |  withContextBar(Dispatchers.IO, Env)
-          |}
-          |
-          |suspend fun bar2(): Unit {
-          |  withContextBar2(Extras, Dispatchers.IO, Env)
-          |}
-        """
+            |suspend fun foo(): Unit {
+            |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
+            |}
+            |
+            |suspend fun bar(): Unit {
+            |  withContextBar(Dispatchers.IO, Env)
+            |}
+            |
+            |suspend fun bar2(): Unit {
+            |  withContextBar2(Extras, Dispatchers.IO, Env)
+            |}
+            """
                 .trimMargin()
         )
     val results: List<KtCallExpression> =
@@ -254,20 +254,20 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |suspend fun foo(): Unit {
-          |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
-          |  return 10
-          |}
-          |
-          |suspend fun bar(): Unit {
-          |  withContextBar(Dispatchers.IO, Env)
-          |  return 10
-          |}
-          |suspend fun bar2(): Unit {
-          |  withContextBar2(Dispatchers.IO, Env, Extras)
-          |  return 10
-          |}
-        """
+            |suspend fun foo(): Unit {
+            |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
+            |  return 10
+            |}
+            |
+            |suspend fun bar(): Unit {
+            |  withContextBar(Dispatchers.IO, Env)
+            |  return 10
+            |}
+            |suspend fun bar2(): Unit {
+            |  withContextBar2(Dispatchers.IO, Env, Extras)
+            |  return 10
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -290,18 +290,18 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |suspend fun foo(): Unit {
-          |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
-          |}
-          |
-          |suspend fun bar(): Unit {
-          |  withContextBar(Dispatchers.IO, Env)
-          |}
-          |
-          |suspend fun bar2(): Unit {
-          |  withContextBar2(Dispatchers.IO)
-          |}
-        """
+            |suspend fun foo(): Unit {
+            |  withContextFoo(Dispatchers.IO, ViewerContext, Env)
+            |}
+            |
+            |suspend fun bar(): Unit {
+            |  withContextBar(Dispatchers.IO, Env)
+            |}
+            |
+            |suspend fun bar2(): Unit {
+            |  withContextBar2(Dispatchers.IO)
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -321,8 +321,8 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |private val foo = 5
-        """
+            |private val foo = 5
+            """
                 .trimMargin()
         )
     val results: List<KtProperty> =
@@ -340,14 +340,14 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |object Foo {
-          |  private val foo = 5
-          |}
-          |
-          |object Bar {
-          |  private val bar = 5
-          |}
-        """
+            |object Foo {
+            |  private val foo = 5
+            |}
+            |
+            |object Bar {
+            |  private val bar = 5
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -372,10 +372,10 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |object Foo : Super1 {}
-          |object Bar : Super1, Super2 {}
-          |object NoBar : Super2 {}
-        """
+            |object Foo : Super1 {}
+            |object Bar : Super1, Super2 {}
+            |object NoBar : Super2 {}
+            """
                 .trimMargin()
         )
     val results =
@@ -391,10 +391,10 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |object Foo : Super1() {}
-          |object Bar : Super1("a"), Super2("a") {}
-          |object NoBar : Super2() {}
-        """
+            |object Foo : Super1() {}
+            |object Bar : Super1("a"), Super2("a") {}
+            |object NoBar : Super2() {}
+            """
                 .trimMargin()
         )
     val results =
@@ -414,11 +414,11 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  (1 + 2).toFloat() // yes
-          |  2.toFloat() // no
-          |}
-        """
+            |fun f() {
+            |  (1 + 2).toFloat() // yes
+            |  2.toFloat() // no
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -437,11 +437,11 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  a?.b() // yes
-          |  a.b() // no
-          |}
-        """
+            |fun f() {
+            |  a?.b() // yes
+            |  a.b() // no
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -457,12 +457,12 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  doIt("yay", num = 1) // yes
-          |  doIt("boo", num = 1) // no
-          |  doIt("yay", food = 1) // no
-          |}
-        """
+            |fun f() {
+            |  doIt("yay", num = 1) // yes
+            |  doIt("boo", num = 1) // no
+            |  doIt("yay", food = 1) // no
+            |}
+            """
                 .trimMargin()
         )
     val results =
@@ -485,12 +485,12 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  doIt(1)
-          |  doIt(2)
-          |  val a = 1
-          |}
-        """
+            |fun f() {
+            |  doIt(1)
+            |  doIt(2)
+            |  val a = 1
+            |}
+            """
                 .trimMargin()
         )
 
@@ -504,12 +504,12 @@ class PsiAstMatcherTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f() {
-          |  doIt(2)
-          |  doIt(3)
-          |  val a = 2
-          |}
-        """
+            |fun f() {
+            |  doIt(2)
+            |  doIt(3)
+            |  val a = 2
+            |}
+            """
                 .trimMargin()
         )
   }
@@ -519,13 +519,13 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  println(1 + 2) // yes
-          |  println(0 + 2) // no
-          |  println(1 + 0) // no
-          |  println(1 - 2) // no
-          |}
-        """
+            |fun f() {
+            |  println(1 + 2) // yes
+            |  println(0 + 2) // no
+            |  println(1 + 0) // no
+            |  println(1 - 2) // no
+            |}
+            """
                 .trimMargin()
         )
 
@@ -546,12 +546,12 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  i++ // yes
-          |  i!! // no
-          |  ++i // no
-          |}
-        """
+            |fun f() {
+            |  i++ // yes
+            |  i!! // no
+            |  ++i // no
+            |}
+            """
                 .trimMargin()
         )
 
@@ -572,12 +572,12 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  println(Foo::class) // yes
-          |  println(Foo::bar) // no
-          |  println(Foo :: class) // yes
-          |}
-        """
+            |fun f() {
+            |  println(Foo::class) // yes
+            |  println(Foo::bar) // no
+            |  println(Foo :: class) // yes
+            |}
+            """
                 .trimMargin()
         )
 
@@ -602,10 +602,10 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  invoke(invoke(invoke() + invoke(2)))
-          |}
-        """
+            |fun f() {
+            |  invoke(invoke(invoke() + invoke(2)))
+            |}
+            """
                 .trimMargin()
         )
 
@@ -618,10 +618,10 @@ class PsiAstMatcherTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f() {
-          |  apply(apply(apply() + apply(2)))
-          |}
-        """
+            |fun f() {
+            |  apply(apply(apply() + apply(2)))
+            |}
+            """
                 .trimMargin()
         )
   }
@@ -631,10 +631,10 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  println(invoke(invoke()))
-          |}
-        """
+            |fun f() {
+            |  println(invoke(invoke()))
+            |}
+            """
                 .trimMargin()
         )
 
@@ -654,11 +654,11 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  val a = 5
-          |  val b = 6
-          |}
-        """
+            |fun f() {
+            |  val a = 5
+            |  val b = 6
+            |}
+            """
                 .trimMargin()
         )
     val ktExpressions = ktFile.collectDescendantsOfType<KtConstantExpression>()
@@ -676,11 +676,11 @@ class PsiAstMatcherTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  val a = 5
-          |  val b = 6
-          |}
-        """
+            |fun f() {
+            |  val a = 5
+            |  val b = 6
+            |}
+            """
                 .trimMargin()
         )
     val ktExpressions = ktFile.collectDescendantsOfType<KtConstantExpression>()

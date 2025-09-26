@@ -30,12 +30,12 @@ class KotlinParserUtilTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-      |package com.facebook.foo
-      |
-      |class Foo {
-      |  val a = 1
-      |}
-    """
+            |package com.facebook.foo
+            |
+            |class Foo {
+            |  val a = 1
+            |}
+            """
                 .trimMargin()
         )
 

@@ -30,12 +30,12 @@ class KtFileExtensionsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  doIt(1)
-          |  doIt(2)
-          |  val a = 1
-          |}
-        """
+            |fun f() {
+            |  doIt(1)
+            |  doIt(2)
+            |  val a = 1
+            |}
+            """
                 .trimMargin()
         )
 
@@ -48,12 +48,12 @@ class KtFileExtensionsTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f() {
-          |  doIt(2)
-          |  doIt(3)
-          |  val a = 2
-          |}
-        """
+            |fun f() {
+            |  doIt(2)
+            |  doIt(3)
+            |  val a = 2
+            |}
+            """
                 .trimMargin()
         )
   }
@@ -63,12 +63,12 @@ class KtFileExtensionsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  doIt(1)
-          |  doIt(2)
-          |  val a = 1
-          |}
-        """
+            |fun f() {
+            |  doIt(1)
+            |  doIt(2)
+            |  val a = 1
+            |}
+            """
                 .trimMargin()
         )
 
@@ -79,12 +79,12 @@ class KtFileExtensionsTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f() {
-          |  doIt(2)
-          |  doIt(3)
-          |  val a = 2
-          |}
-        """
+            |fun f() {
+            |  doIt(2)
+            |  doIt(3)
+            |  val a = 2
+            |}
+            """
                 .trimMargin()
         )
   }
@@ -94,8 +94,8 @@ class KtFileExtensionsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f(foo: Foo) {}
-        """
+            |fun f(foo: Foo) {}
+            """
                 .trimMargin()
         )
 
@@ -104,8 +104,8 @@ class KtFileExtensionsTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f() {}
-        """
+            |fun f() {}
+            """
                 .trimMargin()
         )
   }
@@ -115,8 +115,8 @@ class KtFileExtensionsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f(foo: Foo, bar: Bar) {}
-        """
+            |fun f(foo: Foo, bar: Bar) {}
+            """
                 .trimMargin()
         )
 
@@ -125,8 +125,8 @@ class KtFileExtensionsTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f(foo: Foo) {}
-        """
+            |fun f(foo: Foo) {}
+            """
                 .trimMargin()
         )
   }
@@ -136,10 +136,10 @@ class KtFileExtensionsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f(
-          |  foo: Foo,
-          |) {}
-        """
+            |fun f(
+            |  foo: Foo,
+            |) {}
+            """
                 .trimMargin()
         )
 
@@ -148,8 +148,8 @@ class KtFileExtensionsTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f() {}
-        """
+            |fun f() {}
+            """
                 .trimMargin()
         )
   }
@@ -159,11 +159,11 @@ class KtFileExtensionsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f(
-          |  foo: Foo,
-          |  bar: Bar,
-          |) {}
-        """
+            |fun f(
+            |  foo: Foo,
+            |  bar: Bar,
+            |) {}
+            """
                 .trimMargin()
         )
 
@@ -172,10 +172,10 @@ class KtFileExtensionsTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f(
-          |  foo: Foo,
-          |) {}
-        """
+            |fun f(
+            |  foo: Foo,
+            |) {}
+            """
                 .trimMargin()
         )
   }
@@ -185,8 +185,8 @@ class KtFileExtensionsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f(foo: Foo, bar: Bar) {}
-        """
+            |fun f(foo: Foo, bar: Bar) {}
+            """
                 .trimMargin()
         )
 
@@ -195,8 +195,8 @@ class KtFileExtensionsTest {
     assertThat(newKtFile.text)
         .isEqualTo(
             """
-          |fun f(bar: Bar) {}
-        """
+            |fun f(bar: Bar) {}
+            """
                 .trimMargin()
         )
   }

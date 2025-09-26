@@ -37,10 +37,10 @@ class ATypeParameterListOwnerTest {
             .toAElement() to
             KotlinParserUtil.parseAsFile(
                     """
-                |open class TestClass<ClassTypeParam> {
-                |  fun <FunctionParam> foo(): FunctionParam { return null }
-                |}
-                """
+                    |open class TestClass<ClassTypeParam> {
+                    |  fun <FunctionParam> foo(): FunctionParam { return null }
+                    |}
+                    """
                         .trimMargin()
                 )
                 .toAElement()

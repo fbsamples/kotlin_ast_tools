@@ -34,14 +34,14 @@ class PsiTestUtilsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  doIt(1)
-          |  doIt(2)
-          |  val a = 1
-          |}
-          |
-          |fun f(n: Int) {} 
-        """
+            |fun f() {
+            |  doIt(1)
+            |  doIt(2)
+            |  val a = 1
+            |}
+            |
+            |fun f(n: Int) {} 
+            """
                 .trimMargin()
         )
 
@@ -51,13 +51,15 @@ class PsiTestUtilsTest {
 
     assertThatThrownBy { ktFile.requireSingle(name = "f") }
         .hasMessage(
-            """Expected exactly one element to match name="f" under element, but found 2 elements:
-              |1) fun f() {
-              |  doIt(1)
-              |  doIt(2)
-              |  val a = 1
-              |}
-              |2) fun f(n: Int) {}"""
+            """
+            |Expected exactly one element to match name="f" under element, but found 2 elements:
+            |1) fun f() {
+            |  doIt(1)
+            |  doIt(2)
+            |  val a = 1
+            |}
+            |2) fun f(n: Int) {}
+            """
                 .trimMargin()
         )
     assertThatThrownBy { ktFile.requireSingle(name = "nonExistent") }
@@ -75,16 +77,16 @@ class PsiTestUtilsTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-          |class Example {
-          |  public static void f() {
-          |    doIt(1);
-          |    doIt(2);
-          |    int a = 1;
-          |  }
-          |  
-          |  public static void f(int n) {}
-          |}
-        """
+            |class Example {
+            |  public static void f() {
+            |    doIt(1);
+            |    doIt(2);
+            |    int a = 1;
+            |  }
+            |  
+            |  public static void f(int n) {}
+            |}
+            """
                 .trimMargin()
         )
 
@@ -95,13 +97,15 @@ class PsiTestUtilsTest {
 
     assertThatThrownBy { psiJavaFile.requireSingle(name = "f") }
         .hasMessage(
-            """Expected exactly one element to match name="f" under element, but found 2 elements:
-               |1) public static void f() {
-               |    doIt(1);
-               |    doIt(2);
-               |    int a = 1;
-               |  }
-               |2) public static void f(int n) {}"""
+            """
+            |Expected exactly one element to match name="f" under element, but found 2 elements:
+            |1) public static void f() {
+            |    doIt(1);
+            |    doIt(2);
+            |    int a = 1;
+            |  }
+            |2) public static void f(int n) {}
+            """
                 .trimMargin()
         )
     assertThatThrownBy { psiJavaFile.requireSingle(name = "nonExistent") }

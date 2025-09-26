@@ -29,12 +29,12 @@ class PsiActionsTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |fun f() {
-          |  doIt(1)
-          |  doIt(2)
-          |  val a = 1
-          |}
-        """
+            |fun f() {
+            |  doIt(1)
+            |  doIt(2)
+            |  val a = 1
+            |}
+            """
                 .trimMargin()
         )
 
@@ -45,12 +45,12 @@ class PsiActionsTest {
     assertThat(newCode)
         .isEqualTo(
             """
-          |fun f() {
-          |  doIt(2)
-          |  doIt(3)
-          |  val a = 2
-          |}
-        """
+            |fun f() {
+            |  doIt(2)
+            |  doIt(3)
+            |  val a = 2
+            |}
+            """
                 .trimMargin()
         )
   }

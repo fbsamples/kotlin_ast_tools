@@ -45,15 +45,15 @@ class UsagesFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |fun doIt(name: String): String {
-        |  val name = name.trim()
-        |  println(name)
-        |  val name2 = name + "!"
-        |  return if (name2 > name) name2 else name  
-        |}
-        """
+            |package com.facebook.example
+            |
+            |fun doIt(name: String): String {
+            |  val name = name.trim()
+            |  println(name)
+            |  val name2 = name + "!"
+            |  return if (name2 > name) name2 else name  
+            |}
+            """
                 .trimMargin()
         )
 
@@ -73,13 +73,13 @@ class UsagesFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |fun doIt(name: String): String {
-        |  val f: (String) -> String = { s -> "hello" }
-        |  return f("test")
-        |}
-        """
+            |package com.facebook.example
+            |
+            |fun doIt(name: String): String {
+            |  val f: (String) -> String = { s -> "hello" }
+            |  return f("test")
+            |}
+            """
                 .trimMargin()
         )
 
@@ -94,14 +94,14 @@ class UsagesFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |fun f(name: String): String {
-        |  val f = 5
-        |  println(::f)
-        |  println(f)
-        |}
-        """
+            |package com.facebook.example
+            |
+            |fun f(name: String): String {
+            |  val f = 5
+            |  println(::f)
+            |  println(f)
+            |}
+            """
                 .trimMargin()
         )
 
@@ -120,24 +120,24 @@ class UsagesFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Example(private val name: String) {
-        |  fun f(name: String) {
-        |    println(name)
-        |    println(this.name)
-        |    println(this@Example.name)
-        |    class C(val name: String) {
-        |      fun g() {
-        |        println(name)
-        |        println(this.name)
-        |        println(this@Example.name)
-        |        println(this@C.name)
-        |      }
-        |    }
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Example(private val name: String) {
+            |  fun f(name: String) {
+            |    println(name)
+            |    println(this.name)
+            |    println(this@Example.name)
+            |    class C(val name: String) {
+            |      fun g() {
+            |        println(name)
+            |        println(this.name)
+            |        println(this@Example.name)
+            |        println(this@C.name)
+            |      }
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val ktParameter = ktFile.requireSingleOfType<KtParameter>("private val name: String")
@@ -156,21 +156,21 @@ class UsagesFinderTest {
         listOf(
             KotlinParserUtil.parseAsFile(
                     """
-        |fun doIt(name: String) {
-        |  println(name)
-        |}
-        """
+                    |fun doIt(name: String) {
+                    |  println(name)
+                    |}
+                    """
                         .trimMargin()
                 )
                 .toAElement(),
             JavaPsiParserUtil.parseAsFile(
                     """
-        |public class Example {
-        |  public static String doIt(String name) {
-        |    println(name);
-        |  }
-        |}
-        """
+                    |public class Example {
+                    |  public static String doIt(String name) {
+                    |    println(name);
+                    |  }
+                    |}
+                    """
                         .trimMargin()
                 )
                 .toAElement(),
@@ -187,21 +187,21 @@ class UsagesFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Example {
-        |  public static String doIt(String name) {
-        |    String name = name.trim();
-        |    System.out.println(name);
-        |    String name2 = name + "!";
-        |    if (name.equals(name2)) {
-        |      return name2;
-        |    } else {
-        |      return name;
-        |    }  
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Example {
+            |  public static String doIt(String name) {
+            |    String name = name.trim();
+            |    System.out.println(name);
+            |    String name2 = name + "!";
+            |    if (name.equals(name2)) {
+            |      return name2;
+            |    } else {
+            |      return name;
+            |    }  
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -221,17 +221,17 @@ class UsagesFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |import java.util.List;
-        |public class Example {
-        |  void f(String name) {
-        |    int f = 5;
-        |    new ArrayList<String>().forEach(this::f);
-        |    println(f);
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |import java.util.List;
+            |public class Example {
+            |  void f(String name) {
+            |    int f = 5;
+            |    new ArrayList<String>().forEach(this::f);
+            |    println(f);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -250,26 +250,26 @@ class UsagesFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |class Example {
-        |
-        |  private int a = 1;
-        |
-        |  public void f() {
-        |    new Runnable() {
-        |      private int a = 2;
-        |
-        |      public void run() {
-        |        int a = 3;
-        |        System.out.println(a);
-        |        System.out.println(this.a);
-        |        System.out.println(Example.this.a);
-        |      }
-        |    }.run();
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |class Example {
+            |
+            |  private int a = 1;
+            |
+            |  public void f() {
+            |    new Runnable() {
+            |      private int a = 2;
+            |
+            |      public void run() {
+            |        int a = 3;
+            |        System.out.println(a);
+            |        System.out.println(this.a);
+            |        System.out.println(Example.this.a);
+            |      }
+            |    }.run();
+            |  }
+            |}
+            """
                 .trimMargin()
         )
     val psiVariable1 = psiJavaFile.requireSingleOfType<PsiVariable>("private int a = 1;")
@@ -288,19 +288,19 @@ class UsagesFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Example {
-        |  public static void doIt(boolean b) {
-        |    int n = 5;
-        |    if (n < 2 && b) {
-        |      n = 6;
-        |    } else {
-        |      n--;
-        |    }
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Example {
+            |  public static void doIt(boolean b) {
+            |    int n = 5;
+            |    if (n < 2 && b) {
+            |      n = 6;
+            |    } else {
+            |      n--;
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -319,17 +319,17 @@ class UsagesFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |fun doIt(b: Boolean) {
-        |  val n = 5
-        |  if (n < 2 && b) {
-        |    n = 6
-        |  } else {
-        |    n--
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |fun doIt(b: Boolean) {
+            |  val n = 5
+            |  if (n < 2 && b) {
+            |    n = 6
+            |  } else {
+            |    n--
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -349,23 +349,23 @@ class UsagesFinderTest {
         listOf(
             KotlinParserUtil.parseAsFile(
                     """
-        |fun doIt(name: String) {
-        |  var a = "5"
-        |  a = name  
-        |}
-        """
+                    |fun doIt(name: String) {
+                    |  var a = "5"
+                    |  a = name  
+                    |}
+                    """
                         .trimMargin()
                 )
                 .toAElement(),
             JavaPsiParserUtil.parseAsFile(
                     """
-        |public class Example {
-        |  public static String doIt(String name) {
-        |    String a = "5";
-        |    a = name;
-        |  }
-        |}
-        """
+                    |public class Example {
+                    |  public static String doIt(String name) {
+                    |    String a = "5";
+                    |    a = name;
+                    |  }
+                    |}
+                    """
                         .trimMargin()
                 )
                 .toAElement(),
@@ -385,25 +385,25 @@ class UsagesFinderTest {
         listOf(
             KotlinParserUtil.parseAsFile(
                     """
-        |fun doIt(name: String): String {
-        |  var a = "5"
-        |  a = name
-        |  return a  
-        |}
-        """
+                    |fun doIt(name: String): String {
+                    |  var a = "5"
+                    |  a = name
+                    |  return a  
+                    |}
+                    """
                         .trimMargin()
                 )
                 .toAElement(),
             JavaPsiParserUtil.parseAsFile(
                     """
-        |public class Example {
-        |  public static String doIt(String name) {
-        |    String a = "5";
-        |    a = name;
-        |    return a;
-        |  }
-        |}
-        """
+                    |public class Example {
+                    |  public static String doIt(String name) {
+                    |    String a = "5";
+                    |    a = name;
+                    |    return a;
+                    |  }
+                    |}
+                    """
                         .trimMargin()
                 )
                 .toAElement(),

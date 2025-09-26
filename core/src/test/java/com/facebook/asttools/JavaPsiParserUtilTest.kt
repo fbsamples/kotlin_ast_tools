@@ -37,12 +37,12 @@ class JavaPsiParserUtilTest {
     val javaPsiFile =
         JavaPsiParserUtil.parseAsFile(
             """
-      |package com.facebook.foo
-      |
-      |class Foo {
-      |  int a = 1;
-      |}
-    """
+            |package com.facebook.foo
+            |
+            |class Foo {
+            |  int a = 1;
+            |}
+            """
                 .trimMargin(),
             "Foo.java",
         )
@@ -57,10 +57,10 @@ class JavaPsiParserUtilTest {
     val clazz =
         JavaPsiParserUtil.parseAsClassOrInterface(
             """
-      |class Foo {
-      |  int a = 1;
-      |}
-    """
+            |class Foo {
+            |  int a = 1;
+            |}
+            """
                 .trimMargin()
         )
     assertThat(clazz).isInstanceOf(PsiClass::class.java)
@@ -73,10 +73,10 @@ class JavaPsiParserUtilTest {
     val clazz =
         JavaPsiParserUtil.parseAsClassOrInterface(
             """
-      |interface IFoo {
-      |  public void doThing();
-      |}
-    """
+            |interface IFoo {
+            |  public void doThing();
+            |}
+            """
                 .trimMargin()
         )
     assertThat(clazz).isInstanceOf(PsiClass::class.java)
@@ -89,10 +89,10 @@ class JavaPsiParserUtilTest {
     val method =
         JavaPsiParserUtil.parseAsMethod(
             """
-      |public void doThing() {
-      |  String a = "hello";
-      |}
-    """
+            |public void doThing() {
+            |  String a = "hello";
+            |}
+            """
                 .trimMargin()
         )
     assertThat(method).isInstanceOf(PsiMethod::class.java)

@@ -105,10 +105,10 @@ class AImportDirectiveTest {
     assertThat(
             KotlinParserUtil.parseAsFile(
                     """
-                |import com.foo.Bar.`one two`
-                |
-                |class TestClass
-                """
+                    |import com.foo.Bar.`one two`
+                    |
+                    |class TestClass
+                    """
                         .trimMargin()
                 )
                 .toAElement()

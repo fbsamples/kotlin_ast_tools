@@ -84,9 +84,9 @@ class AQualifiedExpressionTest {
     val kotlinAElement =
         KotlinParserUtil.parseAsFile(
                 """
-          |fun doIt(n: Int) {
-          |  if (n < 5) 1 else { 2 + 2 }.toString()
-        """
+                |fun doIt(n: Int) {
+                |  if (n < 5) 1 else { 2 + 2 }.toString()
+                """
                     .trimIndent()
             )
             .toAElement()

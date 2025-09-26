@@ -44,18 +44,18 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt(name: String) {
-        |    println("hello " + name)
-        |  }
-        |
-        |  fun alsoDoThis(anotherName: String) {
-        |    println("meh")
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt(name: String) {
+            |    println("hello " + name)
+            |  }
+            |
+            |  fun alsoDoThis(anotherName: String) {
+            |    println("meh")
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -88,19 +88,19 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt(name: String) {
-        |    val a = 5
-        |    call {
-        |      val a2 =7
-        |    }
-        |    println("hello " + name)
-        |    val b = 6
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt(name: String) {
+            |    val a = 5
+            |    call {
+            |      val a2 =7
+            |    }
+            |    println("hello " + name)
+            |    val b = 6
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -122,14 +122,14 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(val name: String?) {
-        |  fun doIt(name: String) {
-        |    println("hello " + name)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(val name: String?) {
+            |  fun doIt(name: String) {
+            |    println("hello " + name)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -155,16 +155,16 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt(name: String) {
-        |    for (a in listOf(1, 2)) {
-        |      println(a + "hello " + name)
-        |    }
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt(name: String) {
+            |    for (a in listOf(1, 2)) {
+            |      println(a + "hello " + name)
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -186,16 +186,16 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt(name: String) {
-        |    for (a in listOf(1, 2)) {
-        |      println(a + "hello " + name)
-        |    }
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt(name: String) {
+            |    for (a in listOf(1, 2)) {
+            |      println(a + "hello " + name)
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -236,14 +236,14 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt(name: String) {
-        |    a = { name: Int -> println(name) }
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt(name: String) {
+            |    a = { name: Int -> println(name) }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -262,14 +262,14 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt(name: String?) {
-        |    name?.let { println(it) }
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt(name: String?) {
+            |    name?.let { println(it) }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -288,14 +288,14 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  val a = fun (name: String) {
-        |    println(name)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  val a = fun (name: String) {
+            |    println(name)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -312,14 +312,14 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(val name: String) {
-        |  fun doIt() {
-        |    println("hello " + name)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(val name: String) {
+            |  fun doIt() {
+            |    println("hello " + name)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -336,15 +336,15 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(name: String) {
-        |  fun doIt() {
-        |    val name: Int = 5
-        |    println("hello " + name)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(name: String) {
+            |  fun doIt() {
+            |    val name: Int = 5
+            |    println("hello " + name)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -361,12 +361,12 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(name: String) {
-        |  val name2 = name
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(name: String) {
+            |  val name2 = name
+            |}
+            """
                 .trimMargin()
         )
 
@@ -383,14 +383,14 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(name: String) {
-        |  init {
-        |    println("hello " + name)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(name: String) {
+            |  init {
+            |    println("hello " + name)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -407,18 +407,18 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt() {
-        |    println("hello " + name)
-        |  }
-        |
-        |  companion object {
-        |    val name = "A"
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt() {
+            |    println("hello " + name)
+            |  }
+            |
+            |  companion object {
+            |    val name = "A"
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -435,13 +435,13 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(context: Context) {
-        |  val context: Context = applicationContext
-        |  val bar: Bar = Bar(context)
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(context: Context) {
+            |  val context: Context = applicationContext
+            |  val bar: Bar = Bar(context)
+            |}
+            """
                 .trimMargin()
         )
 
@@ -458,18 +458,18 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt() {
-        |    println("hello " + Inner.name)
-        |  }
-        |
-        |  object Inner {
-        |    val name = "A"
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt() {
+            |    println("hello " + Inner.name)
+            |  }
+            |
+            |  object Inner {
+            |    val name = "A"
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -486,21 +486,21 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt(any: Any) {
-        |    println("any")
-        |    if (any is String) {
-        |      println("string" + any)
-        |    }
-        |    if (any !is Int) {
-        |      return
-        |    }
-        |    println("int" + any)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt(any: Any) {
+            |    println("any")
+            |    if (any is String) {
+            |      println("string" + any)
+            |    }
+            |    if (any !is Int) {
+            |      return
+            |    }
+            |    println("int" + any)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -522,14 +522,14 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(val name: String?) : SuperFoo(name!!) {
-        |  fun doIt(name: String) {
-        |    println("hello " + name)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(val name: String?) : SuperFoo(name!!) {
+            |  fun doIt(name: String) {
+            |    println("hello " + name)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -555,19 +555,19 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |  fun doIt() : Interface {
-        |    val name = "a"
-        |    return object : Interface() {
-        |      fun name() {
-        |        return name
-        |      }
-        |    }
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |  fun doIt() : Interface {
+            |    val name = "a"
+            |    return object : Interface() {
+            |      fun name() {
+            |        return name
+            |      }
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -589,14 +589,14 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(private val name: String) {
-        |  fun doIt() {
-        |    println(name)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(private val name: String) {
+            |  fun doIt() {
+            |    println(name)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -616,25 +616,25 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo(name: String?) {
-        |
-        |  private val name = "this one"
-        |  private val constructorNameReference = name + 1
-        |
-        |  init {
-        |    println("ctor param" + name)
-        |  }
-        |
-        |  val something: String
-        |      get() = "property" + name
-        |
-        |  fun doIt() {
-        |    println("hello " + name)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo(name: String?) {
+            |
+            |  private val name = "this one"
+            |  private val constructorNameReference = name + 1
+            |
+            |  init {
+            |    println("ctor param" + name)
+            |  }
+            |
+            |  val something: String
+            |      get() = "property" + name
+            |
+            |  fun doIt() {
+            |    println("hello " + name)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -678,30 +678,30 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-        |package com.facebook.example
-        |
-        |class Foo {
-        |
-        |  interface Confusing {
-        |    private val name = "not this one"
-        |  }
-        |
-        |  private val name = "this one"
-        |  
-        |  interface Confusing2 {
-        |    private val name = "not this one"
-        |  }
-        |  
-        |  companion object {
-        |    private val number = 1
-        |  }
-        |
-        |  fun doIt() {
-        |    println("hello " + name)
-        |    println("hello " + number)
-        |  }
-        |}
-        """
+            |package com.facebook.example
+            |
+            |class Foo {
+            |
+            |  interface Confusing {
+            |    private val name = "not this one"
+            |  }
+            |
+            |  private val name = "this one"
+            |  
+            |  interface Confusing2 {
+            |    private val name = "not this one"
+            |  }
+            |  
+            |  companion object {
+            |    private val number = 1
+            |  }
+            |
+            |  fun doIt() {
+            |    println("hello " + name)
+            |    println("hello " + number)
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -730,26 +730,26 @@ class DeclarationsFinderTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-          |package com.facebook.tools.editus.commands.custom.postprocesskotlinconversion
-          |
-          |class Foo() {
-          |
-          |   private var mFastPlayActive = false
-          |
-          |   var isFastPlayActive: Boolean
-          |     get() = mFastPlayActive
-          |     set(fastPlayActive) {
-          |       if (mFastPlayActive != fastPlayActive) {
-          |        mFastPlayActive = fastPlayActive
-          |        notifyPropertyChanged()
-          |       }
-          |     }
-          |  
-          |  private fun notifyPropertyChanged() {
-          |  
-          |  }
-          |}
-          |"""
+            |package com.facebook.tools.editus.commands.custom.postprocesskotlinconversion
+            |
+            |class Foo() {
+            |
+            |   private var mFastPlayActive = false
+            |
+            |   var isFastPlayActive: Boolean
+            |     get() = mFastPlayActive
+            |     set(fastPlayActive) {
+            |       if (mFastPlayActive != fastPlayActive) {
+            |        mFastPlayActive = fastPlayActive
+            |        notifyPropertyChanged()
+            |       }
+            |     }
+            |  
+            |  private fun notifyPropertyChanged() {
+            |  
+            |  }
+            |}
+            |"""
                 .trimMargin()
         )
 
@@ -766,18 +766,18 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public void doIt(String name) {
-        |    System.out.println("hello " + name);
-        |  }
-        |
-        |  public void alsoDoThis(String anotherName) {
-        |    System.out.println("meh");
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public void doIt(String name) {
+            |    System.out.println("hello " + name);
+            |  }
+            |
+            |  public void alsoDoThis(String anotherName) {
+            |    System.out.println("meh");
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -812,19 +812,19 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public void doIt(String name) {
-        |    int a = 5;
-        |    {
-        |      int a2 =7;
-        |    }
-        |    System.out.println("hello " + name);
-        |    int b = 6;
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public void doIt(String name) {
+            |    int a = 5;
+            |    {
+            |      int a2 =7;
+            |    }
+            |    System.out.println("hello " + name);
+            |    int b = 6;
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -848,17 +848,17 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |
-        |  private String name;
-        |  
-        |  public void doIt(String name) {
-        |    System.out.println("hello " + name);
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |
+            |  private String name;
+            |  
+            |  public void doIt(String name) {
+            |    System.out.println("hello " + name);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -886,20 +886,20 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |import java.util.Arrays;
-        |
-        |public class Foo {
-        |  public void doIt(String name) {
-        |    for (int b = 0; b < 3; b++) {
-        |      for (int a : Arrays.asList(1, 2)) {
-        |        System.out.println(a + "hello " + name);
-        |      }
-        |    }
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |import java.util.Arrays;
+            |
+            |public class Foo {
+            |  public void doIt(String name) {
+            |    for (int b = 0; b < 3; b++) {
+            |      for (int a : Arrays.asList(1, 2)) {
+            |        System.out.println(a + "hello " + name);
+            |      }
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -924,16 +924,16 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public void doIt(String name) {
-        |    for (int a : Arrays.asList(1, 2)) {
-        |      System.out.println(a + "hello " + name);
-        |    }
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public void doIt(String name) {
+            |    for (int a : Arrays.asList(1, 2)) {
+            |      System.out.println(a + "hello " + name);
+            |    }
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -976,14 +976,14 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public void doIt(String name) {
-        |    Function<Int, Void> a = (name) -> System.out.println(name);
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public void doIt(String name) {
+            |    Function<Int, Void> a = (name) -> System.out.println(name);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -1002,21 +1002,21 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |
-        |  private String name;
-        |  
-        |  public Foo(String name) {
-        |    this.name = name;
-        |  }
-        |  
-        |  public void doIt() {
-        |    System.out.println("hello " + name);
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |
+            |  private String name;
+            |  
+            |  public Foo(String name) {
+            |    this.name = name;
+            |  }
+            |  
+            |  public void doIt() {
+            |    System.out.println("hello " + name);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -1035,17 +1035,17 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public Foo(String name) {}
-        |
-        |  public void doIt() {
-        |    int name = 5;
-        |    System.out.println("hello " + name);
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public Foo(String name) {}
+            |
+            |  public void doIt() {
+            |    int name = 5;
+            |    System.out.println("hello " + name);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -1064,17 +1064,17 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |
-        |  final String name2;
-        |  
-        |  public Foo(String name) {
-        |    name2 = name;
-        |  } 
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |
+            |  final String name2;
+            |  
+            |  public Foo(String name) {
+            |    name2 = name;
+            |  } 
+            |}
+            """
                 .trimMargin()
         )
 
@@ -1091,15 +1091,15 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public Foo(Context context) {}
-        |
-        |  Context context = applicationContext;
-        |  Bar bar = new Bar(context);
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public Foo(Context context) {}
+            |
+            |  Context context = applicationContext;
+            |  Bar bar = new Bar(context);
+            |}
+            """
                 .trimMargin()
         )
 
@@ -1116,18 +1116,18 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public void doIt() {
-        |    System.out.println("hello " + Inner.name);
-        |  }
-        |
-        |  public class Inner {
-        |    String name = "A";
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public void doIt() {
+            |    System.out.println("hello " + Inner.name);
+            |  }
+            |
+            |  public class Inner {
+            |    String name = "A";
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -1146,19 +1146,19 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo extends SuperFoo {
-        |  
-        |  public Foo(@A String name) {
-        |    super(name);
-        |  }
-        |  
-        |  public void doIt(String name) {
-        |    System.out.println("hello " + name);
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo extends SuperFoo {
+            |  
+            |  public Foo(@A String name) {
+            |    super(name);
+            |  }
+            |  
+            |  public void doIt(String name) {
+            |    System.out.println("hello " + name);
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -1188,19 +1188,19 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public Interface doIt() {
-        |    String name = "a";
-        |    return new Interface() {
-        |      void name() {
-        |        return name;
-        |      }
-        |    };
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public Interface doIt() {
+            |    String name = "a";
+            |    return new Interface() {
+            |      void name() {
+            |        return name;
+            |      }
+            |    };
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 
@@ -1222,18 +1222,18 @@ class DeclarationsFinderTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-        |package com.facebook.example;
-        |
-        |public class Foo {
-        |  public Interface doIt() {
-        |    println("hello, name is not available here");
-        |  }
-        |
-        |  public static class Inner {
-        |    String name = "b";
-        |  }
-        |}
-        """
+            |package com.facebook.example;
+            |
+            |public class Foo {
+            |  public Interface doIt() {
+            |    println("hello, name is not available here");
+            |  }
+            |
+            |  public static class Inner {
+            |    String name = "b";
+            |  }
+            |}
+            """
                 .trimMargin()
         )
 

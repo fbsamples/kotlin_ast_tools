@@ -48,14 +48,14 @@ class AModifierListOwnerTest {
             .toAElement() to
             KotlinParserUtil.parseAsFile(
                     """
-                |open class TestClass {
-                |  private val aPrivate = 1
-                |  protected val aProtected = 1
-                |  internal val aInternal = 1
-                |  val aPublic = 1
-                |  public val aPublic2 = 1
-                |}
-                """
+                    |open class TestClass {
+                    |  private val aPrivate = 1
+                    |  protected val aProtected = 1
+                    |  internal val aInternal = 1
+                    |  val aPublic = 1
+                    |  public val aPublic2 = 1
+                    |}
+                    """
                         .trimMargin()
                 )
                 .toAElement()

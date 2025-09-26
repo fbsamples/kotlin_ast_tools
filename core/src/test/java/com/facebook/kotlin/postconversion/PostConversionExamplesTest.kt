@@ -46,18 +46,18 @@ class PostConversionExamplesTest {
     val file = createTempFile(directory = root, suffix = ".kt").toFile()
     file.writeText(
         """
-          |package com.facebook.kotlin.examples
-          |
-          |import android.text.TextUtils
-          |
-          |object Foo {
-          |  fun doIt(str1: String?, str2: String?) {
-          |    println(true == TextUtils.equals(str1, str2))
-          |    println(TextUtils.equals(str1, str2).toString())
-          |    return TextUtils.equals(str1, str2)
-          |  }
-          |}
-          |"""
+        |package com.facebook.kotlin.examples
+        |
+        |import android.text.TextUtils
+        |
+        |object Foo {
+        |  fun doIt(str1: String?, str2: String?) {
+        |    println(true == TextUtils.equals(str1, str2))
+        |    println(TextUtils.equals(str1, str2).toString())
+        |    return TextUtils.equals(str1, str2)
+        |  }
+        |}
+        |"""
             .trimMargin()
     )
 
@@ -66,18 +66,18 @@ class PostConversionExamplesTest {
     assertThat(file.readText())
         .isEqualTo(
             """
-          |package com.facebook.kotlin.examples
-          |
-          |import android.text.TextUtils
-          |
-          |object Foo {
-          |  fun doIt(str1: String?, str2: String?) {
-          |    println(true == (str1 == str2))
-          |    println((str1 == str2).toString())
-          |    return str1 == str2
-          |  }
-          |}
-          |"""
+            |package com.facebook.kotlin.examples
+            |
+            |import android.text.TextUtils
+            |
+            |object Foo {
+            |  fun doIt(str1: String?, str2: String?) {
+            |    println(true == (str1 == str2))
+            |    println((str1 == str2).toString())
+            |    return str1 == str2
+            |  }
+            |}
+            |"""
                 .trimMargin()
         )
   }
@@ -87,18 +87,18 @@ class PostConversionExamplesTest {
     val file = createTempFile(directory = root, suffix = ".kt").toFile()
     file.writeText(
         """
-          |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
-          |
-          |package com.facebook.examples
-          |
-          |import android.text.TextUtils
-          |
-          |object Foo {
-          |  fun doIt(str1: String?) {
-          |    return TextUtils.isEmpty(str1)
-          |  }
-          |}
-          |"""
+        |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
+        |
+        |package com.facebook.examples
+        |
+        |import android.text.TextUtils
+        |
+        |object Foo {
+        |  fun doIt(str1: String?) {
+        |    return TextUtils.isEmpty(str1)
+        |  }
+        |}
+        |"""
             .trimMargin()
     )
 
@@ -107,18 +107,18 @@ class PostConversionExamplesTest {
     assertThat(file.readText())
         .isEqualTo(
             """
-          |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
-          |
-          |package com.facebook.examples
-          |
-          |import android.text.TextUtils
-          |
-          |object Foo {
-          |  fun doIt(str1: String?) {
-          |    return str1.isNullOrEmpty()
-          |  }
-          |}
-          |"""
+            |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
+            |
+            |package com.facebook.examples
+            |
+            |import android.text.TextUtils
+            |
+            |object Foo {
+            |  fun doIt(str1: String?) {
+            |    return str1.isNullOrEmpty()
+            |  }
+            |}
+            |"""
                 .trimMargin()
         )
   }
@@ -128,22 +128,22 @@ class PostConversionExamplesTest {
     val file = createTempFile(directory = root, suffix = ".kt").toFile()
     file.writeText(
         """
-          |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
-          |
-          |package com.facebook.examples
-          |
-          |import com.google.common.base.Strings
-          |
-          |object Foo {
-          |  fun doIt(str: String?) {
-          |    return Strings.isNullOrEmpty(str)
-          |  }
-          |
-          |  fun doItAll(str: String?) {
-          |   return Strings.nullToEmpty(str)
-          |  }
-          |}
-          |"""
+        |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
+        |
+        |package com.facebook.examples
+        |
+        |import com.google.common.base.Strings
+        |
+        |object Foo {
+        |  fun doIt(str: String?) {
+        |    return Strings.isNullOrEmpty(str)
+        |  }
+        |
+        |  fun doItAll(str: String?) {
+        |   return Strings.nullToEmpty(str)
+        |  }
+        |}
+        |"""
             .trimMargin()
     )
 
@@ -152,22 +152,22 @@ class PostConversionExamplesTest {
     assertThat(file.readText())
         .isEqualTo(
             """
-          |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
-          |
-          |package com.facebook.examples
-          |
-          |import com.google.common.base.Strings
-          |
-          |object Foo {
-          |  fun doIt(str: String?) {
-          |    return str.isNullOrEmpty()
-          |  }
-          |
-          |  fun doItAll(str: String?) {
-          |   return str.orEmpty()
-          |  }
-          |}
-          |"""
+            |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
+            |
+            |package com.facebook.examples
+            |
+            |import com.google.common.base.Strings
+            |
+            |object Foo {
+            |  fun doIt(str: String?) {
+            |    return str.isNullOrEmpty()
+            |  }
+            |
+            |  fun doItAll(str: String?) {
+            |   return str.orEmpty()
+            |  }
+            |}
+            |"""
                 .trimMargin()
         )
   }
@@ -177,19 +177,19 @@ class PostConversionExamplesTest {
     val file = createTempFile(directory = root, suffix = ".kt").toFile()
     file.writeText(
         """
-          |package com.facebook.examples
-          |
-          |class Foo {
-          |  fun foo(flag: Boolean) {
-          |    var number = 1
-          |    if (flag) {
-          |      number = 2
-          |    }
-          |
-          |    println(number)
-          |  }
-          |}
-          |"""
+        |package com.facebook.examples
+        |
+        |class Foo {
+        |  fun foo(flag: Boolean) {
+        |    var number = 1
+        |    if (flag) {
+        |      number = 2
+        |    }
+        |
+        |    println(number)
+        |  }
+        |}
+        |"""
             .trimMargin()
     )
 
@@ -198,17 +198,17 @@ class PostConversionExamplesTest {
     assertThat(file.readText())
         .isEqualTo(
             """
-          |package com.facebook.examples
-          |
-          |class Foo {
-          |  fun foo(flag: Boolean) {
-          |    val number = if (flag) 2 else 1
-          |    
-          |
-          |    println(number)
-          |  }
-          |}
-          |"""
+            |package com.facebook.examples
+            |
+            |class Foo {
+            |  fun foo(flag: Boolean) {
+            |    val number = if (flag) 2 else 1
+            |    
+            |
+            |    println(number)
+            |  }
+            |}
+            |"""
                 .trimMargin()
         )
   }

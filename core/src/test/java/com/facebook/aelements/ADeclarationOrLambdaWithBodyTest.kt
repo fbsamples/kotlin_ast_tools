@@ -29,16 +29,16 @@ class ADeclarationOrLambdaWithBodyTest {
     val psiJavaFile =
         JavaPsiParserUtil.parseAsFile(
             """
-                |public class TestClass {
-                |  public int a = 5;
-                |  
-                |  public TestClass() {}
-                |
-                |  public void doIt() {}
-                |  
-                |  Function1<Int, String> f = (a) -> a.toString();
-                |}
-                """
+            |public class TestClass {
+            |  public int a = 5;
+            |  
+            |  public TestClass() {}
+            |
+            |  public void doIt() {}
+            |  
+            |  Function1<Int, String> f = (a) -> a.toString();
+            |}
+            """
                 .trimMargin()
         )
     assertThat(
@@ -51,20 +51,20 @@ class ADeclarationOrLambdaWithBodyTest {
     val ktFile =
         KotlinParserUtil.parseAsFile(
             """
-                |class TestClass() {
-                | 
-                |  val a = 5
-                |  
-                |  fun doIt() {}
-                |
-                |  val b: Int
-                |    get() { return 7 }
-                |
-                |  val f = { a: Int -> a.toString() }
-                |  val f2 = fun (a: Int) = a + a
-                |  val f3 = Runnable { a }
-                |}
-                """
+            |class TestClass() {
+            | 
+            |  val a = 5
+            |  
+            |  fun doIt() {}
+            |
+            |  val b: Int
+            |    get() { return 7 }
+            |
+            |  val f = { a: Int -> a.toString() }
+            |  val f2 = fun (a: Int) = a + a
+            |  val f3 = Runnable { a }
+            |}
+            """
                 .trimMargin()
         )
 
