@@ -39,4 +39,7 @@ open class AClassLiteralExpression constructor(psiElement: PsiElement) :
 
   override val ifLanguage: Cases<out PsiClassObjectAccessExpression, out KtClassLiteralExpression>
     get() = castIfLanguage()
+
+  val receiverExpression: AElement
+    get() = (javaElement?.operand ?: kotlinElement?.receiverExpression)!!.toAElement()
 }
