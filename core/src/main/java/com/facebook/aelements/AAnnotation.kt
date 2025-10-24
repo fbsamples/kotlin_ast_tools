@@ -46,4 +46,11 @@ open class AAnnotation internal constructor(psiElement: PsiElement) : AElementIm
             ?: kotlinElement?.valueArgumentList?.arguments?.map {
               it.getArgumentExpression()!!.toAElement() as AExpressionOrStatement
             }) ?: emptyList()
+
+  val valueArgumentNames: List<String?>
+    get() =
+        (javaElement?.parameterList?.attributes?.map { it.name }
+            ?: kotlinElement?.valueArgumentList?.arguments?.map {
+              it.getArgumentName()?.asName?.identifier
+            }) ?: emptyList()
 }

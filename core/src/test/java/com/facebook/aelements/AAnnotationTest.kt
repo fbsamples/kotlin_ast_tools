@@ -52,4 +52,30 @@ class AAnnotationTest {
     assertThat(kotlinElement.shortName).isEqualTo("Magic")
     assertThat(kotlinElement.valueArguments).hasSize(2)
   }
+
+  @Test
+  fun `annotation with argument names`() {
+    val aElementsTestUtil = AElementTestingUtil<AAnnotation, PsiAnnotation, KtAnnotationEntry>()
+
+    val (javaElement, kotlinElement) =
+        aElementsTestUtil.loadTestAElements<AAnnotation>(
+            javaCode =
+                """
+                |@Magic(value = 5, name = "test")
+                |public class TestClass {
+                |}
+                """
+                    .trimMargin(),
+            kotlinCode =
+                """
+                |@Magic(value = 5, name = "test")
+                |class TestClass {
+                |}
+                """
+                    .trimMargin(),
+        )
+
+    assertThat(javaElement.valueArgumentNames).containsExactly("value", "name")
+    assertThat(kotlinElement.valueArgumentNames).containsExactly("value", "name")
+  }
 }
