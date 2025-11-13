@@ -97,4 +97,48 @@ class AClassOrObjectTest {
           .isEmpty()
     }
   }
+
+  @Test
+  fun `isInterface property works for Kotlin and Java`() {
+    val aElementsTestUtil = AElementTestingUtil<AClassOrObject, PsiClass, KtClassOrObject>()
+
+    val (javaClass, kotlinClass) =
+        aElementsTestUtil.loadTestAElements<AClassOrObject>(
+            javaCode =
+                """
+                |public class OuterClass {
+                |  public void doSomething() {}
+                |
+                |  public interface InnerInterface {
+                |    void doSomething();
+                |  }
+                |}
+                """
+                    .trimMargin(),
+            kotlinCode =
+                """
+                |class OuterClass {
+                |  fun doSomething() {}
+                |}
+                |
+                |interface OuterInterface {
+                |  fun doSomething()
+                |}
+                """
+                    .trimMargin(),
+        )
+
+    val javaInnerInterface =
+        javaClass.collectDescendantsOfType<AClassOrObject> { it.name == "InnerInterface" }.first()
+    val kotlinInterface =
+        kotlinClass.psiElement.containingFile
+            .toAElement()
+            .collectDescendantsOfType<AClassOrObject> { it.name == "OuterInterface" }
+            .first()
+
+    assertThat(javaClass.isInterface).isFalse()
+    assertThat(javaInnerInterface.isInterface).isTrue()
+    assertThat(kotlinClass.isInterface).isFalse()
+    assertThat(kotlinInterface.isInterface).isTrue()
+  }
 }

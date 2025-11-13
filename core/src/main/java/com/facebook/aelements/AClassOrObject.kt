@@ -18,6 +18,7 @@ package com.facebook.aelements
 
 import org.jetbrains.kotlin.com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtProperty
@@ -80,5 +81,12 @@ open class AClassOrObject internal constructor(psiAElement: PsiElement) :
                 }
               }
             },
+        )
+
+  val isInterface: Boolean
+    get() =
+        ifLanguage(
+            isJava = { it.isInterface },
+            isKotlin = { (it as? KtClass)?.isInterface() == true },
         )
 }
