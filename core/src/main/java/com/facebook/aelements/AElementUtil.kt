@@ -26,11 +26,14 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.com.intellij.psi.PsiClassObjectAccessExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiClassType
 import org.jetbrains.kotlin.com.intellij.psi.PsiCodeBlock
+import org.jetbrains.kotlin.com.intellij.psi.PsiDoWhileStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiExpressionList
 import org.jetbrains.kotlin.com.intellij.psi.PsiField
 import org.jetbrains.kotlin.com.intellij.psi.PsiFile
+import org.jetbrains.kotlin.com.intellij.psi.PsiForStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiForeachStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiIfStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiImportStatementBase
 import org.jetbrains.kotlin.com.intellij.psi.PsiJavaFile
@@ -46,9 +49,11 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiParameterList
 import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceParameterList
 import org.jetbrains.kotlin.com.intellij.psi.PsiStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiSwitchStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiTypeElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiTypeParameter
 import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
+import org.jetbrains.kotlin.com.intellij.psi.PsiWhileStatement
 import org.jetbrains.kotlin.psi.KtAnnotated
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtArrayAccessExpression
@@ -59,8 +64,10 @@ import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructor
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody
+import org.jetbrains.kotlin.psi.KtDoWhileExpression
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtForExpression
 import org.jetbrains.kotlin.psi.KtFunctionLiteral
 import org.jetbrains.kotlin.psi.KtIfExpression
 import org.jetbrains.kotlin.psi.KtImportDirective
@@ -77,6 +84,8 @@ import org.jetbrains.kotlin.psi.KtTypeConstraint
 import org.jetbrains.kotlin.psi.KtTypeParameter
 import org.jetbrains.kotlin.psi.KtTypeReference
 import org.jetbrains.kotlin.psi.KtValueArgumentList
+import org.jetbrains.kotlin.psi.KtWhenExpression
+import org.jetbrains.kotlin.psi.KtWhileExpression
 
 /** Converts a Psi Element to the most specific corresponding AElement. */
 fun PsiElement.toAElement(): AElement =
@@ -119,6 +128,15 @@ fun PsiElement.toAElement(): AElement =
       is PsiArrayAccessExpression -> toAElement()
       is PsiAssignmentExpression -> toAElement()
       is KtBinaryExpression -> toAElement()
+      is PsiForStatement -> toAElement()
+      is PsiForeachStatement -> toAElement()
+      is KtForExpression -> toAElement()
+      is PsiWhileStatement -> toAElement()
+      is KtWhileExpression -> toAElement()
+      is PsiDoWhileStatement -> toAElement()
+      is KtDoWhileExpression -> toAElement()
+      is PsiSwitchStatement -> toAElement()
+      is KtWhenExpression -> toAElement()
       is PsiIfStatement -> toAElement()
       is KtIfExpression -> toAElement()
       is PsiLambdaExpression -> toAElement()
@@ -234,6 +252,33 @@ fun PsiIfStatement.toAElement() = AIfExpressionOrStatement(this)
 
 fun KtIfExpression.toAElement() = AIfExpression(this)
 
+/** Creates an [AForStatement] from a [PsiForStatement]. */
+fun PsiForStatement.toAElement() = AForStatementImpl(this)
+
+/** Creates an [AForeachStatement] from a [PsiForeachStatement]. */
+fun PsiForeachStatement.toAElement() = AForeachStatementImpl(this)
+
+/** Creates an [AForExpression] from a [KtForExpression]. */
+fun KtForExpression.toAElement() = AForExpressionImpl(this)
+
+/** Creates an [AWhileStatement] from a [PsiWhileStatement]. */
+fun PsiWhileStatement.toAElement() = AWhileStatementImpl(this)
+
+/** Creates an [AWhileExpression] from a [KtWhileExpression]. */
+fun KtWhileExpression.toAElement() = AWhileExpressionImpl(this)
+
+/** Creates an [ADoWhileStatement] from a [PsiDoWhileStatement]. */
+fun PsiDoWhileStatement.toAElement() = ADoWhileStatementImpl(this)
+
+/** Creates an [ADoWhileExpression] from a [KtDoWhileExpression]. */
+fun KtDoWhileExpression.toAElement() = ADoWhileExpressionImpl(this)
+
+/** Creates an [ASwitchStatement] from a [PsiSwitchStatement]. */
+fun PsiSwitchStatement.toAElement() = ASwitchStatementImpl(this)
+
+/** Creates an [AWhenExpression] from a [KtWhenExpression]. */
+fun KtWhenExpression.toAElement() = AWhenExpressionImpl(this)
+
 fun PsiLambdaExpression.toAElement() = ALambdaExpression(this)
 
 fun KtLambdaExpression.toAElement() = ALambdaExpression(this)
@@ -256,6 +301,10 @@ fun KtExpression.toAElement(): AExpressionOrStatement =
       is KtQualifiedExpression -> toAElement()
       is KtCallExpression -> toAElement()
       is KtBinaryExpression -> toAElement()
+      is KtForExpression -> toAElement()
+      is KtWhileExpression -> toAElement()
+      is KtDoWhileExpression -> toAElement()
+      is KtWhenExpression -> toAElement()
       is KtIfExpression -> toAElement()
       is KtLambdaExpression -> toAElement()
       else -> AExpressionImpl(this)
@@ -280,7 +329,17 @@ fun PsiCallExpression.toAElement(): AMethodOrNewCallExpression =
 
 fun PsiNewExpression.toAElement(): AMethodOrNewCallExpression = AMethodOrNewCallExpressionImpl(this)
 
-fun PsiStatement.toAElement(): AExpressionOrStatement = AExpressionOrStatementImpl(this)
+fun PsiStatement.toAElement(): AExpressionOrStatement =
+    when (this) {
+      is PsiForStatement -> toAElement()
+      is PsiForeachStatement -> toAElement()
+      is PsiWhileStatement -> toAElement()
+      is PsiDoWhileStatement -> toAElement()
+      is PsiSwitchStatement -> toAElement()
+      is PsiIfStatement -> toAElement()
+      is PsiBlockStatement -> toAElement()
+      else -> AExpressionOrStatementImpl(this)
+    }
 
 fun PsiJvmModifiersOwner.toAElement() =
     when (this) {

@@ -35,10 +35,10 @@ AElements is a framework that merges Kotlin and Java PSI AST elements to enable 
 
 #### High Priority - Control Flow
 - ✅ For loops (PsiForStatement / KtForExpression) - **COMPLETED**
-- ❌ While loops (PsiWhileStatement / KtWhileExpression)
-- ❌ Do-while loops (PsiDoWhileStatement / KtDoWhileExpression)
+- ✅ While loops (PsiWhileStatement / KtWhileExpression) - **COMPLETED**
+- ✅ Do-while loops (PsiDoWhileStatement / KtDoWhileExpression) - **COMPLETED**
 - ✅ For-each loops (PsiForeachStatement / KtForExpression with collections) - **COMPLETED**
-- ❌ Switch/When (PsiSwitchStatement / KtWhenExpression)
+- ✅ Switch/When (PsiSwitchStatement / KtWhenExpression) - **COMPLETED**
 - ❌ Try-catch-finally (PsiTryStatement / KtTryExpression)
 - ❌ Throw statements (PsiThrowStatement / KtThrowExpression)
 - ❌ Return statements (PsiReturnStatement / KtReturnExpression)
@@ -185,3 +185,89 @@ Ensure quality and usability:
   - Java enhanced for loops (for (String s : list))
   - Kotlin for loops (for (item in collection))
   - Kotlin range loops (for (i in 0..9))
+
+### November 18, 2025
+- 📝 Received reviewer feedback on D87298468 requiring refactoring
+
+## Reviewer Feedback Log
+
+### D87298468 - For Loop Implementation (November 18, 2025)
+**Reviewer: ostrulovich**
+
+1. **More Specific Implementations Required**
+   - Feedback: "These need to be more specific, you may want to do separate foreach (for Kotlin and Java) and old style for for Java only."
+   - Action: Create separate classes for different loop types instead of a single unified AForExpression
+   - Learning: While unified interfaces are good for abstraction, sometimes language-specific implementations provide better clarity and type safety
+
+2. **Code Organization**
+   - Feedback: "Keep all toAElement in the same file"
+   - Action: Move all toAElement extension functions to AElementUtil.kt
+   - Learning: Centralized conversion functions improve maintainability and discoverability
+
+3. **Documentation Practice**
+   - Feedback: "Whenever you get comments - write them in the PLAN.md file, (write this line as well) so you learn along the way"
+   - Action: Created this Reviewer Feedback Log section
+   - Learning: Documenting feedback helps track improvements and learning over time
+
+### D87298468 - For Loop Implementation Follow-up (November 20, 2025)
+**Reviewer: ostrulovich**
+
+1. **Type Specificity in javaElement**
+   - Feedback: "This seems wrong, the java element type should be as specific as possible, or something went wrong in the design here."
+   - Issue: AForeachStatement and AForStatement were returning `PsiStatement` instead of the more specific types
+   - Action: Changed return types to `PsiForeachStatement` and `PsiForStatement` respectively
+   - Learning: Always use the most specific type possible for Java elements to provide better type safety and IDE support
+
+2. **Comment Conciseness**
+   - Feedback: "When writing comments, don't spare the excessive english repeating the obvious 'the initialization statement of the for loop' is pointless since this is the initialization variable, of type expression or statement in a for loop. Jump straight to the 'for example'"
+   - Action: Simplified all comments to jump straight to examples without verbose explanations
+   - Learning: Comments should be concise and avoid repeating information that's already obvious from the variable name and type. Focus on examples that illustrate usage.
+
+### November 21, 2025 - While and Do-While Loop Implementation
+- ✅ Implemented support for while loops in both Java and Kotlin:
+  - **AWhileStatement.kt**: Java while loops (`PsiWhileStatement`)
+  - **AWhileExpression.kt**: Kotlin while loops (`KtWhileExpression`)
+- ✅ Implemented support for do-while loops in both Java and Kotlin:
+  - **ADoWhileStatement.kt**: Java do-while loops (`PsiDoWhileStatement`)
+  - **ADoWhileExpression.kt**: Kotlin do-while loops (`KtDoWhileExpression`)
+- ✅ Updated AElementUtil.kt with:
+  - Imports for all 4 new loop types
+  - Conversion functions for all 4 loop types
+  - Updated when blocks in `PsiElement.toAElement()`, `KtExpression.toAElement()`, and `PsiStatement.toAElement()`
+- ✅ Added comprehensive test coverage (16 new tests):
+  - **AWhileStatementTest.kt**: 4 tests for Java while loops
+  - **AWhileExpressionTest.kt**: 4 tests for Kotlin while loops
+  - **ADoWhileStatementTest.kt**: 4 tests for Java do-while loops
+  - **ADoWhileExpressionTest.kt**: 4 tests for Kotlin do-while loops
+- ✅ All 68 tests passing (52 existing + 16 new)
+- ✅ Build and lint checks successful
+- **Learning**: Always use `JavaPsiParserUtil` (not `JavaParserUtil`) for Java PSI parsing in tests. Check existing test files for correct import patterns.
+
+### December 1, 2025 - Switch/When Statement Implementation
+- ✅ Implemented support for Java switch statements:
+  - **ASwitchStatement.kt**: Java switch statements (`PsiSwitchStatement`)
+  - Properties: `expression` (selector), `body` (containing case statements)
+- ✅ Implemented support for Kotlin when expressions:
+  - **AWhenExpression.kt**: Kotlin when expressions (`KtWhenExpression`)
+  - Properties: `subjectExpression` (optional), `entries` (list of when branches)
+- ✅ Updated AElementUtil.kt with:
+  - Imports for `PsiSwitchStatement` and `KtWhenExpression`
+  - Conversion functions for both statement types
+  - Updated when blocks in `PsiElement.toAElement()`, `KtExpression.toAElement()`, and `PsiStatement.toAElement()`
+- ✅ Added comprehensive test coverage (8 new tests):
+  - **ASwitchStatementTest.kt**: 4 tests for Java switch statements
+    - Multiple cases with default
+    - Fall-through cases
+    - Expression selectors
+  - **AWhenExpressionTest.kt**: 4 tests for Kotlin when expressions
+    - When with subject expression
+    - When without subject (boolean conditions)
+    - Multiple conditions per entry
+    - When with else branch
+- ✅ All 76 tests passing (68 existing + 8 new)
+- ✅ Build and lint checks successful
+- **Implementation Notes**:
+  - PsiSwitchStatement exposes selector expression and body containing case statements
+  - KtWhenExpression supports optional subject (for boolean when expressions)
+  - Entries property returns list of AElement for flexible branch handling
+  - Follows same patterns as loop implementations for consistency
