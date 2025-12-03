@@ -43,7 +43,7 @@ class AForeachStatementImpl(override val psiElement: PsiForeachStatement) :
     get() = null
 
   override val iterationParameter: AElement?
-    get() = psiElement.iterationParameter?.toAElement()
+    get() = psiElement.iterationParameter.toAElement()
 
   override val iteratedValue: AExpression?
     get() = psiElement.iteratedValue?.toAElement()
