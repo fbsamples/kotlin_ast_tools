@@ -21,11 +21,13 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiArrayAccessExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiAssignmentExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiBinaryExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiBlockStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiBreakStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiCallExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiClass
 import org.jetbrains.kotlin.com.intellij.psi.PsiClassObjectAccessExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiClassType
 import org.jetbrains.kotlin.com.intellij.psi.PsiCodeBlock
+import org.jetbrains.kotlin.com.intellij.psi.PsiContinueStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiDoWhileStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiExpression
@@ -48,8 +50,11 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiParameter
 import org.jetbrains.kotlin.com.intellij.psi.PsiParameterList
 import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceParameterList
+import org.jetbrains.kotlin.com.intellij.psi.PsiReturnStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiSwitchStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiThrowStatement
+import org.jetbrains.kotlin.com.intellij.psi.PsiTryStatement
 import org.jetbrains.kotlin.com.intellij.psi.PsiTypeElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiTypeParameter
 import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
@@ -59,10 +64,12 @@ import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtArrayAccessExpression
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtBlockExpression
+import org.jetbrains.kotlin.psi.KtBreakExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassLiteralExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtConstructor
+import org.jetbrains.kotlin.psi.KtContinueExpression
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody
 import org.jetbrains.kotlin.psi.KtDoWhileExpression
 import org.jetbrains.kotlin.psi.KtExpression
@@ -79,6 +86,9 @@ import org.jetbrains.kotlin.psi.KtParameterList
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtPropertyAccessor
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
+import org.jetbrains.kotlin.psi.KtReturnExpression
+import org.jetbrains.kotlin.psi.KtThrowExpression
+import org.jetbrains.kotlin.psi.KtTryExpression
 import org.jetbrains.kotlin.psi.KtTypeArgumentList
 import org.jetbrains.kotlin.psi.KtTypeConstraint
 import org.jetbrains.kotlin.psi.KtTypeParameter
@@ -139,6 +149,22 @@ fun PsiElement.toAElement(): AElement =
       is KtWhenExpression -> toAElement()
       is PsiIfStatement -> toAElement()
       is KtIfExpression -> toAElement()
+      is PsiWhileStatement -> toAElement()
+      is KtWhileExpression -> toAElement()
+      is PsiDoWhileStatement -> toAElement()
+      is KtDoWhileExpression -> toAElement()
+      is PsiSwitchStatement -> toAElement()
+      is KtWhenExpression -> toAElement()
+      is PsiTryStatement -> toAElement()
+      is KtTryExpression -> toAElement()
+      is PsiThrowStatement -> toAElement()
+      is KtThrowExpression -> toAElement()
+      is PsiReturnStatement -> toAElement()
+      is KtReturnExpression -> toAElement()
+      is PsiBreakStatement -> toAElement()
+      is KtBreakExpression -> toAElement()
+      is PsiContinueStatement -> toAElement()
+      is KtContinueExpression -> toAElement()
       is PsiLambdaExpression -> toAElement()
       is KtLambdaExpression -> toAElement()
       is KtClassLiteralExpression -> toAElement()
@@ -261,23 +287,37 @@ fun PsiForeachStatement.toAElement() = AForeachStatementImpl(this)
 /** Creates an [AForExpression] from a [KtForExpression]. */
 fun KtForExpression.toAElement() = AForExpressionImpl(this)
 
-/** Creates an [AWhileStatement] from a [PsiWhileStatement]. */
 fun PsiWhileStatement.toAElement() = AWhileStatementImpl(this)
 
-/** Creates an [AWhileExpression] from a [KtWhileExpression]. */
 fun KtWhileExpression.toAElement() = AWhileExpressionImpl(this)
 
-/** Creates an [ADoWhileStatement] from a [PsiDoWhileStatement]. */
 fun PsiDoWhileStatement.toAElement() = ADoWhileStatementImpl(this)
 
-/** Creates an [ADoWhileExpression] from a [KtDoWhileExpression]. */
 fun KtDoWhileExpression.toAElement() = ADoWhileExpressionImpl(this)
 
-/** Creates an [ASwitchStatement] from a [PsiSwitchStatement]. */
 fun PsiSwitchStatement.toAElement() = ASwitchStatementImpl(this)
 
-/** Creates an [AWhenExpression] from a [KtWhenExpression]. */
 fun KtWhenExpression.toAElement() = AWhenExpressionImpl(this)
+
+fun PsiTryStatement.toAElement() = ATryExpression(this)
+
+fun KtTryExpression.toAElement() = ATryExpression(this)
+
+fun PsiThrowStatement.toAElement() = AThrowExpression(this)
+
+fun KtThrowExpression.toAElement() = AThrowExpression(this)
+
+fun PsiReturnStatement.toAElement() = AReturnExpression(this)
+
+fun KtReturnExpression.toAElement() = AReturnExpression(this)
+
+fun PsiBreakStatement.toAElement() = ABreakExpression(this)
+
+fun KtBreakExpression.toAElement() = ABreakExpression(this)
+
+fun PsiContinueStatement.toAElement() = AContinueExpression(this)
+
+fun KtContinueExpression.toAElement() = AContinueExpression(this)
 
 fun PsiLambdaExpression.toAElement() = ALambdaExpression(this)
 
