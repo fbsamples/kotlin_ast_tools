@@ -17,6 +17,8 @@
 package com.facebook.aelements
 
 import com.facebook.aelements.util.AElementTestingUtil
+import com.facebook.asttools.KotlinParserUtil
+import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.intellij.psi.PsiBinaryExpression
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.junit.Test
@@ -61,5 +63,24 @@ class ABinaryExpressionTest {
           { it.operationReference.text },
       )
     }
+  }
+
+  @Test
+  fun `return statement in a binary expression`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+            |class TestClass {
+            |  fun doIt(a: String?) {
+            |    val b = a ?: return
+            |  }
+            |}
+            """
+                .trimMargin()
+        )
+    val aElement = ktFile.toAElement().collectDescendantsOfType<ABinaryExpression>().first()
+    assertThat(aElement.left?.text).isEqualTo("a")
+    assertThat(aElement.operator).isEqualTo("?:")
+    assertThat(aElement.right?.text).isEqualTo("return")
   }
 }

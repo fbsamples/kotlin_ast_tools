@@ -39,8 +39,8 @@ open class ABinaryExpression private constructor(psiElement: PsiElement) :
   val left: AExpression
     get() = (javaElement?.lOperand ?: kotlinElement?.left)?.toAElement() as AExpression
 
-  val right: AExpression
-    get() = (javaElement?.rOperand ?: kotlinElement?.right)?.toAElement() as AExpression
+  val right: AExpressionOrStatement
+    get() = (javaElement?.rOperand ?: kotlinElement?.right)?.toAElement() as AExpressionOrStatement
 
   val operator: String
     get() = (javaElement?.operationSign?.text ?: kotlinElement?.operationReference?.text)!!
