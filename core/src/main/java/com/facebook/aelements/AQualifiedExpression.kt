@@ -42,10 +42,10 @@ interface AQualifiedExpression : AExpression {
 
   val javaQualifiedExpression: PsiReferenceExpression?
 
-  val receiverExpression: AExpression
+  val receiverExpressionOrStatement: AExpressionOrStatement
     get() =
         (javaQualifiedExpression?.qualifierExpression ?: kotlinElement?.receiverExpression)!!
-            .toAElement() as AExpression
+            .toAElement() as AExpressionOrStatement
 
   val selectorExpression: AExpression
     get() =

@@ -68,7 +68,7 @@ class AQualifiedCallExpressionTest {
       )
       aElementsTestUtil.assertSamePsiElement(
           aElement = aElement,
-          onAElement = { it.receiverExpression },
+          onAElement = { it.receiverExpressionOrStatement },
           onJava = { it.methodExpression.qualifierExpression },
           onKotlin = { it.receiverExpression },
       )

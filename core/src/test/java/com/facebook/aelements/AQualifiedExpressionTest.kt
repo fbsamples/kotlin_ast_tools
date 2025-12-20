@@ -64,7 +64,7 @@ class AQualifiedExpressionTest {
       )
       aElementsTestUtil.assertSamePsiElement(
           aElement = aElement,
-          onAElement = { it.receiverExpression },
+          onAElement = { it.receiverExpressionOrStatement },
           onJava = { (it as PsiReferenceExpression).qualifierExpression },
           onKotlin = { it.receiverExpression },
       )
@@ -80,7 +80,7 @@ class AQualifiedExpressionTest {
   }
 
   @Test
-  fun `in Kotlin if expression works as reciever`() {
+  fun `in Kotlin if expression works as receiver`() {
     val kotlinAElement =
         KotlinParserUtil.parseAsFile(
                 """
@@ -92,6 +92,24 @@ class AQualifiedExpressionTest {
             .toAElement()
             .findDescendantOfType<AQualifiedExpression>()!!
 
-    assertThat(kotlinAElement.receiverExpression.text).isEqualTo("if (n < 5) 1 else { 2 + 2 }")
+    assertThat(kotlinAElement.receiverExpressionOrStatement.text)
+        .isEqualTo("if (n < 5) 1 else { 2 + 2 }")
+  }
+
+  @Test
+  fun `Kotlin receiver statement`() {
+    val kotlinAElement =
+        KotlinParserUtil.parseAsFile(
+                """
+                |fun foo() {
+                |  return.also { println("hello") }
+                |}
+                """
+                    .trimIndent()
+            )
+            .toAElement()
+            .findDescendantOfType<AQualifiedExpression>()!!
+
+    assertThat(kotlinAElement.receiverExpressionOrStatement.text).isEqualTo("return")
   }
 }
