@@ -90,6 +90,29 @@ class UsagesFinderTest {
   }
 
   @Test
+  fun `test find usages of constructor parameter with function type`() {
+    val ktFile =
+        KotlinParserUtil.parseAsFile(
+            """
+            |package com.facebook.example
+            |
+            |class Example(private val callback: (String) -> Unit) {
+            |  fun doIt() {
+            |    callback("test")
+            |  }
+            |}
+            """
+                .trimMargin()
+        )
+
+    val ktParameter =
+        ktFile.requireSingleOfType<KtParameter>("private val callback: (String) -> Unit")
+    val usages = UsagesFinder.getUsages(ktParameter)
+    assertThat(usages.map { "${locationOf(it)}:${it.parent?.text}" })
+        .containsExactly("5:5:callback(\"test\")")
+  }
+
+  @Test
   fun `test find usages with same name function in Kotlin`() {
     val ktFile =
         KotlinParserUtil.parseAsFile(

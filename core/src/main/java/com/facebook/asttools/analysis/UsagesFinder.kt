@@ -38,6 +38,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiThisExpression
 import org.jetbrains.kotlin.com.intellij.psi.PsiVariable
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
+import org.jetbrains.kotlin.psi.KtCallableDeclaration
 import org.jetbrains.kotlin.psi.KtCallableReferenceExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtExpression
@@ -270,11 +271,12 @@ object UsagesFinder {
           parent is KtCallExpression ->
               if (parent.calleeExpression == candidate)
                   effectiveDeclaration is KtNamedFunction ||
-                      (effectiveDeclaration as? KtProperty)
-                          ?.typeReference
-                          ?.text
-                          .orEmpty()
-                          .contains("->")
+                      (effectiveDeclaration is KtProperty || effectiveDeclaration is KtParameter) &&
+                          (effectiveDeclaration as KtCallableDeclaration)
+                              .typeReference
+                              ?.text
+                              .orEmpty()
+                              .contains("->")
               else true
           parent is KtCallableReferenceExpression -> effectiveDeclaration is KtNamedFunction
           parent is PsiMethodCallExpression ->
