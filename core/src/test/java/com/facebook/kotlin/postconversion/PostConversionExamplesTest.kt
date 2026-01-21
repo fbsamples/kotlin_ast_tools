@@ -124,6 +124,55 @@ class PostConversionExamplesTest {
   }
 
   @Test
+  fun `replace TextUtils join with joinToString`() {
+    val file = createTempFile(directory = root, suffix = ".kt").toFile()
+    file.writeText(
+        """
+        |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
+        |
+        |package com.facebook.examples
+        |
+        |import android.text.TextUtils
+        |
+        |object Foo {
+        |  fun formatNames(names: List<String>): String {
+        |    return TextUtils.join(", ", names)
+        |  }
+        |
+        |  fun formatWithPrefix(items: List<String>): String {
+        |    return "Items: " + TextUtils.join(" | ", items)
+        |  }
+        |}
+        |"""
+            .trimMargin()
+    )
+
+    PostConversionExamples.main(System.out, arrayOf(file.path))
+
+    assertThat(file.readText())
+        .isEqualTo(
+            """
+            |// (c) Meta Platforms, Inc. and affiliates. Confidential and proprietary.
+            |
+            |package com.facebook.examples
+            |
+            |import android.text.TextUtils
+            |
+            |object Foo {
+            |  fun formatNames(names: List<String>): String {
+            |    return names.joinToString(", ")
+            |  }
+            |
+            |  fun formatWithPrefix(items: List<String>): String {
+            |    return "Items: " + items.joinToString(" | ")
+            |  }
+            |}
+            |"""
+                .trimMargin()
+        )
+  }
+
+  @Test
   fun `replace Guava Strings with built in functions`() {
     val file = createTempFile(directory = root, suffix = ".kt").toFile()
     file.writeText(

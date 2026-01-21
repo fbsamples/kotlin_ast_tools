@@ -77,6 +77,10 @@ object PostConversionExamples {
             },
         )
         .replaceAllExpressions("TextUtils.isEmpty(#a#)", "#a#.isNullOrEmpty()")
+        .replaceAllExpressions(
+            "TextUtils.join(#delimiter#, #iterable#)",
+            "#iterable#.joinToString(#delimiter#)",
+        )
   }
 
   fun replaceGuavaStrings(ktFile: KtFile): KtFile {
