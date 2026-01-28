@@ -31,6 +31,7 @@ import org.jetbrains.kotlin.psi.KtIfExpression
 import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
 import org.jetbrains.kotlin.psi.KtTreeVisitorVoid
+import org.jetbrains.kotlin.psi.KtUnaryExpression
 import org.jetbrains.kotlin.psi.psiUtil.asAssignment
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 
@@ -72,7 +73,10 @@ object PostConversionExamples {
             "TextUtils.equals(#a#, #b#)",
             replaceWith = { match ->
               val parent = match.psiElement.parent
-              val needsParenthesis = parent is KtBinaryExpression || parent is KtQualifiedExpression
+              val needsParenthesis =
+                  parent is KtUnaryExpression ||
+                      parent is KtBinaryExpression ||
+                      parent is KtQualifiedExpression
               if (needsParenthesis) "(#a# == #b#)" else "#a# == #b#"
             },
         )

@@ -83,6 +83,49 @@ class PostConversionExamplesTest {
   }
 
   @Test
+  fun `replace negated TextUtils equals with parenthesized ==`() {
+    val file = createTempFile(directory = root, suffix = ".kt").toFile()
+    file.writeText(
+        """
+        |package com.facebook.kotlin.examples
+        |
+        |import android.text.TextUtils
+        |
+        |object Foo {
+        |  fun check(mainLink: String?, url: String?, title: String?, snippet: String?) {
+        |    if (!TextUtils.equals(mainLink, url) || (title.isNullOrEmpty() && snippet.isNullOrEmpty())) {
+        |      println("condition met")
+        |    }
+        |    val result = !TextUtils.equals(mainLink, url)
+        |  }
+        |}
+        |"""
+            .trimMargin()
+    )
+
+    PostConversionExamples.main(System.out, arrayOf(file.path))
+
+    assertThat(file.readText())
+        .isEqualTo(
+            """
+            |package com.facebook.kotlin.examples
+            |
+            |import android.text.TextUtils
+            |
+            |object Foo {
+            |  fun check(mainLink: String?, url: String?, title: String?, snippet: String?) {
+            |    if (!(mainLink == url) || (title.isNullOrEmpty() && snippet.isNullOrEmpty())) {
+            |      println("condition met")
+            |    }
+            |    val result = !(mainLink == url)
+            |  }
+            |}
+            |"""
+                .trimMargin()
+        )
+  }
+
+  @Test
   fun `replace TextUtils isEmpty with built in`() {
     val file = createTempFile(directory = root, suffix = ".kt").toFile()
     file.writeText(
