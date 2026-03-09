@@ -21,11 +21,11 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiExpressionList
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 
 /**
- * Represents a list of value arguments (not to be confused with type arguements) in a call to a
+ * Represents a list of value arguments (not to be confused with type arguments) in a call to a
  * function, i.e. `(a, b)` in `f(a, b)`
  *
- * Why does this exist and it's not just a list of the parameters? This since this list is a node by
- * itself, for example getting the parenthesis marking it is both useful and makes sense to
+ * Why does this exist and it's not just a list of the parameters? This is because this list is a
+ * node by itself, for example getting the parenthesis marking it is both useful and makes sense to
  * represent in an AST.
  */
 open class AValueArgumentList internal constructor(psiElement: PsiElement) :
