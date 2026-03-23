@@ -259,13 +259,12 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
           "Cannot apply patches, some patches intersect, and applying them creates new candidates"
       )
     }
-    val nonIntersectingElements =
-        elements.filter { matchResult ->
-          elements.none { matchResult2 ->
-            val element = matchResult.psiElement
-            element != null && matchResult2.psiElement.isAncestor(element, strict = true)
-          }
-        }
+    val nonIntersectingElements = elements.filter { matchResult ->
+      elements.none { matchResult2 ->
+        val element = matchResult.psiElement
+        element != null && matchResult2.psiElement.isAncestor(element, strict = true)
+      }
+    }
     val newRemainingElements = elements.size - nonIntersectingElements.size
     // Guarantee no infinite loop is possible
     if (newRemainingElements >= remainingMatches) {
@@ -291,8 +290,9 @@ internal fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariabl
     return psiFile
   }
 
-  val sortedPatches: List<Pair<PsiElement, String>> =
-      elements.map { Pair(checkNotNull(it.psiElement), replaceWith(it)) }
+  val sortedPatches: List<Pair<PsiElement, String>> = elements.map {
+    Pair(checkNotNull(it.psiElement), replaceWith(it))
+  }
 
   var previousPatchEndOffset = -1
   for (patch in sortedPatches) {

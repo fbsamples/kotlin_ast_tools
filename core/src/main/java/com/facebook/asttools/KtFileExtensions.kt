@@ -90,31 +90,30 @@ fun <Element : PsiElement> KtFile.removeAll(elements: List<Element>): KtFile {
     return this
   }
 
-  val sortedPatches =
-      elements.map { result ->
-        when (result) {
-          is KtParameter -> {
-            val ktParameterList = result.parent as KtParameterList
-            val nextParameter = result.nextSiblingOfSameType<KtParameter>()
-            val prevParameter = result.prevSiblingOfSameType<KtParameter>()
-            when {
-              nextParameter != null -> Pair(result.startOffset, nextParameter.startOffset)
-              prevParameter != null -> Pair(prevParameter.endOffset, result.endOffset)
-              else ->
-                  Pair(
-                      checkNotNull(ktParameterList.leftParenthesis).endOffset,
-                      checkNotNull(ktParameterList.rightParenthesis).startOffset,
-                  )
-            }
-          }
-
-          is KtAnnotationEntry,
-          is KtProperty,
-          is KtExpression -> Pair(result.startOffset, result.endOffset)
-
-          else -> TODO("Unsupported type, add code to make it work")
+  val sortedPatches = elements.map { result ->
+    when (result) {
+      is KtParameter -> {
+        val ktParameterList = result.parent as KtParameterList
+        val nextParameter = result.nextSiblingOfSameType<KtParameter>()
+        val prevParameter = result.prevSiblingOfSameType<KtParameter>()
+        when {
+          nextParameter != null -> Pair(result.startOffset, nextParameter.startOffset)
+          prevParameter != null -> Pair(prevParameter.endOffset, result.endOffset)
+          else ->
+              Pair(
+                  checkNotNull(ktParameterList.leftParenthesis).endOffset,
+                  checkNotNull(ktParameterList.rightParenthesis).startOffset,
+              )
         }
       }
+
+      is KtAnnotationEntry,
+      is KtProperty,
+      is KtExpression -> Pair(result.startOffset, result.endOffset)
+
+      else -> TODO("Unsupported type, add code to make it work")
+    }
+  }
 
   var text = this.text
   for ((start, end) in sortedPatches.reversed()) {
