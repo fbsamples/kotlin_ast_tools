@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiReferenceParameterList
 import org.jetbrains.kotlin.psi.KtTypeArgumentList
 
 /**
- * Represents a list of type arguments (not to be confused with value arguements) in a call to a
+ * Represents a list of type arguments (not to be confused with value arguments) in a call to a
  * function, i.e. `<A, B>` in `f<A, B>(a, b)`
  *
  * Why does this exist and it's not just a list of the types? This is because this list is a node by
