@@ -17,8 +17,8 @@
 package com.facebook.asttools
 
 import java.lang.IllegalStateException
+import kotlin.test.fail
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.fail
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.junit.Test
 
