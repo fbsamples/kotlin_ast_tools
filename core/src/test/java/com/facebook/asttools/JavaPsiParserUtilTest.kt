@@ -17,7 +17,7 @@
 package com.facebook.asttools
 
 import java.lang.IllegalStateException
-import org.assertj.core.api.Assertions
+import kotlin.test.fail
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.com.intellij.psi.PsiAnnotation
 import org.jetbrains.kotlin.com.intellij.psi.PsiClass
@@ -139,7 +139,7 @@ class JavaPsiParserUtilTest {
   fun `when cannot parse give a good error message`() {
     try {
       JavaPsiParserUtil.parseAsStatement("@Hello")
-      Assertions.fail("Expected exception")
+      fail("Expected exception")
     } catch (e: IllegalStateException) {
       assertThat(e).hasMessage("Cannot parse as PsiStatement: '@Hello'")
     }
