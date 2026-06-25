@@ -16,13 +16,13 @@
 
 package com.facebook.asttools
 
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
+import org.jetbrains.kotlin.cli.jvm.compiler.legacy.pipeline.createProjectEnvironment
 import org.jetbrains.kotlin.com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
+import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
 /**
@@ -32,31 +32,30 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 object ProjectHelper {
 
   private var overriddenProject: Project? = null
-  private val kotlinCoreEnvironment: KotlinCoreEnvironment by lazy { createCoreEnvironment() }
+  private val defaultProject: Project by lazy { createProject() }
 
   fun getProject(): Project {
-    return overriddenProject ?: kotlinCoreEnvironment.project
+    return overriddenProject ?: defaultProject
   }
 
   fun setProjectOverride(project: Project) {
     this.overriddenProject = project
   }
 
-  private fun createCoreEnvironment(): KotlinCoreEnvironment {
+  private fun createProject(): Project {
     val disposable = Disposer.newDisposable()
-    return KotlinCoreEnvironment.createForProduction(
-        disposable,
-        getConfiguration(),
-        EnvironmentConfigFiles.JVM_CONFIG_FILES,
-    )
-  }
-
-  private fun getConfiguration(): CompilerConfiguration {
-    val configuration = CompilerConfiguration()
-    configuration.put(
-        CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY,
-        PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false),
-    )
-    return configuration
+    val messageCollector =
+        PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false)
+    val configuration =
+        CompilerConfiguration().apply {
+          put(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, messageCollector)
+        }
+    return createProjectEnvironment(
+            configuration,
+            disposable,
+            EnvironmentConfigFiles.JVM_CONFIG_FILES,
+            messageCollector,
+        )
+        .project
   }
 }
