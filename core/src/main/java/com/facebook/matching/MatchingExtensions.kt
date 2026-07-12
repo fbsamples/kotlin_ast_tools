@@ -168,11 +168,10 @@ fun PsiJavaFile.findAllAnnotations(
 fun <Element : PsiElement> KtFile.replaceAll(
     matcher: PsiAstMatcher<Element>,
     replaceWith: (Element) -> String,
-): KtFile =
-    replaceAllWithVariables(
-        matcher,
-        replaceWith = { result -> replaceWith(result.psiElement as Element) },
-    )
+): KtFile = replaceAllWithVariables(
+    matcher,
+    replaceWith = { result -> replaceWith(result.psiElement as Element) },
+)
 
 /**
  * Finds and replaces elements in a Kotlin file using a [PsiAstMatcher]

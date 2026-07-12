@@ -38,14 +38,12 @@ inline fun <reified T : PsiElement> PsiElement.requireSingleOfType(
       }
   return results.singleOrNull()
       ?: run {
-        val matchString =
-            listOfNotNull(
-                    text?.let { "text=\"$text\"" },
-                    "type=${T::class.java.simpleName}"
-                        .takeIf { T::class.java != PsiElement::class.java },
-                    name?.let { "name=\"$name\"" },
-                )
-                .joinToString(separator = ", and ")
+        val matchString = listOfNotNull(
+            text?.let { "text=\"$text\"" },
+            "type=${T::class.java.simpleName}".takeIf { T::class.java != PsiElement::class.java },
+            name?.let { "name=\"$name\"" },
+        )
+            .joinToString(separator = ", and ")
         val resultsString =
             if (results.isEmpty()) "no elements"
             else

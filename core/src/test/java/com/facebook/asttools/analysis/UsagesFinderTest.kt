@@ -175,29 +175,28 @@ class UsagesFinderTest {
 
   @Test
   fun `test find usages in both languages`() {
-    val aFiles =
-        listOf(
-            KotlinParserUtil.parseAsFile(
-                    """
-                    |fun doIt(name: String) {
-                    |  println(name)
-                    |}
-                    """
-                        .trimMargin()
-                )
-                .toAElement(),
-            JavaPsiParserUtil.parseAsFile(
-                    """
-                    |public class Example {
-                    |  public static String doIt(String name) {
-                    |    println(name);
-                    |  }
-                    |}
-                    """
-                        .trimMargin()
-                )
-                .toAElement(),
-        )
+    val aFiles = listOf(
+        KotlinParserUtil.parseAsFile(
+                """
+                |fun doIt(name: String) {
+                |  println(name)
+                |}
+                """
+                    .trimMargin()
+            )
+            .toAElement(),
+        JavaPsiParserUtil.parseAsFile(
+                """
+                |public class Example {
+                |  public static String doIt(String name) {
+                |    println(name);
+                |  }
+                |}
+                """
+                    .trimMargin()
+            )
+            .toAElement(),
+    )
     for (aFile in aFiles) {
       val usages =
           UsagesFinder.getUsages(aFile.findDescendantOfType<AParameter> { it.name == "name" }!!)
@@ -368,31 +367,30 @@ class UsagesFinderTest {
 
   @Test
   fun `test find writes in both languages`() {
-    val aFiles =
-        listOf(
-            KotlinParserUtil.parseAsFile(
-                    """
-                    |fun doIt(name: String) {
-                    |  var a = "5"
-                    |  a = name  
-                    |}
-                    """
-                        .trimMargin()
-                )
-                .toAElement(),
-            JavaPsiParserUtil.parseAsFile(
-                    """
-                    |public class Example {
-                    |  public static String doIt(String name) {
-                    |    String a = "5";
-                    |    a = name;
-                    |  }
-                    |}
-                    """
-                        .trimMargin()
-                )
-                .toAElement(),
-        )
+    val aFiles = listOf(
+        KotlinParserUtil.parseAsFile(
+                """
+                |fun doIt(name: String) {
+                |  var a = "5"
+                |  a = name  
+                |}
+                """
+                    .trimMargin()
+            )
+            .toAElement(),
+        JavaPsiParserUtil.parseAsFile(
+                """
+                |public class Example {
+                |  public static String doIt(String name) {
+                |    String a = "5";
+                |    a = name;
+                |  }
+                |}
+                """
+                    .trimMargin()
+            )
+            .toAElement(),
+    )
     for (aFile in aFiles) {
       val usages =
           UsagesFinder.getWrites(
@@ -404,33 +402,32 @@ class UsagesFinderTest {
 
   @Test
   fun `test find reads in both languages`() {
-    val aFiles =
-        listOf(
-            KotlinParserUtil.parseAsFile(
-                    """
-                    |fun doIt(name: String): String {
-                    |  var a = "5"
-                    |  a = name
-                    |  return a  
-                    |}
-                    """
-                        .trimMargin()
-                )
-                .toAElement(),
-            JavaPsiParserUtil.parseAsFile(
-                    """
-                    |public class Example {
-                    |  public static String doIt(String name) {
-                    |    String a = "5";
-                    |    a = name;
-                    |    return a;
-                    |  }
-                    |}
-                    """
-                        .trimMargin()
-                )
-                .toAElement(),
-        )
+    val aFiles = listOf(
+        KotlinParserUtil.parseAsFile(
+                """
+                |fun doIt(name: String): String {
+                |  var a = "5"
+                |  a = name
+                |  return a  
+                |}
+                """
+                    .trimMargin()
+            )
+            .toAElement(),
+        JavaPsiParserUtil.parseAsFile(
+                """
+                |public class Example {
+                |  public static String doIt(String name) {
+                |    String a = "5";
+                |    a = name;
+                |    return a;
+                |  }
+                |}
+                """
+                    .trimMargin()
+            )
+            .toAElement(),
+    )
     for (aFile in aFiles) {
       val usages =
           UsagesFinder.getReads(

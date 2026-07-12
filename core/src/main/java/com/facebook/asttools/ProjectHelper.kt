@@ -51,11 +51,11 @@ object ProjectHelper {
           put(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, messageCollector)
         }
     return createProjectEnvironment(
-            configuration,
-            disposable,
-            EnvironmentConfigFiles.JVM_CONFIG_FILES,
-            messageCollector,
-        )
+        configuration,
+        disposable,
+        EnvironmentConfigFiles.JVM_CONFIG_FILES,
+        messageCollector,
+    )
         .project
   }
 }

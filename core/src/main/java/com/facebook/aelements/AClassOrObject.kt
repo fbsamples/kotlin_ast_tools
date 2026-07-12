@@ -67,26 +67,24 @@ open class AClassOrObject internal constructor(psiAElement: PsiElement) :
     get() = javaElement?.name ?: kotlinElement?.name
 
   val superTypes: List<ATypeReference>
-    get() =
-        ifLanguage(
-            isKotlin = { kotlinElement ->
-              kotlinElement.superTypeListEntries.mapNotNull { it.typeReference?.toAElement() }
-            },
-            isJava = { javaElement ->
-              if (javaElement.isEnum || javaElement.isAnnotationType) {
-                emptyList()
-              } else {
-                (javaElement.implementsListTypes + javaElement.extendsListTypes).mapNotNull {
-                  it?.toAElement()
-                }
-              }
-            },
-        )
+    get() = ifLanguage(
+        isKotlin = { kotlinElement ->
+          kotlinElement.superTypeListEntries.mapNotNull { it.typeReference?.toAElement() }
+        },
+        isJava = { javaElement ->
+          if (javaElement.isEnum || javaElement.isAnnotationType) {
+            emptyList()
+          } else {
+            (javaElement.implementsListTypes + javaElement.extendsListTypes).mapNotNull {
+              it?.toAElement()
+            }
+          }
+        },
+    )
 
   val isInterface: Boolean
-    get() =
-        ifLanguage(
-            isJava = { it.isInterface },
-            isKotlin = { (it as? KtClass)?.isInterface() == true },
-        )
+    get() = ifLanguage(
+        isJava = { it.isInterface },
+        isKotlin = { (it as? KtClass)?.isInterface() == true },
+    )
 }
