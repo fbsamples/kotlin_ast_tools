@@ -17,13 +17,13 @@
 package com.facebook.asttools
 
 import org.intellij.lang.annotations.Language
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiErrorElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiManager
 import org.jetbrains.kotlin.com.intellij.testFramework.LightVirtualFile
+import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
@@ -155,7 +155,7 @@ object KotlinParserUtil {
   private fun getConfiguration(): CompilerConfiguration {
     val configuration = CompilerConfiguration()
     configuration.put(
-        CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY,
+        CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY,
         PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false),
     )
     return configuration
