@@ -36,7 +36,7 @@ class PsiAstMatcherImplTest {
             |  doNotDoIt(6)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     var counter1 = 0
     var counter2 = 0

@@ -63,7 +63,7 @@ object KotlinParserUtil {
             |  $code
             |}
             |"""
-                .trimMargin()
+                .trimMargin(),
         ),
         code,
     )
@@ -76,7 +76,7 @@ object KotlinParserUtil {
             """
             |class `DUMMY NAME` : $trimmedCode {}
             |"""
-                .trimMargin()
+                .trimMargin(),
         ),
         trimmedCode,
     )
@@ -96,7 +96,7 @@ object KotlinParserUtil {
             """
             |val `DUMMY NAME` = $code
             |"""
-                .trimMargin()
+                .trimMargin(),
         ),
         code,
     )
@@ -108,7 +108,7 @@ object KotlinParserUtil {
             """
             |fun `DUMMY NAME`() $code
             |"""
-                .trimMargin()
+                .trimMargin(),
         ),
         code,
     )
@@ -120,7 +120,7 @@ object KotlinParserUtil {
             """
             |$code val `DUMMY NAME` = null
             |"""
-                .trimMargin()
+                .trimMargin(),
         ),
         code,
     )
@@ -132,7 +132,7 @@ object KotlinParserUtil {
             """
             |fun `DUMMY NAME`($code) = TODO()
             |"""
-                .trimMargin()
+                .trimMargin(),
         ),
         code,
     )

@@ -28,11 +28,11 @@ internal constructor(
     psiElement: PsiElement,
 ) : AExpressionImpl(psiElement) {
   constructor(
-      psiArrayAccessExpression: PsiArrayAccessExpression
+      psiArrayAccessExpression: PsiArrayAccessExpression,
   ) : this(psiArrayAccessExpression as PsiElement)
 
   constructor(
-      ktArrayAccessExpression: KtArrayAccessExpression
+      ktArrayAccessExpression: KtArrayAccessExpression,
   ) : this(ktArrayAccessExpression as PsiElement)
 
   override val javaElement: PsiArrayAccessExpression?

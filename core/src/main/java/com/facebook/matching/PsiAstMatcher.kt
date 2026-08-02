@@ -64,7 +64,7 @@ interface PsiAstMatcher<Element : PsiElement> {
             }
             super.visitElement(element)
           }
-        }
+        },
     )
     return results
   }

@@ -54,7 +54,7 @@ class UsagesFinderTest {
             |  return if (name2 > name) name2 else name  
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val ktProperty = ktFile.findDescendantOfType<KtProperty> { it.name == "name" }!!
@@ -80,7 +80,7 @@ class UsagesFinderTest {
             |  return f("test")
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val ktProperty = ktFile.findDescendantOfType<KtProperty> { it.name == "f" }!!
@@ -102,7 +102,7 @@ class UsagesFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val ktParameter =
@@ -125,7 +125,7 @@ class UsagesFinderTest {
             |  println(f)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val ktProperty = ktFile.requireSingleOfType<KtProperty>("val f = 5")
@@ -133,8 +133,8 @@ class UsagesFinderTest {
     assertThat(UsagesFinder.getUsages(ktProperty).map { "${locationOf(it)}:${it.parent?.text}" })
         .containsExactly("6:11:f")
     assertThat(
-            UsagesFinder.getUsages(ktNamedFunction).map { "${locationOf(it)}:${it.parent?.text}" }
-        )
+        UsagesFinder.getUsages(ktNamedFunction).map { "${locationOf(it)}:${it.parent?.text}" },
+    )
         .containsExactly("5:13:::f")
   }
 
@@ -161,7 +161,7 @@ class UsagesFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val ktParameter = ktFile.requireSingleOfType<KtParameter>("private val name: String")
     assertThat(UsagesFinder.getUsages(ktParameter).map { "${locationOf(it)}:${it.parent?.text}" })
@@ -182,7 +182,7 @@ class UsagesFinderTest {
                 |  println(name)
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement(),
         JavaPsiParserUtil.parseAsFile(
@@ -193,7 +193,7 @@ class UsagesFinderTest {
                 |  }
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement(),
     )
@@ -224,7 +224,7 @@ class UsagesFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val psiVariable = psiJavaFile.findDescendantOfType<PsiLocalVariable> { it.name == "name" }!!
@@ -254,14 +254,14 @@ class UsagesFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val psiLocalVariable = psiJavaFile.requireSingleOfType<PsiLocalVariable>("int f = 5;")
     val psiMethod = psiJavaFile.requireSingleOfType<PsiMethod>(name = "f")
     assertThat(
-            UsagesFinder.getUsages(psiLocalVariable).map { "${locationOf(it)}:${it.parent?.text}" }
-        )
+        UsagesFinder.getUsages(psiLocalVariable).map { "${locationOf(it)}:${it.parent?.text}" },
+    )
         .containsExactly("8:13:(f)")
     assertThat(UsagesFinder.getUsages(psiMethod).map { "${locationOf(it)}:${it.parent?.text}" })
         .containsExactly("7:37:(this::f)")
@@ -292,7 +292,7 @@ class UsagesFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val psiVariable1 = psiJavaFile.requireSingleOfType<PsiVariable>("private int a = 1;")
     val psiVariable2 = psiJavaFile.requireSingleOfType<PsiVariable>("private int a = 2;")
@@ -323,7 +323,7 @@ class UsagesFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val psiVariable = psiJavaFile.findDescendantOfType<PsiLocalVariable> { it.name == "n" }!!
@@ -352,7 +352,7 @@ class UsagesFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val ktProperty = ktFile.findDescendantOfType<KtProperty> { it.name == "n" }!!
@@ -375,7 +375,7 @@ class UsagesFinderTest {
                 |  a = name  
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement(),
         JavaPsiParserUtil.parseAsFile(
@@ -387,14 +387,14 @@ class UsagesFinderTest {
                 |  }
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement(),
     )
     for (aFile in aFiles) {
       val usages =
           UsagesFinder.getWrites(
-              aFile.findDescendantOfType<AVariableDeclaration> { it.name == "a" }!!
+              aFile.findDescendantOfType<AVariableDeclaration> { it.name == "a" }!!,
           )
       assertThat(usages.map { it.text }.getOrNull(1)).isEqualTo("a = name")
     }
@@ -411,7 +411,7 @@ class UsagesFinderTest {
                 |  return a  
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement(),
         JavaPsiParserUtil.parseAsFile(
@@ -424,14 +424,14 @@ class UsagesFinderTest {
                 |  }
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement(),
     )
     for (aFile in aFiles) {
       val usages =
           UsagesFinder.getReads(
-              aFile.findDescendantOfType<AVariableDeclaration> { it.name == "a" }!!
+              aFile.findDescendantOfType<AVariableDeclaration> { it.name == "a" }!!,
           )
       assertThat(usages.map { it.parent?.text }.single()).matches("return a;?")
     }

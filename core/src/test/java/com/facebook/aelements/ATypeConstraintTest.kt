@@ -31,7 +31,7 @@ class ATypeConstraintTest {
                 |  fun <FunctionParam> foo(): FunctionParam where FunctionParam : String { return null }
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement()
 

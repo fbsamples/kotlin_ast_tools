@@ -58,11 +58,11 @@ import org.jetbrains.kotlin.psi.KtQualifiedExpression
 open class AQualifiedCallExpression private constructor(psiElement: PsiElement) :
     AExpressionImpl(psiElement), ACallExpression, AQualifiedExpression {
   constructor(
-      psiMethodCallExpression: PsiMethodCallExpression
+      psiMethodCallExpression: PsiMethodCallExpression,
   ) : this(psiMethodCallExpression as PsiElement)
 
   constructor(
-      ktQualifiedExpression: KtQualifiedExpression
+      ktQualifiedExpression: KtQualifiedExpression,
   ) : this(ktQualifiedExpression as PsiElement)
 
   override val javaElement: PsiMethodCallExpression?

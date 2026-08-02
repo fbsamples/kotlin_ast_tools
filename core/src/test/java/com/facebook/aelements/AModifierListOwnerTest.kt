@@ -43,7 +43,7 @@ class AModifierListOwnerTest {
                 |  }
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement() to
             KotlinParserUtil.parseAsFile(
@@ -56,59 +56,59 @@ class AModifierListOwnerTest {
                     |  public val aPublic2 = 1
                     |}
                     """
-                        .trimMargin()
+                        .trimMargin(),
                 )
                 .toAElement()
 
     for (aFile in listOf(javaElement, kotlinElement)) {
       assertThat(
-              aFile
-                  .collectDescendantsOfType<AProperty> { it.name!!.contains("Public") }
-                  .map { it.isPublic }
-                  .distinct()
-          )
+          aFile
+              .collectDescendantsOfType<AProperty> { it.name!!.contains("Public") }
+              .map { it.isPublic }
+              .distinct(),
+      )
           .containsExactly(true)
       assertThat(
-              aFile
-                  .collectDescendantsOfType<AProperty> { it.name!!.contains("Private") }
-                  .map { it.isPrivate }
-                  .distinct()
-          )
+          aFile
+              .collectDescendantsOfType<AProperty> { it.name!!.contains("Private") }
+              .map { it.isPrivate }
+              .distinct(),
+      )
           .containsExactly(true)
       assertThat(
-              aFile
-                  .collectDescendantsOfType<AProperty> { it.name!!.contains("Internal") }
-                  .map { it.isInternal }
-                  .distinct()
-          )
+          aFile
+              .collectDescendantsOfType<AProperty> { it.name!!.contains("Internal") }
+              .map { it.isInternal }
+              .distinct(),
+      )
           .doesNotContain(false)
       assertThat(
-              aFile
-                  .collectDescendantsOfType<AProperty> { it.name!!.contains("Package") }
-                  .map { it.isPackage }
-                  .distinct()
-          )
+          aFile
+              .collectDescendantsOfType<AProperty> { it.name!!.contains("Package") }
+              .map { it.isPackage }
+              .distinct(),
+      )
           .doesNotContain(false)
       assertThat(
-              aFile
-                  .collectDescendantsOfType<AProperty> { it.name!!.contains("Protected") }
-                  .map { it.isProtected }
-                  .distinct()
-          )
+          aFile
+              .collectDescendantsOfType<AProperty> { it.name!!.contains("Protected") }
+              .map { it.isProtected }
+              .distinct(),
+      )
           .containsExactly(true)
       assertThat(
-              aFile
-                  .collectDescendantsOfType<AProperty> { it.name!!.contains("Static") }
-                  .map { it.isStatic }
-                  .distinct()
-          )
+          aFile
+              .collectDescendantsOfType<AProperty> { it.name!!.contains("Static") }
+              .map { it.isStatic }
+              .distinct(),
+      )
           .doesNotContain(false)
       assertThat(
-              aFile
-                  .collectDescendantsOfType<AClassOrObject> { it.name!!.contains("StaticClass") }
-                  .map { it.isStatic }
-                  .distinct()
-          )
+          aFile
+              .collectDescendantsOfType<AClassOrObject> { it.name!!.contains("StaticClass") }
+              .map { it.isStatic }
+              .distinct(),
+      )
           .doesNotContain(false)
     }
   }

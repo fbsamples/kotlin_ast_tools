@@ -65,7 +65,7 @@ class AElementTestingUtil<T : AElement, J : PsiElement, K : PsiElement> {
               |${aElementResult?.javaClass?.simpleName}:${aElementResult?.javaClass?.simpleName}, ${aElementResult?.text}
               |   to be equal to
               |${psiResult?.javaClass?.simpleName}:${psiResult?.javaClass?.simpleName}, ${psiResult?.text}"""
-                .trimMargin()
+                .trimMargin(),
         )
         .isEqualTo(psiResult)
   }
@@ -89,7 +89,7 @@ class AElementTestingUtil<T : AElement, J : PsiElement, K : PsiElement> {
               |${aElementResult?.javaClass?.simpleName}:${aElementResult?.map { "${it.javaClass.simpleName}, ${it.text}"} }
               |   to be equal to
               |${psiResult?.javaClass?.simpleName}:${psiResult?.map { "${it?.javaClass?.simpleName}, ${it?.text}"} }"""
-                .trimMargin()
+                .trimMargin(),
         )
         .isEqualTo(psiResult)
   }
@@ -113,7 +113,7 @@ class AElementTestingUtil<T : AElement, J : PsiElement, K : PsiElement> {
               |${aElementResult?.javaClass?.simpleName}:${aElementResult}
               |   to be equal to
               |${psiResult?.javaClass?.simpleName}:${psiResult}"""
-                .trimMargin()
+                .trimMargin(),
         )
         .isEqualTo(psiResult)
   }

@@ -87,7 +87,7 @@ class AQualifiedExpressionTest {
                 |fun doIt(n: Int) {
                 |  if (n < 5) 1 else { 2 + 2 }.toString()
                 """
-                    .trimIndent()
+                    .trimIndent(),
             )
             .toAElement()
             .findDescendantOfType<AQualifiedExpression>()!!
@@ -105,7 +105,7 @@ class AQualifiedExpressionTest {
                 |  return.also { println("hello") }
                 |}
                 """
-                    .trimIndent()
+                    .trimIndent(),
             )
             .toAElement()
             .findDescendantOfType<AQualifiedExpression>()!!

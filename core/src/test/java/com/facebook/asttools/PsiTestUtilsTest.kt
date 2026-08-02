@@ -42,7 +42,7 @@ class PsiTestUtilsTest {
             |
             |fun f(n: Int) {} 
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(ktFile.requireSingle(text = "doIt(1)")).isInstanceOf(KtCallExpression::class.java)
@@ -60,15 +60,15 @@ class PsiTestUtilsTest {
             |}
             |2) fun f(n: Int) {}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThatThrownBy { ktFile.requireSingle(name = "nonExistent") }
         .hasMessage(
-            "Expected exactly one element to match name=\"nonExistent\" under element, but found no elements"
+            "Expected exactly one element to match name=\"nonExistent\" under element, but found no elements",
         )
     assertThatThrownBy { ktFile.requireSingleOfType<KtThisExpression>() }
         .hasMessage(
-            "Expected exactly one element to match type=KtThisExpression under element, but found no elements"
+            "Expected exactly one element to match type=KtThisExpression under element, but found no elements",
         )
   }
 
@@ -87,7 +87,7 @@ class PsiTestUtilsTest {
             |  public static void f(int n) {}
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(psiJavaFile.requireSingle("doIt(1)"))
@@ -106,15 +106,15 @@ class PsiTestUtilsTest {
             |  }
             |2) public static void f(int n) {}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThatThrownBy { psiJavaFile.requireSingle(name = "nonExistent") }
         .hasMessage(
-            "Expected exactly one element to match name=\"nonExistent\" under element, but found no elements"
+            "Expected exactly one element to match name=\"nonExistent\" under element, but found no elements",
         )
     assertThatThrownBy { psiJavaFile.requireSingleOfType<PsiThisExpression>() }
         .hasMessage(
-            "Expected exactly one element to match type=PsiThisExpression under element, but found no elements"
+            "Expected exactly one element to match type=PsiThisExpression under element, but found no elements",
         )
   }
 }

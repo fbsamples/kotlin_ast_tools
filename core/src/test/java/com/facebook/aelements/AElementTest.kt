@@ -45,7 +45,7 @@ class AElementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val ktFile =
         KotlinParserUtil.parseAsFile(
@@ -63,7 +63,7 @@ class AElementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val javaElements = mutableListOf<PsiElement>()
@@ -111,7 +111,7 @@ class AElementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val ktFile =
         KotlinParserUtil.parseAsFile(
@@ -128,7 +128,7 @@ class AElementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     for (aFile in listOf(ktFile.toAElement(), javaPsiFile.toAElement())) {
@@ -142,8 +142,8 @@ class AElementTest {
       assertThat(aClassOrObject.parentsOfType<AClassOrObject>().map { it.name }.toList())
           .containsExactly("TestClass2", "TestClass")
       assertThat(
-              aClassOrObject.parentsOfType<AClassOrObject>(withSelf = true).map { it.name }.toList()
-          )
+          aClassOrObject.parentsOfType<AClassOrObject>(withSelf = true).map { it.name }.toList(),
+      )
           .containsExactly("TestClass3", "TestClass2", "TestClass")
     }
   }
@@ -169,7 +169,7 @@ class AElementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val ktFile =
         KotlinParserUtil.parseAsFile(
@@ -186,7 +186,7 @@ class AElementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThat(ktFile.toAElement().findDescendantOfType<ANamedFunction>()?.lineNumberInFile)
         .isEqualTo(8)

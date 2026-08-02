@@ -30,7 +30,7 @@ import org.jetbrains.kotlin.psi.psiUtil.startOffset
 fun replaceElements(code: String, elements: List<PsiElement>, replacements: List<String>): String {
   if (elements.size != replacements.size) {
     throw IllegalArgumentException(
-        "'elements' (${elements.size}) and replacements (${replacements.size}) have different lengths"
+        "'elements' (${elements.size}) and replacements (${replacements.size}) have different lengths",
     )
   }
   val sortedPatches: List<Pair<PsiElement, String>> =

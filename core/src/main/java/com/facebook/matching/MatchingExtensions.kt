@@ -99,7 +99,7 @@ fun KtFile.replaceAllExpressions(
     vararg variables: Pair<String, PsiAstMatcherImpl<*>>,
 ): KtFile {
   return replaceAllWithVariables(
-      PsiAstTemplateParser().parseTemplateWithVariables<KtExpression>(template, *variables)
+      PsiAstTemplateParser().parseTemplateWithVariables<KtExpression>(template, *variables),
   ) { match ->
     PsiAstTemplateParser().parseReplacementTemplate(template, replaceWith(match), match)
   }
@@ -111,7 +111,7 @@ fun PsiJavaFile.replaceAllExpressions(
     vararg variables: Pair<String, PsiAstMatcherImpl<*>>,
 ): PsiJavaFile {
   return replaceAllWithVariables(
-      PsiAstTemplateParser().parseTemplateWithVariables<PsiExpression>(template, *variables)
+      PsiAstTemplateParser().parseTemplateWithVariables<PsiExpression>(template, *variables),
   ) { match ->
     PsiAstTemplateParser().parseReplacementTemplate(template, replaceWith(match), match)
   }

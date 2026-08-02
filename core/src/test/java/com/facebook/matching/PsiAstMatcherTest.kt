@@ -52,7 +52,7 @@ class PsiAstMatcherTest {
             |  fun doIt() = 1
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtClassOrObject>()
@@ -84,7 +84,7 @@ class PsiAstMatcherTest {
             |  var bar2: Bar by SuperDelegate
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtProperty>()
@@ -116,7 +116,7 @@ class PsiAstMatcherTest {
             |  return 10
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtNamedFunction>()
@@ -141,7 +141,7 @@ class PsiAstMatcherTest {
             |  return 10
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtNamedFunction>()
@@ -162,7 +162,7 @@ class PsiAstMatcherTest {
             |fun foo2(): String = "10"
             |fun foo3() = Unit
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtNamedFunction>()
@@ -186,7 +186,7 @@ class PsiAstMatcherTest {
             |  return 10
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val matchResults =
         match<KtCallExpression>()
@@ -232,7 +232,7 @@ class PsiAstMatcherTest {
             |  withContextBar2(Extras, Dispatchers.IO, Env)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results: List<KtCallExpression> =
         match<KtCallExpression>()
@@ -268,7 +268,7 @@ class PsiAstMatcherTest {
             |  return 10
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtCallExpression>()
@@ -302,7 +302,7 @@ class PsiAstMatcherTest {
             |  withContextBar2(Dispatchers.IO)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtCallExpression>()
@@ -323,7 +323,7 @@ class PsiAstMatcherTest {
             """
             |private val foo = 5
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results: List<KtProperty> =
         match<KtProperty>()
@@ -348,7 +348,7 @@ class PsiAstMatcherTest {
             |  private val bar = 5
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtProperty>()
@@ -360,10 +360,10 @@ class PsiAstMatcherTest {
     assertThat(results).hasSize(1)
     assertThat(results[0].text).isEqualTo("private val foo = 5")
     assertThat(
-            ktFile
-                .findDescendantOfType<KtObjectDeclaration> { it.name == "Foo" }
-                .isAncestor(results[0])
-        )
+        ktFile
+            .findDescendantOfType<KtObjectDeclaration> { it.name == "Foo" }
+            .isAncestor(results[0]),
+    )
         .isTrue
   }
 
@@ -376,7 +376,7 @@ class PsiAstMatcherTest {
             |object Bar : Super1, Super2 {}
             |object NoBar : Super2 {}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtClassOrObject>()
@@ -395,7 +395,7 @@ class PsiAstMatcherTest {
             |object Bar : Super1("a"), Super2("a") {}
             |object NoBar : Super2() {}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtClassOrObject>()
@@ -419,7 +419,7 @@ class PsiAstMatcherTest {
             |  2.toFloat() // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtQualifiedExpression>()
@@ -442,7 +442,7 @@ class PsiAstMatcherTest {
             |  a.b() // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtQualifiedExpression>()
@@ -463,7 +463,7 @@ class PsiAstMatcherTest {
             |  doIt("yay", food = 1) // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         match<KtCallExpression>()
@@ -491,7 +491,7 @@ class PsiAstMatcherTest {
             |  val a = 1
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val newKtFile =
@@ -510,7 +510,7 @@ class PsiAstMatcherTest {
             |  val a = 2
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -526,7 +526,7 @@ class PsiAstMatcherTest {
             |  println(1 - 2) // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results =
@@ -552,7 +552,7 @@ class PsiAstMatcherTest {
             |  ++i // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results =
@@ -578,7 +578,7 @@ class PsiAstMatcherTest {
             |  println(Foo :: class) // yes
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results =
@@ -606,7 +606,7 @@ class PsiAstMatcherTest {
             |  invoke(invoke(invoke() + invoke(2)))
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val newKtFile =
@@ -622,7 +622,7 @@ class PsiAstMatcherTest {
             |  apply(apply(apply() + apply(2)))
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -635,7 +635,7 @@ class PsiAstMatcherTest {
             |  println(invoke(invoke()))
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     ktFile.replaceAllWithVariables(
@@ -659,7 +659,7 @@ class PsiAstMatcherTest {
             |  val b = 6
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val ktExpressions = ktFile.collectDescendantsOfType<KtConstantExpression>()
     assertThat(ktExpressions.map { it.text }).containsExactly("5", "6")
@@ -681,7 +681,7 @@ class PsiAstMatcherTest {
             |  val b = 6
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val ktExpressions = ktFile.collectDescendantsOfType<KtConstantExpression>()
     assertThat(ktExpressions.map { it.text }).containsExactly("5", "6")

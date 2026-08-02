@@ -38,7 +38,7 @@ class AForExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -66,7 +66,7 @@ class AForExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -93,7 +93,7 @@ class AForExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -118,7 +118,7 @@ class AForExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -142,7 +142,7 @@ class AForExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()

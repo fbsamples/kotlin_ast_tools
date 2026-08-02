@@ -38,7 +38,7 @@ interface Resolver {
           }
 
           override fun resolveToFullyQualifiedTypeAndSupertypes(
-              psiElement: PsiElement
+              psiElement: PsiElement,
           ): List<String>? {
             error("Template was not built with a resolver to allow resolving of symbols")
           }

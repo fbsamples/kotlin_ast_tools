@@ -76,7 +76,7 @@ class ABinaryExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val aElement = ktFile.toAElement().collectDescendantsOfType<ABinaryExpression>().first()
     assertThat(aElement.left?.text).isEqualTo("a")

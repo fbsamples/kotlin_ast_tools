@@ -45,7 +45,7 @@ class ASwitchStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -75,7 +75,7 @@ class ASwitchStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -111,7 +111,7 @@ class ASwitchStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -142,7 +142,7 @@ class ASwitchStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()

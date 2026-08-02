@@ -93,7 +93,7 @@ interface AElement {
 
 /** Finds all elements of the given type and matching the predicate and puts them in a list */
 inline fun <reified T : AElement> AElement.collectDescendantsOfType(
-    noinline predicate: (T) -> Boolean = { true }
+    noinline predicate: (T) -> Boolean = { true },
 ): List<T> {
   return psiElement
       .collectDescendantsOfType<PsiElement> {
@@ -104,7 +104,7 @@ inline fun <reified T : AElement> AElement.collectDescendantsOfType(
 
 /** Finds the first element of the given type and matching the predicate */
 inline fun <reified T : AElement> AElement.findDescendantOfType(
-    noinline predicate: (T) -> Boolean = { true }
+    noinline predicate: (T) -> Boolean = { true },
 ): T? {
   return psiElement
       .findDescendantOfType<PsiElement> {

@@ -38,7 +38,7 @@ class AForStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaPsiFile.toAElement()
@@ -65,7 +65,7 @@ class AForStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaPsiFile.toAElement()
@@ -92,7 +92,7 @@ class AForStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaPsiFile.toAElement()
@@ -118,7 +118,7 @@ class AForStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaPsiFile.toAElement()

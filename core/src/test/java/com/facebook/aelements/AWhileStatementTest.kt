@@ -40,7 +40,7 @@ class AWhileStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -68,7 +68,7 @@ class AWhileStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -94,7 +94,7 @@ class AWhileStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -121,7 +121,7 @@ class AWhileStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()

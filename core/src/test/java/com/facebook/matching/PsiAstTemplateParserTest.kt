@@ -36,44 +36,43 @@ class PsiAstTemplateParserTest {
             |  var bar3 = foo.getEvenMore().get()
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
-    val parser =
-        PsiAstTemplateParser(
-            object : Resolver {
-              override fun resolveToFullyQualifiedType(psiElement: PsiElement): String? =
-                  when (psiElement.text) {
-                    "foo.get()" -> "com.facebook.bar.Bar"
-                    "foo.getMore()" -> "com.facebook.bar.NotBar"
-                    else -> null
-                  }
+    val parser = PsiAstTemplateParser(
+        object : Resolver {
+          override fun resolveToFullyQualifiedType(psiElement: PsiElement): String? =
+              when (psiElement.text) {
+                "foo.get()" -> "com.facebook.bar.Bar"
+                "foo.getMore()" -> "com.facebook.bar.NotBar"
+                else -> null
+              }
 
-              override fun resolveToFullyQualifiedTypeAndSupertypes(
-                  psiElement: PsiElement
-              ): List<String>? =
-                  when (psiElement.text) {
-                    "foo.get()" -> listOf("com.facebook.bar.Bar", "com.facebook.bar.Baz")
-                    "foo.getMore()" -> listOf("com.facebook.bar.NotBar", "com.facebook.bar.NotBaz")
-                    else -> null
-                  }
-            }
-        )
+          override fun resolveToFullyQualifiedTypeAndSupertypes(
+              psiElement: PsiElement,
+          ): List<String>? =
+              when (psiElement.text) {
+                "foo.get()" -> listOf("com.facebook.bar.Bar", "com.facebook.bar.Baz")
+                "foo.getMore()" -> listOf("com.facebook.bar.NotBar", "com.facebook.bar.NotBaz")
+                else -> null
+              }
+        },
+    )
 
     assertThat(
-            parser
-                .parseTemplateWithVariables<KtExpression>("#a{type=com.facebook.bar.Bar}#.get()")
-                .findAll(ktFile)
-                .map { it.text }
-        )
+        parser
+            .parseTemplateWithVariables<KtExpression>("#a{type=com.facebook.bar.Bar}#.get()")
+            .findAll(ktFile)
+            .map { it.text },
+    )
         .containsExactly("foo.get().get()")
 
     assertThat(
-            parser
-                .parseTemplateWithVariables<KtExpression>("#a{type=com.facebook.bar.Baz}#.get()")
-                .findAll(ktFile)
-                .map { it.text }
-        )
+        parser
+            .parseTemplateWithVariables<KtExpression>("#a{type=com.facebook.bar.Baz}#.get()")
+            .findAll(ktFile)
+            .map { it.text },
+    )
         .containsExactly("foo.get().get()")
   }
 }

@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.psi.psiUtil.startOffset
  * Additional conditions can be then added with [PsiAstMatcher.addCustomMatcher]
  */
 inline fun <reified T : PsiElement> match(
-    noinline predicate: ((T) -> Boolean)? = null
+    noinline predicate: ((T) -> Boolean)? = null,
 ): PsiAstMatcherImpl<T> {
   val matcher = PsiAstMatcherImpl(T::class.java)
   predicate?.let { matcher.addCustomMatcher(it) }
@@ -91,10 +91,12 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       predicate: (T) -> Boolean,
   ) {
     matcherFunctions +=
-        MatcherFunctionAndTime({
-          val t: T? = transform(it)
-          if (t != null && predicate(t)) MatchResult(t as? PsiElement, mapOf()) else null
-        })
+        MatcherFunctionAndTime(
+            {
+              val t: T? = transform(it)
+              if (t != null && predicate(t)) MatchResult(t as? PsiElement, mapOf()) else null
+            },
+        )
   }
 
   /**
@@ -109,9 +111,11 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       predicate: (Element) -> Boolean,
   ) {
     matcherFunctions +=
-        MatcherFunctionAndTime({
-          if (predicate(it)) MatchResult(it as? PsiElement, mapOf()) else null
-        })
+        MatcherFunctionAndTime(
+            {
+              if (predicate(it)) MatchResult(it as? PsiElement, mapOf()) else null
+            },
+        )
   }
 
   /**
@@ -125,10 +129,12 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       inheritShouldMatchNull: Boolean = false,
   ) {
     matcherFunctions +=
-        MatcherFunctionAndTime({
-          val t: T? = transform(it)
-          if (t == null && !matcher.shouldMatchToNull) null else matcher.matches(t)
-        })
+        MatcherFunctionAndTime(
+            {
+              val t: T? = transform(it)
+              if (t == null && !matcher.shouldMatchToNull) null else matcher.matches(t)
+            },
+        )
     if (inheritShouldMatchNull && matcher.shouldMatchToNull) {
       shouldMatchToNull = true
     }
@@ -179,7 +185,7 @@ class PsiAstMatcherImpl<Element : PsiElement>(internal val targetType: Class<Ele
       if (enableKtAstMatcherDebugPrints) {
         println(
             "KtAstMatcher-debug: Match $matcherFunction " +
-                "on ${if (obj is PsiElement) "'${obj.text}'" else obj} -> $childResult"
+                "on ${if (obj is PsiElement) "'${obj.text}'" else obj} -> $childResult",
         )
       }
       childResult ?: return null
@@ -256,7 +262,7 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     }
     if (elements.size > remainingMatches) {
       throw IllegalArgumentException(
-          "Cannot apply patches, some patches intersect, and applying them creates new candidates"
+          "Cannot apply patches, some patches intersect, and applying them creates new candidates",
       )
     }
     val nonIntersectingElements = elements.filter { matchResult ->
@@ -269,7 +275,7 @@ fun <Element : PsiElement, PsiFileType : PsiFile> replaceAllWithVariables(
     // Guarantee no infinite loop is possible
     if (newRemainingElements >= remainingMatches) {
       throw IllegalArgumentException(
-          "Cannot apply patches, some patches intersect, and applying them creates new candidates"
+          "Cannot apply patches, some patches intersect, and applying them creates new candidates",
       )
     }
     remainingMatches = newRemainingElements

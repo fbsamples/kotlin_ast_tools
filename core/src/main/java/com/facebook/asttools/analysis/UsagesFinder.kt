@@ -131,7 +131,7 @@ object UsagesFinder {
         declaration.takeIf {
           declaration is KtProperty &&
               (declaration.initializer != null || declaration.delegateExpression != null)
-        }
+        },
     ) +
         getUsages(declaration, under).mapNotNull {
           it.parent.takeIf { parent ->

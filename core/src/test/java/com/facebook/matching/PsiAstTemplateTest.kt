@@ -46,7 +46,7 @@ class PsiAstTemplateTest {
             |  val barString = "Bar".uppercase()
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(ktFile.findAllExpressions("\"Bar\".uppercase()").single())
@@ -68,7 +68,7 @@ class PsiAstTemplateTest {
             |  @Magic("yay") val barString = "Bar".uppercase()
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val ktExpression = ktFile.findAllExpressions("#a#.uppercase()").single()
@@ -96,7 +96,7 @@ class PsiAstTemplateTest {
             |  val barString = "Bar".uppercase()
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val delegatedPropertyResults: List<KtProperty> =
@@ -120,7 +120,7 @@ class PsiAstTemplateTest {
             |  val foo: Foo = initAgain()
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(ktFile.findAllProperties("val #name#: Bar").map { it.text })
@@ -138,7 +138,7 @@ class PsiAstTemplateTest {
             |  val bar: Int = doIt(1 + 1)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results = ktFile.findAllExpressions("doIt(1 + 1)")
 
@@ -155,7 +155,7 @@ class PsiAstTemplateTest {
             |  @NotMagic val b = 5
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results = ktFile.findAllAnnotations("@Magic")
 
@@ -174,7 +174,7 @@ class PsiAstTemplateTest {
             |  return a
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results = ktFile.findAllExpressions("doIt(1, name = b)")
 
@@ -191,7 +191,7 @@ class PsiAstTemplateTest {
             |  doIt(1) // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results: List<KtExpression> =
@@ -215,7 +215,7 @@ class PsiAstTemplateTest {
             |  Bar.doThat(1)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(ktFile.findAllExpressions("#call#(#a#)").map { it.text })
@@ -236,7 +236,7 @@ class PsiAstTemplateTest {
             |  doIt(1, 2, 3)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(ktFile.findAllExpressions("doIt(#a?#)").map { it.text })
@@ -259,7 +259,7 @@ class PsiAstTemplateTest {
             |  doIt()
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(ktFile.findAllExpressions("doIt<String>()").map { it.text })
@@ -284,7 +284,7 @@ class PsiAstTemplateTest {
             |  c.apply { doIt(5) }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results =
@@ -305,7 +305,7 @@ class PsiAstTemplateTest {
             |  doIt(1, 2)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val newKtFile = ktFile.replaceAllExpressions("doIt(#a#, #b#)", "doIt(#b#, #a#)")
@@ -317,7 +317,7 @@ class PsiAstTemplateTest {
             |  doIt(2, 1)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -332,7 +332,7 @@ class PsiAstTemplateTest {
             |  a.b() // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results: List<KtExpression> = ktFile.findAllExpressions("a?.b()")
@@ -352,7 +352,7 @@ class PsiAstTemplateTest {
             |      class)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results: List<KtExpression> = ktFile.findAllExpressions("Bar::class")
@@ -372,7 +372,7 @@ class PsiAstTemplateTest {
             |  doIt(3).again()
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results: List<KtExpression> = ktFile.findAllExpressions("doIt(#any#)")
 
@@ -390,7 +390,7 @@ class PsiAstTemplateTest {
             |  doIt(doIt(3)!!)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results: List<KtExpression> = ktFile.findAllExpressions("doIt(#any#)!!")
 
@@ -407,7 +407,7 @@ class PsiAstTemplateTest {
             |  ++i
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val resultsPrefix: List<KtExpression> = ktFile.findAllExpressions("++#any#")
     val resultsPostfix: List<KtExpression> = ktFile.findAllExpressions("#any#++")
@@ -428,7 +428,7 @@ class PsiAstTemplateTest {
             |  println(foo as? FooImpl)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThat(ktFile.findAllExpressions("#any# + 5").map { it.text }).containsExactly("i + 5")
     assertThat(ktFile.findAllExpressions("#any# - #any2#").map { it.text }).containsExactly("i - 2")
@@ -449,7 +449,7 @@ class PsiAstTemplateTest {
             |  println(foo is Int)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThat(ktFile.findAllExpressions("#any# is Bar").map { it.text })
         .containsExactly("foo is Bar")
@@ -469,7 +469,7 @@ class PsiAstTemplateTest {
             |  val a = 1 + (1 + 1)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThat(ktFile.findAllExpressions("(#any#)").map { it.text })
         .containsExactly("(doIt())", "(1 + 1)")
@@ -491,29 +491,29 @@ class PsiAstTemplateTest {
             |  example(1)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            PsiAstTemplateParser()
-                .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example")
-                .findAll(ktFile)
-                .map { it.text }
-        )
+        PsiAstTemplateParser()
+            .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example")
+            .findAll(ktFile)
+            .map { it.text },
+    )
         .containsExactly("import com.facebook.example")
     assertThat(
-            PsiAstTemplateParser()
-                .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example as #a#")
-                .findAll(ktFile)
-                .map { it.text }
-        )
+        PsiAstTemplateParser()
+            .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example as #a#")
+            .findAll(ktFile)
+            .map { it.text },
+    )
         .containsExactly("import com.facebook.example as E")
     assertThat(
-            PsiAstTemplateParser()
-                .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example as E")
-                .findAll(ktFile)
-                .map { it.text }
-        )
+        PsiAstTemplateParser()
+            .parseTemplateWithVariables<KtImportDirective>("import com.facebook.example as E")
+            .findAll(ktFile)
+            .map { it.text },
+    )
         .containsExactly("import com.facebook.example as E")
   }
 
@@ -537,7 +537,7 @@ class PsiAstTemplateTest {
             |  println(3)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results =
         PsiAstTemplateParser()
@@ -548,7 +548,7 @@ class PsiAstTemplateTest {
                 |  #b#
                 |}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .findAllWithVariables(ktFile)
 
@@ -560,7 +560,7 @@ class PsiAstTemplateTest {
             |  println(2)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThat(results.single()["a"]).isEqualTo("println(1)")
     assertThat(results.single()["b"]).isEqualTo("println(2)")
@@ -576,7 +576,7 @@ class PsiAstTemplateTest {
             |  foo.doIt()
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val resultsPrefix: List<KtExpression> = ktFile.findAllExpressions("#a#.let { #b# }")
 
@@ -594,7 +594,7 @@ class PsiAstTemplateTest {
             |  invokeIt() // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val reults: List<KtExpression> = ktFile.findAllExpressions("#a{text=do.*}#()")
 
@@ -612,7 +612,7 @@ class PsiAstTemplateTest {
             |  invokeIt() // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val newKtFile = ktFile.replaceAllExpressions("#a{text=do.*}#()", "#a#New()")
 
@@ -625,7 +625,7 @@ class PsiAstTemplateTest {
             |  invokeIt() // no
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -640,7 +640,7 @@ class PsiAstTemplateTest {
             |  foo.doIt(Wrapper(1), 2) // yes
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val reults: List<KtExpression> = ktFile.findAllExpressions("foo.doIt(Wrapper(#a#), #b#)")
 
@@ -658,7 +658,7 @@ class PsiAstTemplateTest {
             |  public final String barString = "Bar".toUpperCase();
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(psiJavaFile.findAllExpressions("\"Bar\".toUpperCase()").single())
@@ -680,7 +680,7 @@ class PsiAstTemplateTest {
             |  @Magic("yay") String barString = "Bar".toUppercase();
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val psiExpression = psiJavaFile.findAllExpressions("#a#.toUppercase()").single()
@@ -706,7 +706,7 @@ class PsiAstTemplateTest {
             |  final String barString = "Bar".toUppercase();
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val initializedPropertyResults =
@@ -726,7 +726,7 @@ class PsiAstTemplateTest {
             |  final int bar = doIt(1 + 1);
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results = psiJavaFile.findAllExpressions("doIt(1 + 1)")
 
@@ -745,7 +745,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results = psiJavaFile.findAllAnnotations("@Magic")
 
@@ -766,7 +766,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results = psiJavaFile.findAllExpressions("doIt(1, b)")
 
@@ -785,7 +785,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results =
@@ -811,7 +811,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(psiJavaFile.findAllExpressions("#call#(#a#)").map { it.text })
@@ -834,7 +834,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(psiJavaFile.findAllExpressions("doIt(#a?#)").map { it.text })
@@ -859,7 +859,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(psiJavaFile.findAllExpressions("Foo.<String>doIt()").map { it.text })
@@ -883,7 +883,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val newKtFile = psiJavaFile.replaceAllExpressions("doIt(#a#, #b#)", "doIt(#b#, #a#)")
@@ -897,7 +897,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -913,7 +913,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results = psiJavaFile.findAllExpressions("a.b()")
@@ -935,7 +935,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val results = psiJavaFile.findAllExpressions("Bar.class")
@@ -956,7 +956,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val results = psiJavaFile.findAllExpressions("doIt(#any#)")
 
@@ -975,7 +975,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     val resultsPrefix = psiJavaFile.findAllExpressions("++#any#")
     val resultsPostfix = psiJavaFile.findAllExpressions("#any#++")
@@ -996,7 +996,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThat(psiJavaFile.findAllExpressions("(Bar) #any#").map { it.text })
         .containsExactly("(Bar) foo")
@@ -1016,7 +1016,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThat(psiJavaFile.findAllExpressions("#any# instanceof Bar").map { it.text })
         .containsExactly("foo instanceof Bar")
@@ -1036,7 +1036,7 @@ class PsiAstTemplateTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
     assertThat(psiJavaFile.findAllExpressions("(#any#)").map { it.text })
         .containsExactly("(doIt())", "(1 + 1)")
@@ -1056,35 +1056,35 @@ class PsiAstTemplateTest {
             |
             |class Bar {}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            PsiAstTemplateParser()
-                .parseTemplateWithVariables<PsiImportStatementBase>(
-                    "import com.facebook.example.Foo;"
-                )
-                .findAll(psiJavaFile)
-                .map { it.text }
-        )
+        PsiAstTemplateParser()
+            .parseTemplateWithVariables<PsiImportStatementBase>(
+                "import com.facebook.example.Foo;",
+            )
+            .findAll(psiJavaFile)
+            .map { it.text },
+    )
         .containsExactly("import com.facebook.example.Foo;")
     assertThat(
-            PsiAstTemplateParser()
-                .parseTemplateWithVariables<PsiImportStatementBase>(
-                    "import static com.facebook.example.Foo.f;"
-                )
-                .findAll(psiJavaFile)
-                .map { it.text }
-        )
+        PsiAstTemplateParser()
+            .parseTemplateWithVariables<PsiImportStatementBase>(
+                "import static com.facebook.example.Foo.f;",
+            )
+            .findAll(psiJavaFile)
+            .map { it.text },
+    )
         .containsExactly("import static com.facebook.example.Foo.f;")
     assertThat(
-            PsiAstTemplateParser()
-                .parseTemplateWithVariables<PsiImportStatementBase>(
-                    "import com.facebook.example.#a#;"
-                )
-                .findAll(psiJavaFile)
-                .map { it.text }
-        )
+        PsiAstTemplateParser()
+            .parseTemplateWithVariables<PsiImportStatementBase>(
+                "import com.facebook.example.#a#;",
+            )
+            .findAll(psiJavaFile)
+            .map { it.text },
+    )
         .containsExactly("import com.facebook.example.Foo;", "import com.facebook.example.Foo2;")
   }
 }

@@ -58,7 +58,7 @@ class PostConversionExamplesTest {
         |  }
         |}
         |"""
-            .trimMargin()
+            .trimMargin(),
     )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
@@ -78,7 +78,7 @@ class PostConversionExamplesTest {
             |  }
             |}
             |"""
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -100,7 +100,7 @@ class PostConversionExamplesTest {
         |  }
         |}
         |"""
-            .trimMargin()
+            .trimMargin(),
     )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
@@ -121,7 +121,7 @@ class PostConversionExamplesTest {
             |  }
             |}
             |"""
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -142,7 +142,7 @@ class PostConversionExamplesTest {
         |  }
         |}
         |"""
-            .trimMargin()
+            .trimMargin(),
     )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
@@ -162,7 +162,7 @@ class PostConversionExamplesTest {
             |  }
             |}
             |"""
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -187,7 +187,7 @@ class PostConversionExamplesTest {
         |  }
         |}
         |"""
-            .trimMargin()
+            .trimMargin(),
     )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
@@ -211,7 +211,7 @@ class PostConversionExamplesTest {
             |  }
             |}
             |"""
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -236,7 +236,7 @@ class PostConversionExamplesTest {
         |  }
         |}
         |"""
-            .trimMargin()
+            .trimMargin(),
     )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
@@ -260,7 +260,7 @@ class PostConversionExamplesTest {
             |  }
             |}
             |"""
-                .trimMargin()
+                .trimMargin(),
         )
   }
 
@@ -282,7 +282,7 @@ class PostConversionExamplesTest {
         |  }
         |}
         |"""
-            .trimMargin()
+            .trimMargin(),
     )
 
     PostConversionExamples.main(System.out, arrayOf(file.path))
@@ -301,7 +301,7 @@ class PostConversionExamplesTest {
             |  }
             |}
             |"""
-                .trimMargin()
+                .trimMargin(),
         )
   }
 }

@@ -26,7 +26,7 @@ open class ACallableDeclaration internal constructor(psiElement: PsiElement) :
   constructor(psiMethod: PsiMethod) : this(psiMethod as PsiElement)
 
   constructor(
-      ktCallableDeclaration: KtCallableDeclaration
+      ktCallableDeclaration: KtCallableDeclaration,
   ) : this(ktCallableDeclaration as PsiElement)
 
   override val javaElement: PsiMethod?

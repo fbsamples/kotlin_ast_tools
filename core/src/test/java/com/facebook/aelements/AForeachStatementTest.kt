@@ -40,7 +40,7 @@ class AForeachStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaPsiFile.toAElement()
@@ -67,7 +67,7 @@ class AForeachStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaPsiFile.toAElement()
@@ -91,7 +91,7 @@ class AForeachStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaPsiFile.toAElement()
@@ -119,7 +119,7 @@ class AForeachStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaPsiFile.toAElement()

@@ -40,7 +40,7 @@ class ADoWhileExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -68,7 +68,7 @@ class ADoWhileExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -95,7 +95,7 @@ class ADoWhileExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -123,7 +123,7 @@ class ADoWhileExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()

@@ -40,7 +40,7 @@ class AWhileExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -68,7 +68,7 @@ class AWhileExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -94,7 +94,7 @@ class AWhileExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()
@@ -121,7 +121,7 @@ class AWhileExpressionTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = ktFile.toAElement()

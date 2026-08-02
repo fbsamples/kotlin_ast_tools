@@ -24,11 +24,11 @@ open class AClassLiteralExpression constructor(psiElement: PsiElement) :
     AExpressionImpl(psiElement) {
 
   constructor(
-      ktClassLiteralExpression: KtClassLiteralExpression
+      ktClassLiteralExpression: KtClassLiteralExpression,
   ) : this(ktClassLiteralExpression as PsiElement)
 
   constructor(
-      psiClassObjectAccessExpression: PsiClassObjectAccessExpression
+      psiClassObjectAccessExpression: PsiClassObjectAccessExpression,
   ) : this(psiClassObjectAccessExpression as PsiElement)
 
   override val javaElement: PsiClassObjectAccessExpression?

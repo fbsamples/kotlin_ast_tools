@@ -185,7 +185,7 @@ object PostConversionExamples {
             nodes.add(nextStatement)
             replacements.add("")
           }
-        }
+        },
     )
     if (nodes.isEmpty()) {
       return ktFile
@@ -204,7 +204,7 @@ object PostConversionExamples {
               count++
             }
           }
-        }
+        },
     )
     return count
   }

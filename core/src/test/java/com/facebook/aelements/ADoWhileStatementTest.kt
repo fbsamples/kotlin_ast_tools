@@ -40,7 +40,7 @@ class ADoWhileStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -68,7 +68,7 @@ class ADoWhileStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -95,7 +95,7 @@ class ADoWhileStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()
@@ -123,7 +123,7 @@ class ADoWhileStatementTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val aFile = javaFile.toAElement()

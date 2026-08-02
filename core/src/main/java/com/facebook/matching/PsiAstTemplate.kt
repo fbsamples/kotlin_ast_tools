@@ -535,7 +535,7 @@ class PsiAstTemplate(variables: List<Variable> = listOf()) {
     matcherFromVariable
         ?: error(
             "Template references variable $$varName, " +
-                "but one was defined: Add `val $varName by match<...> { ... }` to your template"
+                "but one was defined: Add `val $varName by match<...> { ... }` to your template",
         )
     variable.addConditionsFromVariable(matcherFromVariable)
     check(T::class.java == matcherFromVariable.targetType) {

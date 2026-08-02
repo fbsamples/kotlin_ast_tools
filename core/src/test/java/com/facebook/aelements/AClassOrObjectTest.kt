@@ -89,11 +89,11 @@ class AClassOrObjectTest {
           { it.superTypeListEntries.map { it.typeReference } },
       )
       assertThat(
-              aElement
-                  .collectDescendantsOfType<AClassOrObject> { it.name == "Status" }
-                  .first()
-                  .superTypes
-          )
+          aElement
+              .collectDescendantsOfType<AClassOrObject> { it.name == "Status" }
+              .first()
+              .superTypes,
+      )
           .isEmpty()
     }
   }

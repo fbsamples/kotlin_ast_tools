@@ -24,7 +24,7 @@ import org.jetbrains.kotlin.psi.KtImportDirective
 /** Represents an import, i.e. `import com.foo.Foo` or `import static com.foo.Foo.ba` */
 class AImportDirective private constructor(psiElement: PsiElement) : AElementImpl(psiElement) {
   constructor(
-      psiImportStatementBase: PsiImportStatementBase
+      psiImportStatementBase: PsiImportStatementBase,
   ) : this(psiImportStatementBase as PsiElement)
 
   constructor(ktImportDirective: KtImportDirective) : this(ktImportDirective as PsiElement)

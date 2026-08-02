@@ -44,6 +44,6 @@ class ADeclarationWithBodyImpl internal constructor(psiElement: PsiElement) :
   constructor(psiMethod: PsiMethod) : this(psiMethod as PsiElement)
 
   constructor(
-      ktDeclarationWithBody: KtDeclarationWithBody
+      ktDeclarationWithBody: KtDeclarationWithBody,
   ) : this(ktDeclarationWithBody as PsiElement)
 }

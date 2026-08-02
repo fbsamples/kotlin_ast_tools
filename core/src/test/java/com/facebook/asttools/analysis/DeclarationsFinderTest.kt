@@ -56,14 +56,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!,
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "alsoDoThis",
@@ -71,10 +71,10 @@ class DeclarationsFinderTest {
             "name",
         )
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println("meh")""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println("meh")""" }!!,
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "alsoDoThis",
@@ -101,14 +101,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!,
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "a",
@@ -130,12 +130,12 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val declarations =
         DeclarationsFinder.getDeclarationsAt(
-            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!
+            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!,
         )
     assertThat(declarations)
         .containsOnlyKeys(
@@ -165,14 +165,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println(a + "hello " + name)""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println(a + "hello " + name)""" }!!,
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "a",
@@ -196,34 +196,34 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                checkNotNull(ktFile.findDescendantOfType<KtForExpression>())
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            checkNotNull(ktFile.findDescendantOfType<KtForExpression>()),
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "doIt",
             "name",
         )
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                checkNotNull(ktFile.findDescendantOfType<KtForExpression>()?.loopParameter)
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            checkNotNull(ktFile.findDescendantOfType<KtForExpression>()?.loopParameter),
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "doIt",
             "name",
         )
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                checkNotNull(ktFile.findDescendantOfType<KtForExpression>()?.loopRange)
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            checkNotNull(ktFile.findDescendantOfType<KtForExpression>()?.loopRange),
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "doIt",
@@ -244,16 +244,16 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                    ktFile.findDescendantOfType { it.text == "println(name)" }!!
-                )["name"]!!
-                .value
-                .text
-        )
+        DeclarationsFinder.getDeclarationsAt(
+                ktFile.findDescendantOfType { it.text == "println(name)" }!!,
+            )["name"]!!
+            .value
+            .text,
+    )
         .isEqualTo("name: Int")
   }
 
@@ -270,16 +270,16 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                    ktFile.findDescendantOfType { it.text == "println(it)" }!!
-                )["it"]!!
-                .value
-                .text
-        )
+        DeclarationsFinder.getDeclarationsAt(
+                ktFile.findDescendantOfType { it.text == "println(it)" }!!,
+            )["it"]!!
+            .value
+            .text,
+    )
         .isEqualTo("{ println(it) }")
   }
 
@@ -296,14 +296,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println(name)""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println(name)""" }!!,
+        ),
+    )
         .containsKeys("name")
   }
 
@@ -320,14 +320,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!,
+        ),
+    )
         .containsKeys("name")
   }
 
@@ -345,12 +345,12 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val map =
         DeclarationsFinder.getDeclarationsAt(
-            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!
+            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!,
         )
     assertThat(map).containsKey("name")
     assertThat(map["name"]?.value?.text).isEqualTo("val name: Int = 5")
@@ -367,14 +367,14 @@ class DeclarationsFinderTest {
             |  val name2 = name
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """val name2 = name""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """val name2 = name""" }!!,
+        ),
+    )
         .containsKey("name")
   }
 
@@ -391,14 +391,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!,
+        ),
+    )
         .containsKey("name")
   }
 
@@ -419,14 +419,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println("hello " + name)""" }!!,
+        ),
+    )
         .containsKeys("name")
   }
 
@@ -442,12 +442,12 @@ class DeclarationsFinderTest {
             |  val bar: Bar = Bar(context)
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val contextDeclaration =
         DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """val bar: Bar = Bar(context)""" }!!
+                ktFile.findDescendantOfType { it.text == """val bar: Bar = Bar(context)""" }!!,
             )["context"]
     assertThat(contextDeclaration?.value).isInstanceOf(KtParameter::class.java)
     assertThat(contextDeclaration?.value?.text).isEqualTo("context: Context")
@@ -470,14 +470,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """println("hello " + Inner.name)""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """println("hello " + Inner.name)""" }!!,
+        ),
+    )
         .containsKeys("Inner")
   }
 
@@ -501,7 +501,7 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val declaration = ktFile.findDescendantOfType<KtNamedDeclaration> { it.text == "any: Any" }!!
@@ -530,7 +530,7 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val functionParameterDeclaration =
@@ -568,7 +568,7 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val localVariableDeclaration =
@@ -576,7 +576,7 @@ class DeclarationsFinderTest {
             checkNotNull(
                 ktFile
                     .findDescendantOfType<KtReturnExpression> { it.text == """return name""" }
-                    ?.returnedExpression
+                    ?.returnedExpression,
             ),
             "name",
         )
@@ -597,13 +597,13 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val localVariableDeclaration =
         DeclarationsFinder.getVariableDeclarationAt(
             checkNotNull(
-                ktFile.findDescendantOfType<KtCallExpression> { it.text == """println(name)""" }
+                ktFile.findDescendantOfType<KtCallExpression> { it.text == """println(name)""" },
             ),
             "name",
         )
@@ -635,7 +635,7 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val propertyDeclaration =
@@ -649,7 +649,7 @@ class DeclarationsFinderTest {
     val constructorParamDeclaration =
         DeclarationsFinder.getDeclarationAt(
             checkNotNull(
-                ktFile.findDescendantOfType { it.text == """println("ctor param" + name)""" }
+                ktFile.findDescendantOfType { it.text == """println("ctor param" + name)""" },
             ),
             "name",
         )
@@ -657,19 +657,19 @@ class DeclarationsFinderTest {
     assertThat(constructorParamDeclaration).isInstanceOf(KtParameter::class.java)
 
     assertThat(
-            DeclarationsFinder.getDeclarationAt(
-                checkNotNull(ktFile.findDescendantOfType { it.text == """"property" + name""" }),
-                "name",
-            )
-        )
+        DeclarationsFinder.getDeclarationAt(
+            checkNotNull(ktFile.findDescendantOfType { it.text == """"property" + name""" }),
+            "name",
+        ),
+    )
         .isSameAs(propertyDeclaration)
 
     assertThat(
-            DeclarationsFinder.getDeclarationAt(
-                checkNotNull(ktFile.findDescendantOfType { it.text == """name + 1""" }),
-                "name",
-            )
-        )
+        DeclarationsFinder.getDeclarationAt(
+            checkNotNull(ktFile.findDescendantOfType { it.text == """name + 1""" }),
+            "name",
+        ),
+    )
         .isSameAs(constructorParamDeclaration)
   }
 
@@ -702,7 +702,7 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val propertyDeclaration =
@@ -716,7 +716,7 @@ class DeclarationsFinderTest {
     val companionObjectDeclaration =
         DeclarationsFinder.getDeclarationAt(
             checkNotNull(
-                ktFile.findDescendantOfType { it.text == """println("hello " + number)""" }
+                ktFile.findDescendantOfType { it.text == """println("hello " + number)""" },
             ),
             "number",
         )
@@ -750,14 +750,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             |"""
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                ktFile.findDescendantOfType { it.text == """mFastPlayActive != fastPlayActive""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            ktFile.findDescendantOfType { it.text == """mFastPlayActive != fastPlayActive""" }!!,
+        ),
+    )
         .containsKeys("fastPlayActive")
   }
 
@@ -778,16 +778,16 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType {
-                  it.text == """System.out.println("hello " + name)"""
-                }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            psiJavaFile.findDescendantOfType {
+              it.text == """System.out.println("hello " + name)"""
+            }!!,
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "alsoDoThis",
@@ -795,10 +795,10 @@ class DeclarationsFinderTest {
             "name",
         )
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType { it.text == """System.out.println("meh")""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            psiJavaFile.findDescendantOfType { it.text == """System.out.println("meh")""" }!!,
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "alsoDoThis",
@@ -825,16 +825,16 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType {
-                  it.text == """System.out.println("hello " + name)"""
-                }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            psiJavaFile.findDescendantOfType {
+              it.text == """System.out.println("hello " + name)"""
+            }!!,
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "a",
@@ -859,14 +859,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val declarations =
         DeclarationsFinder.getDeclarationsAt(
             psiJavaFile.findDescendantOfType {
               it.text == """System.out.println("hello " + name)"""
-            }!!
+            }!!,
         )
     assertThat(declarations)
         .containsOnlyKeys(
@@ -900,16 +900,16 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType {
-                  it.text == """System.out.println(a + "hello " + name)"""
-                }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            psiJavaFile.findDescendantOfType {
+              it.text == """System.out.println(a + "hello " + name)"""
+            }!!,
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "a",
@@ -934,36 +934,36 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                checkNotNull(psiJavaFile.findDescendantOfType<PsiForeachStatement>())
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            checkNotNull(psiJavaFile.findDescendantOfType<PsiForeachStatement>()),
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "doIt",
             "name",
         )
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                checkNotNull(psiJavaFile.findDescendantOfType<PsiForeachStatement>()?.iteratedValue)
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            checkNotNull(psiJavaFile.findDescendantOfType<PsiForeachStatement>()?.iteratedValue),
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "doIt",
             "name",
         )
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                checkNotNull(
-                    psiJavaFile.findDescendantOfType<PsiForeachStatement>()?.iterationParameter
-                )
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            checkNotNull(
+                psiJavaFile.findDescendantOfType<PsiForeachStatement>()?.iterationParameter,
+            ),
+        ),
+    )
         .containsOnlyKeys(
             "Foo",
             "doIt",
@@ -984,16 +984,16 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                    psiJavaFile.findDescendantOfType { it.text == "System.out.println(name)" }!!
-                )["name"]!!
-                .value
-                .text
-        )
+        DeclarationsFinder.getDeclarationsAt(
+                psiJavaFile.findDescendantOfType { it.text == "System.out.println(name)" }!!,
+            )["name"]!!
+            .value
+            .text,
+    )
         .isEqualTo("name")
   }
 
@@ -1017,16 +1017,16 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType {
-                  it.text == """System.out.println("hello " + name)"""
-                }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            psiJavaFile.findDescendantOfType {
+              it.text == """System.out.println("hello " + name)"""
+            }!!,
+        ),
+    )
         .containsKeys("name")
   }
 
@@ -1046,14 +1046,14 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val map =
         DeclarationsFinder.getDeclarationsAt(
             psiJavaFile.findDescendantOfType {
               it.text == """System.out.println("hello " + name)"""
-            }!!
+            }!!,
         )
     assertThat(map).containsKey("name")
     assertThat(map["name"]?.value?.text).isEqualTo("int name = 5;")
@@ -1075,14 +1075,14 @@ class DeclarationsFinderTest {
             |  } 
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType { it.text == """name2 = name;""" }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            psiJavaFile.findDescendantOfType { it.text == """name2 = name;""" }!!,
+        ),
+    )
         .containsKey("name")
   }
 
@@ -1100,12 +1100,12 @@ class DeclarationsFinderTest {
             |  Bar bar = new Bar(context);
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val contextDeclaration =
         DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType { it.text == """Bar bar = new Bar(context);""" }!!
+                psiJavaFile.findDescendantOfType { it.text == """Bar bar = new Bar(context);""" }!!,
             )["context"]
     assertThat(contextDeclaration?.value).isInstanceOf(PsiField::class.java)
     assertThat(contextDeclaration?.value?.text).isEqualTo("Context context = applicationContext;")
@@ -1128,16 +1128,16 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     assertThat(
-            DeclarationsFinder.getDeclarationsAt(
-                psiJavaFile.findDescendantOfType {
-                  it.text == """System.out.println("hello " + Inner.name)"""
-                }!!
-            )
-        )
+        DeclarationsFinder.getDeclarationsAt(
+            psiJavaFile.findDescendantOfType {
+              it.text == """System.out.println("hello " + Inner.name)"""
+            }!!,
+        ),
+    )
         .containsKeys("Inner")
   }
 
@@ -1159,7 +1159,7 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val functionParameterDeclaration =
@@ -1167,7 +1167,7 @@ class DeclarationsFinderTest {
             checkNotNull(
                 psiJavaFile.findDescendantOfType {
                   it.text == """System.out.println("hello " + name)"""
-                }
+                },
             ),
             "name",
         )
@@ -1201,7 +1201,7 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val localVariableDeclaration =
@@ -1209,7 +1209,7 @@ class DeclarationsFinderTest {
             checkNotNull(
                 psiJavaFile
                     .findDescendantOfType<PsiReturnStatement> { it.text == """return name;""" }
-                    ?.returnValue
+                    ?.returnValue,
             ),
             "name",
         )
@@ -1234,7 +1234,7 @@ class DeclarationsFinderTest {
             |  }
             |}
             """
-                .trimMargin()
+                .trimMargin(),
         )
 
     val localVariableDeclaration =
@@ -1242,7 +1242,7 @@ class DeclarationsFinderTest {
             checkNotNull(
                 psiJavaFile.findDescendantOfType<PsiExpression> {
                   it.text == """"hello, name is not available here""""
-                }
+                },
             ),
             "name",
         )

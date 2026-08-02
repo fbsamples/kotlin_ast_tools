@@ -73,7 +73,7 @@ class AImportDirectiveTest {
                 |
                 |public class TestClass {}
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement()
             .findDescendantOfType<AImportDirective> { it.text == "import static com.foo.Bar.boom;" }
@@ -90,7 +90,7 @@ class AImportDirectiveTest {
                 |
                 |class TestClass
                 """
-                    .trimMargin()
+                    .trimMargin(),
             )
             .toAElement()
             .findDescendantOfType<AImportDirective> {
@@ -103,19 +103,19 @@ class AImportDirectiveTest {
   @Test
   fun `test escaped names in Kotlin`() {
     assertThat(
-            KotlinParserUtil.parseAsFile(
-                    """
-                    |import com.foo.Bar.`one two`
-                    |
-                    |class TestClass
-                    """
-                        .trimMargin()
-                )
-                .toAElement()
-                .findDescendantOfType<AImportDirective> {
-                  it.fullyQualifiedName == "com.foo.Bar.`one two`"
-                }
-        )
+        KotlinParserUtil.parseAsFile(
+                """
+                |import com.foo.Bar.`one two`
+                |
+                |class TestClass
+                """
+                    .trimMargin(),
+            )
+            .toAElement()
+            .findDescendantOfType<AImportDirective> {
+              it.fullyQualifiedName == "com.foo.Bar.`one two`"
+            },
+    )
         .isNotNull()
   }
 }
