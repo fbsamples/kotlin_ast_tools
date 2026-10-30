@@ -18,12 +18,8 @@ package com.facebook.asttools
 
 import org.jetbrains.kotlin.cli.common.messages.MessageRenderer
 import org.jetbrains.kotlin.cli.common.messages.PrintingMessageCollector
-import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
-import org.jetbrains.kotlin.cli.jvm.compiler.legacy.pipeline.createProjectEnvironment
 import org.jetbrains.kotlin.com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
-import org.jetbrains.kotlin.config.CommonConfigurationKeys
-import org.jetbrains.kotlin.config.CompilerConfiguration
 
 /**
  * Helper that creates or uses a provided Project for psi operations. For example, finding the
@@ -46,16 +42,7 @@ object ProjectHelper {
     val disposable = Disposer.newDisposable()
     val messageCollector =
         PrintingMessageCollector(System.err, MessageRenderer.PLAIN_RELATIVE_PATHS, false)
-    val configuration =
-        CompilerConfiguration().apply {
-          put(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, messageCollector)
-        }
-    return createProjectEnvironment(
-        configuration,
-        disposable,
-        EnvironmentConfigFiles.JVM_CONFIG_FILES,
-        messageCollector,
-    )
-        .project
+    val configuration = createCompilerConfigurationCompat(messageCollector)
+    return createProjectCompat(configuration, disposable, messageCollector)
   }
 }
